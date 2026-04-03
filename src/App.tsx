@@ -16,6 +16,7 @@ import AIAssistant from '@/pages/AIAssistant'
 import SCALookup from '@/pages/SCALookup'
 import RFPParser from '@/pages/RFPParser'
 import LaborCategories from '@/pages/LaborCategories'
+import QuickEstimate from '@/pages/QuickEstimate'
 import ToastContainer from '@/components/Toast'
 import Onboarding from '@/components/Onboarding'
 import {
@@ -64,6 +65,7 @@ function App() {
           <Route path="sca" element={<SCALookup />} />
           <Route path="labor" element={<LaborCategories />} />
           <Route path="rfp" element={<RFPParser />} />
+          <Route path="estimate" element={<QuickEstimate />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

@@ -110,12 +110,20 @@ export default function Analytics() {
         </motion.div>
         <GlassCard className="flex flex-col items-center justify-center py-16">
           <BarChart3 className="w-12 h-12 text-text-disabled mb-4" />
-          <p className="text-text-secondary text-lg font-medium mb-1">No quotes yet</p>
-          <p className="text-text-tertiary text-sm mb-4">Create a quote to start tracking your pipeline.</p>
-          <Link to="/quote" className="btn btn-primary no-underline">
-            <FileText className="w-4 h-4" />
-            Create Quote
-          </Link>
+          <h3 className="text-lg font-semibold text-text-primary mb-1">Create your first quote to see analytics</h3>
+          <p className="text-text-tertiary text-sm mb-5 max-w-md mx-auto">
+            Track win rates, pipeline value, monthly trends, and top quotes. Start by creating a task order or proposal.
+          </p>
+          <div className="flex items-center justify-center gap-3">
+            <Link to="/quote" className="btn btn-primary no-underline">
+              <FileText className="w-4 h-4" />
+              New Task Order
+            </Link>
+            <Link to="/proposal" className="btn btn-ghost no-underline">
+              <FileStack className="w-4 h-4" />
+              New Proposal
+            </Link>
+          </div>
         </GlassCard>
       </div>
     )

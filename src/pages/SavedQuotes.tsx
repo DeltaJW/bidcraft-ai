@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion'
 import { FolderOpen, FileText, FileStack, Trash2, Clock, DollarSign, Copy, Filter, Download } from 'lucide-react'
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import GlassCard from '@/components/GlassCard'
+import ConfirmDialog from '@/components/ConfirmDialog'
 import { quotesStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
 import type { Quote } from '@/types'
@@ -23,6 +25,7 @@ export default function SavedQuotes() {
   const quotes = useStore(quotesStore)
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterType, setFilterType] = useState<string>('all')
+  const [deleteQuoteId, setDeleteQuoteId] = useState<string | null>(null)
 
   const filtered = quotes.filter((q) => {
     if (filterStatus !== 'all' && q.status !== filterStatus) return false
@@ -166,10 +169,20 @@ export default function SavedQuotes() {
       {quotes.length === 0 ? (
         <GlassCard className="text-center py-16">
           <FolderOpen className="w-12 h-12 text-text-disabled mx-auto mb-4" />
-          <p className="text-text-tertiary text-lg mb-2">No saved quotes yet</p>
-          <p className="text-text-tertiary text-sm">
-            Create a Task Order Quote or Full Proposal and click "Save" to see it here
+          <h3 className="text-lg font-semibold text-text-primary mb-1">No saved quotes yet</h3>
+          <p className="text-text-tertiary text-sm mb-5 max-w-md mx-auto">
+            Create a Task Order Quote for one-off jobs or build a Full Proposal from your workloading data, then click "Save" to track it here.
           </p>
+          <div className="flex items-center justify-center gap-3">
+            <Link to="/quote" className="btn btn-primary no-underline">
+              <FileText className="w-4 h-4" />
+              New Task Order
+            </Link>
+            <Link to="/proposal" className="btn btn-ghost no-underline">
+              <FileStack className="w-4 h-4" />
+              New Proposal
+            </Link>
+          </div>
         </GlassCard>
       ) : filtered.length === 0 ? (
         <GlassCard className="text-center py-12">
@@ -231,7 +244,7 @@ export default function SavedQuotes() {
                     </button>
                     <button
                       className="p-1.5 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
-                      onClick={() => deleteQuote(q.id)}
+                      onClick={() => setDeleteQuoteId(q.id)}
                       title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -243,6 +256,18 @@ export default function SavedQuotes() {
           })}
         </div>
       )}
+
+      <ConfirmDialog
+        open={deleteQuoteId !== null}
+        title="Delete Quote"
+        message="This will permanently remove this saved quote. This cannot be undone."
+        confirmLabel="Delete Quote"
+        onConfirm={() => {
+          if (deleteQuoteId) deleteQuote(deleteQuoteId)
+          setDeleteQuoteId(null)
+        }}
+        onCancel={() => setDeleteQuoteId(null)}
+      />
     </motion.div>
   )
 }

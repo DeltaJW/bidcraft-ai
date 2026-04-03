@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download, FileDown } from 'lucide-react'
+import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download, FileDown, ClipboardList } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import ProposalPreview from '@/components/ProposalPreview'
@@ -328,8 +329,16 @@ export default function Proposal() {
           {/* Zones with tasks (read from workload) */}
           <GlassCard title="Labor by Zone" subtitle="Imported from workloading calculator">
             {computedZones.length === 0 ? (
-              <div className="text-center py-8 text-text-tertiary text-sm">
-                No zones — use the Workloading Calculator to build zones and click "Send to Proposal"
+              <div className="text-center py-10">
+                <ClipboardList className="w-12 h-12 text-text-disabled mx-auto mb-3" />
+                <h3 className="text-sm font-semibold text-text-primary mb-1">No zones imported yet</h3>
+                <p className="text-xs text-text-tertiary max-w-sm mx-auto mb-4">
+                  Build your workload in the Workloading Calculator, then click "Send to Proposal" to import zones and tasks here.
+                </p>
+                <Link to="/workloading" className="btn btn-primary !text-xs no-underline">
+                  <ClipboardList className="w-3.5 h-3.5" />
+                  Go to Workloading Calculator
+                </Link>
               </div>
             ) : (
               <div className="flex flex-col gap-4">

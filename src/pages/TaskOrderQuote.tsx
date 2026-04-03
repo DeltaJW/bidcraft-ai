@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, Plus, Trash2, Printer, DollarSign, Save, Download } from 'lucide-react'
+import { FileText, Plus, Trash2, Printer, DollarSign, Save, Download, ListChecks } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import QuotePreview from '@/components/QuotePreview'
@@ -261,8 +261,17 @@ export default function TaskOrderQuote() {
             subtitle="Select tasks and enter square footage or quantity"
           >
             {tasks.length === 0 ? (
-              <div className="text-center py-8 text-text-tertiary text-sm">
-                No tasks added yet
+              <div className="text-center py-10">
+                <ListChecks className="w-12 h-12 text-text-disabled mx-auto mb-3" />
+                <h3 className="text-sm font-semibold text-text-primary mb-1">No tasks added yet</h3>
+                <p className="text-xs text-text-tertiary max-w-sm mx-auto mb-4">
+                  {!selectedBurdenId
+                    ? 'Select a burden profile above, then add tasks to start pricing.'
+                    : 'Click "Add Task" below to select cleaning tasks and enter square footage.'}
+                </p>
+                <button className="btn btn-primary !text-xs" onClick={addTask}>
+                  <Plus className="w-3 h-3" /> Add Task
+                </button>
               </div>
             ) : (
               <table className="w-full text-sm mb-4">

@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil, Download } from 'lucide-react'
+import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil, Download, Search } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import ConfirmDialog from '@/components/ConfirmDialog'
 import { toast } from '@/components/Toast'
 import { burdenProfilesStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
@@ -52,6 +54,7 @@ export default function BurdenBuilder() {
   const [saved, setSaved] = useState(false)
   const [suiState, setSuiState] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [deleteProfileId, setDeleteProfileId] = useState<string | null>(null)
 
   function update<K extends keyof BurdenProfile>(field: K, value: BurdenProfile[K]) {
     setProfile((prev) => ({ ...prev, [field]: value }))
@@ -231,6 +234,22 @@ export default function BurdenBuilder() {
                         Enter from SCA Wage Determination or your prevailing wage
                       </p>
                     </div>
+                    {profile.baseWage === 0 && (
+                      <div className="glass !bg-accent/5 border-accent/15 p-3 rounded-lg flex items-start gap-3">
+                        <Search className="w-4 h-4 text-accent mt-0.5 shrink-0" />
+                        <div>
+                          <p className="text-xs text-text-secondary">
+                            Need to find SCA wage rates for your area? Look up the wage determination for your contract's location and labor category.
+                          </p>
+                          <Link
+                            to="/sca"
+                            className="text-xs text-accent hover:text-accent-hover transition-colors mt-1 inline-block no-underline font-medium"
+                          >
+                            Open SCA Wage Lookup →
+                          </Link>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -486,7 +505,7 @@ export default function BurdenBuilder() {
                     </button>
                     <button
                       className="p-1.5 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
-                      onClick={(e) => { e.stopPropagation(); burdenProfilesStore.update((prev) => prev.filter((p) => p.id !== bp.id)) }}
+                      onClick={(e) => { e.stopPropagation(); setDeleteProfileId(bp.id) }}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -502,6 +521,24 @@ export default function BurdenBuilder() {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        open={deleteProfileId !== null}
+        title="Delete Burden Profile"
+        message="This will permanently remove this burden profile. Any quotes using it will retain their saved values, but you won't be able to recalculate with this profile."
+        confirmLabel="Delete Profile"
+        onConfirm={() => {
+          if (deleteProfileId) {
+            burdenProfilesStore.update((prev) => prev.filter((p) => p.id !== deleteProfileId))
+            if (editingId === deleteProfileId) {
+              setProfile(emptyProfile())
+              setEditingId(null)
+              setStep(0)
+            }
+          }
+          setDeleteProfileId(null)
+        }}
+        onCancel={() => setDeleteProfileId(null)}
+      />
     </motion.div>
   )
 }

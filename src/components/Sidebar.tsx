@@ -15,10 +15,12 @@ import {
   BarChart3,
   FileSearch,
   Users,
+  Zap,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/estimate', icon: Zap, label: 'Quick Estimate' },
   { to: '/company', icon: Building2, label: 'Company Profile' },
   { to: '/rates', icon: BookOpen, label: 'Rate Library' },
   { to: '/burden', icon: Calculator, label: 'Burden Builder' },

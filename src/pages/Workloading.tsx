@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ClipboardList, Plus, Trash2, MapPin, Send, FolderOpen, Download } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import ConfirmDialog from '@/components/ConfirmDialog'
 import { toast } from '@/components/Toast'
 import { rateLibraryStore, burdenProfilesStore, workloadDraftStore, templatesStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
@@ -22,6 +23,7 @@ export default function Workloading() {
   const [selectedBurdenId, setSelectedBurdenId] = useState('')
   const [showTemplates, setShowTemplates] = useState(false)
   const [templateSaved, setTemplateSaved] = useState(false)
+  const [deleteTemplateId, setDeleteTemplateId] = useState<string | null>(null)
 
   const selectedBurden = burdenProfiles.find((b) => b.id === selectedBurdenId)
 
@@ -236,7 +238,7 @@ export default function Workloading() {
                 </p>
                 <button
                   className="absolute top-2 right-2 p-1 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer opacity-0 group-hover:opacity-100"
-                  onClick={(e) => { e.stopPropagation(); deleteTemplate(tmpl.id) }}
+                  onClick={(e) => { e.stopPropagation(); setDeleteTemplateId(tmpl.id) }}
                 >
                   <Trash2 className="w-3.5 h-3.5" />
                 </button>
@@ -281,11 +283,23 @@ export default function Workloading() {
         <div className="lg:col-span-3 flex flex-col gap-4">
           {zones.length === 0 && (
             <GlassCard className="text-center py-12">
-              <MapPin className="w-8 h-8 text-text-disabled mx-auto mb-3" />
-              <p className="text-text-tertiary">Click "Add Zone" to create building zones</p>
-              <p className="text-xs text-text-disabled mt-1">
-                Zones represent areas like lobbies, offices, restrooms, etc.
+              <MapPin className="w-12 h-12 text-text-disabled mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-text-primary mb-1">Build Your Workload</h3>
+              <p className="text-text-tertiary text-sm mb-4 max-w-md mx-auto">
+                Define zones (lobbies, offices, restrooms) and assign cleaning tasks with square footage and frequency to calculate labor hours.
               </p>
+              <div className="flex items-center justify-center gap-3">
+                <button className="btn btn-primary" onClick={addZone}>
+                  <Plus className="w-4 h-4" />
+                  Add Zone
+                </button>
+                {templates.length > 0 && (
+                  <button className="btn btn-ghost" onClick={() => setShowTemplates(true)}>
+                    <FolderOpen className="w-4 h-4" />
+                    Load a Template
+                  </button>
+                )}
+              </div>
             </GlassCard>
           )}
 
@@ -470,6 +484,17 @@ export default function Workloading() {
           </GlassCard>
         </div>
       </div>
+      <ConfirmDialog
+        open={deleteTemplateId !== null}
+        title="Delete Template"
+        message="This will permanently remove this building template. This cannot be undone."
+        confirmLabel="Delete Template"
+        onConfirm={() => {
+          if (deleteTemplateId) deleteTemplate(deleteTemplateId)
+          setDeleteTemplateId(null)
+        }}
+        onCancel={() => setDeleteTemplateId(null)}
+      />
     </motion.div>
   )
 }

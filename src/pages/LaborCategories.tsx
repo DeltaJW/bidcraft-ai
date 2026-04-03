@@ -1,6 +1,7 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Users, Plus, Trash2 } from 'lucide-react'
+import { Users, Plus, Trash2, Calculator } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { laborCategoriesStore, burdenProfilesStore, useStore } from '@/data/mockStore'
@@ -119,15 +120,31 @@ export default function LaborCategories() {
       {/* Categories list */}
       {categories.length === 0 ? (
         <GlassCard className="text-center py-12">
-          <Users className="w-10 h-10 text-text-disabled mx-auto mb-3" />
-          <p className="text-text-tertiary mb-2">No labor categories defined</p>
-          <p className="text-xs text-text-disabled mb-4">
+          <Users className="w-12 h-12 text-text-disabled mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-text-primary mb-1">No labor categories defined</h3>
+          <p className="text-sm text-text-tertiary mb-1 max-w-md mx-auto">
             Add categories like Janitor, Lead, Supervisor, and Project Manager to price work with different labor rates.
           </p>
-          <button className="btn btn-primary" onClick={loadDefaults}>
-            <Plus className="w-4 h-4" />
-            Load Default Categories
-          </button>
+          {burdenProfiles.length === 0 && (
+            <p className="text-xs text-amber-400/80 mb-4 max-w-md mx-auto">
+              You'll need at least one burden profile to assign rates to categories.{' '}
+              <Link to="/burden" className="text-accent hover:text-accent-hover no-underline font-medium">
+                Build one in Burden Builder →
+              </Link>
+            </p>
+          )}
+          <div className="flex items-center justify-center gap-3 mt-3">
+            <button className="btn btn-primary" onClick={loadDefaults}>
+              <Plus className="w-4 h-4" />
+              Load Default Categories
+            </button>
+            {burdenProfiles.length === 0 && (
+              <Link to="/burden" className="btn btn-ghost no-underline">
+                <Calculator className="w-4 h-4" />
+                Build Burden Profile
+              </Link>
+            )}
+          </div>
         </GlassCard>
       ) : (
         <div className="flex flex-col gap-3">

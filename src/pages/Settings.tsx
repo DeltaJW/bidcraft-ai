@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { toast } from '@/components/Toast'
 import GlassCard from '@/components/GlassCard'
+import ConfirmDialog from '@/components/ConfirmDialog'
 import {
   companyStore,
   rateLibraryStore,
@@ -255,22 +256,19 @@ export default function Settings() {
             This will permanently delete all your data including company profile, rate library customizations,
             burden profiles, saved quotes, and building templates. This cannot be undone.
           </p>
-          {showClearConfirm ? (
-            <div className="flex items-center gap-3">
-              <button className="btn btn-danger" onClick={handleClearAll}>
-                <Trash2 className="w-4 h-4" />
-                Yes, Delete Everything
-              </button>
-              <button className="btn btn-ghost" onClick={() => setShowClearConfirm(false)}>
-                Cancel
-              </button>
-            </div>
-          ) : (
-            <button className="btn btn-danger" onClick={() => setShowClearConfirm(true)}>
-              <Trash2 className="w-4 h-4" />
-              Clear All Data
-            </button>
-          )}
+          <button className="btn btn-danger" onClick={() => setShowClearConfirm(true)}>
+            <Trash2 className="w-4 h-4" />
+            Clear All Data
+          </button>
+
+          <ConfirmDialog
+            open={showClearConfirm}
+            title="Clear All Data"
+            message="This will permanently delete all your data including company profile, rate library customizations, burden profiles, saved quotes, and building templates. This cannot be undone."
+            confirmLabel="Yes, Delete Everything"
+            onConfirm={handleClearAll}
+            onCancel={() => setShowClearConfirm(false)}
+          />
         </GlassCard>
 
         {/* About */}
