@@ -36,6 +36,7 @@ const NAV_ITEMS = [
   { to: '/workload', icon: ClipboardList, label: 'Workloading' },
   { to: '/quote', icon: FileText, label: 'Task Order Quote' },
   { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
+  { to: '/multi', icon: Building2, label: 'Multi-Building' },
   { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
   { to: '/analytics', icon: BarChart3, label: 'Analytics' },
   { to: '/optimizer', icon: Target, label: 'Profit Optimizer' },

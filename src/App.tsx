@@ -21,6 +21,7 @@ import RFPParser from '@/pages/RFPParser'
 import LaborCategories from '@/pages/LaborCategories'
 import QuickEstimate from '@/pages/QuickEstimate'
 import ProfitOptimizer from '@/pages/ProfitOptimizer'
+import MultiBuilding from '@/pages/MultiBuilding'
 import ScenarioCompare from '@/pages/ScenarioCompare'
 import ToastContainer from '@/components/Toast'
 import Onboarding from '@/components/Onboarding'
@@ -75,6 +76,7 @@ function App() {
           <Route path="rfp" element={<RFPParser />} />
           <Route path="estimate" element={<QuickEstimate />} />
           <Route path="optimizer" element={<ProfitOptimizer />} />
+          <Route path="multi" element={<MultiBuilding />} />
           <Route path="scenarios" element={<ScenarioCompare />} />
           <Route path="settings" element={<Settings />} />
         </Route>
