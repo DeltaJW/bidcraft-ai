@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import AppLayout from '@/layouts/AppLayout'
 import Dashboard from '@/pages/Dashboard'
 import CompanyProfile from '@/pages/CompanyProfile'
@@ -14,7 +14,7 @@ import ToastContainer from '@/components/Toast'
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         {/* Marketing landing page */}
         <Route path="landing" element={<Landing />} />
@@ -32,7 +32,7 @@ function App() {
         </Route>
       </Routes>
       <ToastContainer />
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
