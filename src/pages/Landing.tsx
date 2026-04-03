@@ -226,9 +226,11 @@ export default function Landing() {
             variants={heroItem}
             className="text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6"
           >
-            Your unfair advantage
+            Price the work.
             <br />
-            <span className="gradient-text">in bid pricing.</span>
+            <span className="gradient-text">Win the bid.</span>
+            <br />
+            Generate the proposal.
           </motion.h1>
 
           <motion.p
