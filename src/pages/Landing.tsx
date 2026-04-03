@@ -67,6 +67,7 @@ const FEATURES = [
     desc: '120+ production rates across janitorial, security, landscaping, and facilities maintenance.',
     stat: '120+',
     statLabel: 'rates',
+    accent: '#22C55E', // emerald
   },
   {
     icon: Calculator,
@@ -74,6 +75,7 @@ const FEATURES = [
     desc: '6-step wizard builds fully burdened labor rates. Base wage, fringe, taxes, leave, G&A, and profit.',
     stat: '6',
     statLabel: 'steps',
+    accent: '#F59E0B', // amber
   },
   {
     icon: ClipboardList,
@@ -81,6 +83,7 @@ const FEATURES = [
     desc: 'Zone-based workloading with 9 frequency options. Auto-calculates annual hours, FTE needs, and labor costs.',
     stat: '9',
     statLabel: 'frequencies',
+    accent: '#A855F7', // purple
   },
   {
     icon: FileText,
@@ -88,6 +91,7 @@ const FEATURES = [
     desc: 'Government-ready proposals with your logo, CAGE code, and set-aside status. Navy letterhead, signature blocks.',
     stat: 'Gov',
     statLabel: 'ready',
+    accent: '#F43F5E', // rose
   },
   {
     icon: Bot,
@@ -95,6 +99,7 @@ const FEATURES = [
     desc: 'Describe a building or paste a scope of work. AI suggests zones, tasks, rates, and pricing strategies.',
     stat: 'AI',
     statLabel: 'powered',
+    accent: '#22D3EE', // cyan
   },
   {
     icon: Download,
@@ -102,14 +107,15 @@ const FEATURES = [
     desc: 'CSV, PDF, and DOCX export. Print-ready government documents. Backup and restore all data in one click.',
     stat: '3',
     statLabel: 'formats',
+    accent: '#F97316', // orange
   },
 ]
 
 const INDUSTRIES = [
-  { name: 'Janitorial', count: '45', unit: 'rates', desc: 'Floor care, carpet, restrooms, trash' },
-  { name: 'Security', count: '24', unit: 'rates', desc: 'Fixed post, patrol, access control' },
-  { name: 'Landscaping', count: '30', unit: 'rates', desc: 'Mowing, trimming, turf care, snow' },
-  { name: 'Maintenance', count: '28', unit: 'rates', desc: 'HVAC, electrical, plumbing, PM' },
+  { name: 'Janitorial', count: '45', unit: 'rates', desc: 'Floor care, carpet, restrooms, trash', numColor: '#5B8DEF' },
+  { name: 'Security', count: '24', unit: 'rates', desc: 'Fixed post, patrol, access control', numColor: '#22C55E' },
+  { name: 'Landscaping', count: '30', unit: 'rates', desc: 'Mowing, trimming, turf care, snow', numColor: '#F59E0B' },
+  { name: 'Maintenance', count: '28', unit: 'rates', desc: 'HVAC, electrical, plumbing, PM', numColor: '#A855F7' },
 ]
 
 const PRICING = [
@@ -293,14 +299,14 @@ export default function Landing() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {FEATURES.map((f) => (
                 <motion.div key={f.title} variants={cardReveal}>
-                  <div className="card-accent-left p-5 flex gap-4 h-full">
+                  <div className="card-accent-left p-5 flex gap-4 h-full" style={{ borderLeftColor: f.accent }}>
                     <div className="flex-shrink-0 w-10 h-10 rounded-md bg-surface-2 flex items-center justify-center">
-                      <f.icon className="w-4.5 h-4.5 text-accent" />
+                      <f.icon className="w-4.5 h-4.5" style={{ color: f.accent }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between mb-1.5">
                         <h3 className="text-sm font-semibold text-text-primary">{f.title}</h3>
-                        <span className="text-[10px] font-mono font-bold text-accent tracking-wide">
+                        <span className="text-[10px] font-mono font-bold tracking-wide" style={{ color: f.accent }}>
                           {f.stat} <span className="text-text-disabled font-normal">{f.statLabel}</span>
                         </span>
                       </div>
@@ -335,10 +341,10 @@ export default function Landing() {
               {INDUSTRIES.map((ind) => (
                 <motion.div key={ind.name} variants={scaleIn}>
                   <div className="stat-card p-5 text-center">
-                    <div className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-0.5">
+                    <div className="font-mono text-3xl font-bold tracking-tight mb-0.5" style={{ color: ind.numColor }}>
                       {ind.count}
                     </div>
-                    <div className="text-[10px] uppercase tracking-widest text-accent font-semibold mb-3">
+                    <div className="text-[10px] uppercase tracking-widest font-semibold mb-3" style={{ color: ind.numColor }}>
                       {ind.unit}
                     </div>
                     <div className="separator-gradient mb-3" />

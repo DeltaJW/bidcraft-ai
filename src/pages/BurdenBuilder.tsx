@@ -168,12 +168,12 @@ export default function BurdenBuilder() {
   }
 
   const waterfallSegments = [
-    { label: 'Base', value: profile.baseWage, color: 'bg-accent' },
-    { label: 'H&W', value: profile.hwRate, color: 'bg-blue-400' },
-    { label: 'Taxes', value: taxTotal, color: 'bg-amber-400' },
-    { label: 'Leave', value: leaveDollar, color: 'bg-purple-400' },
-    { label: 'G&A', value: gaDollar, color: 'bg-emerald-400' },
-    { label: 'Profit', value: feeDollar, color: 'bg-rose-400' },
+    { label: 'Base', value: profile.baseWage, color: 'bg-accent', textColor: 'text-accent' },
+    { label: 'H&W', value: profile.hwRate, color: 'bg-blue-400', textColor: 'text-blue-400' },
+    { label: 'Taxes', value: taxTotal, color: 'bg-amber-400', textColor: 'text-amber-400' },
+    { label: 'Leave', value: leaveDollar, color: 'bg-purple-400', textColor: 'text-purple-400' },
+    { label: 'G&A', value: gaDollar, color: 'bg-emerald-400', textColor: 'text-emerald-400' },
+    { label: 'Profit', value: feeDollar, color: 'bg-rose-400', textColor: 'text-rose-400' },
   ]
 
   return (
@@ -538,7 +538,7 @@ export default function BurdenBuilder() {
                             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 }}
                           />
                         </div>
-                        <span className="text-[10px] font-mono text-text-tertiary w-14 text-right tabular-nums">
+                        <span className={`text-[10px] font-mono w-14 text-right tabular-nums ${seg.textColor}`}>
                           ${seg.value.toFixed(2)}
                         </span>
                       </div>
