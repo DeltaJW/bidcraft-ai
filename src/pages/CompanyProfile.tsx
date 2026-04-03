@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Building2, Save, Upload } from 'lucide-react'
+import { Building2, Save, Upload, Search, Loader2 } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { companyStore, useStore } from '@/data/mockStore'
+import { searchSAM, lookupByUEI, inferSetAside, type SAMEntity } from '@/services/sam'
 import type { Company } from '@/types'
 
 const SET_ASIDE_OPTIONS = [
@@ -62,6 +63,19 @@ export default function CompanyProfile() {
       </div>
 
       <div className="flex flex-col gap-6">
+        {/* SAM.gov Lookup */}
+        <SAMLookup onSelect={(entity) => {
+          setForm((prev) => ({
+            ...prev,
+            name: entity.legalBusinessName,
+            address: `${entity.address.line1}${entity.address.line2 ? ', ' + entity.address.line2 : ''}, ${entity.address.city}, ${entity.address.state} ${entity.address.zip}`,
+            cageCode: entity.cage,
+            uei: entity.uei,
+            setAside: inferSetAside(entity.businessTypes),
+          }))
+          toast(`Loaded ${entity.legalBusinessName} from SAM.gov`)
+        }} />
+
         {/* Logo & Company Info */}
         <GlassCard title="Company Information" subtitle="Used on all generated quotes and proposals">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -181,5 +195,102 @@ export default function CompanyProfile() {
         </button>
       </div>
     </motion.div>
+  )
+}
+
+function SAMLookup({ onSelect }: { onSelect: (entity: SAMEntity) => void }) {
+  const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [results, setResults] = useState<SAMEntity[]>([])
+  const [searched, setSearched] = useState(false)
+
+  async function handleSearch() {
+    if (!query.trim()) return
+    setLoading(true)
+    setSearched(true)
+    try {
+      // Try UEI lookup first (if it looks like a UEI — 12 chars alphanumeric)
+      const isUEI = /^[A-Z0-9]{12}$/i.test(query.trim())
+      let found: SAMEntity[] = []
+      if (isUEI) {
+        const entity = await lookupByUEI(query.trim().toUpperCase())
+        if (entity) found = [entity]
+      }
+      if (found.length === 0) {
+        found = await searchSAM(query.trim())
+      }
+      setResults(found)
+      if (found.length === 0) {
+        toast('No results from SAM.gov. The API may be blocked by CORS in the browser — enter your info manually.', 'info')
+      }
+    } catch {
+      toast('SAM.gov lookup failed', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <GlassCard title="SAM.gov Lookup" subtitle="Auto-fill your company info from SAM.gov registration">
+      <div className="flex gap-2 mb-3">
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Enter UEI, CAGE code, or company name"
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          className="flex-1"
+        />
+        <button
+          className="btn btn-primary"
+          onClick={handleSearch}
+          disabled={loading || !query.trim()}
+        >
+          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+          {loading ? 'Searching...' : 'Look Up'}
+        </button>
+      </div>
+      <p className="helper-text mb-3">
+        Enter your 12-character UEI from SAM.gov for the most accurate results. Company name search also works.
+      </p>
+
+      {results.length > 0 && (
+        <div className="flex flex-col gap-2">
+          {results.slice(0, 5).map((entity) => (
+            <div
+              key={entity.uei}
+              className="card-inset p-3 cursor-pointer hover:border-accent/30 transition-colors"
+              onClick={() => onSelect(entity)}
+            >
+              <div className="flex justify-between items-start">
+                <div>
+                  <h4 className="text-sm font-semibold text-text-primary">{entity.legalBusinessName}</h4>
+                  {entity.dbaName && <p className="text-xs text-text-tertiary">DBA: {entity.dbaName}</p>}
+                  <p className="text-xs text-text-tertiary mt-0.5">
+                    {entity.address.city}, {entity.address.state} {entity.address.zip}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs font-mono text-accent">UEI: {entity.uei}</p>
+                  {entity.cage && <p className="text-xs font-mono text-text-tertiary">CAGE: {entity.cage}</p>}
+                </div>
+              </div>
+              {entity.businessTypes.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {entity.businessTypes.slice(0, 4).map((bt, i) => (
+                    <span key={i} className="badge badge-navy text-xs">{bt}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {searched && results.length === 0 && !loading && (
+        <p className="text-xs text-text-tertiary text-center py-3">
+          No results found. SAM.gov API may require a backend proxy for browser access. Enter your info manually below.
+        </p>
+      )}
+    </GlassCard>
   )
 }

@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download, FileDown, ClipboardList, Package } from 'lucide-react'
+import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download, FileDown, ClipboardList, Package, BookOpen } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import ProposalPreview from '@/components/ProposalPreview'
+import ProposalCoverPage from '@/components/ProposalCoverPage'
 import SupplyCatalogModal from '@/components/SupplyCatalogModal'
 import {
   companyStore,
@@ -44,6 +45,7 @@ export default function Proposal() {
   const [title, setTitle] = useState('')
   const [contractRef, setContractRef] = useState('')
   const [location, setLocation] = useState('')
+  const [submittedTo, setSubmittedTo] = useState('')
   const [scopeDescription, setScopeDescription] = useState('')
   const [selectedBurdenId, setSelectedBurdenId] = useState('')
   const [selectedClientId, setSelectedClientId] = useState('')
@@ -57,6 +59,7 @@ export default function Proposal() {
     'Annual pricing subject to SCA wage determination adjustments',
   ])
   const [showPreview, setShowPreview] = useState(false)
+  const [showCoverPage, setShowCoverPage] = useState(true)
   const [showCatalog, setShowCatalog] = useState(false)
   const [saved, setSaved] = useState(false)
 
@@ -232,9 +235,15 @@ export default function Proposal() {
   }
 
   if (showPreview) {
+    const today = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+
     return (
       <div>
-        <div className="no-print mb-4 flex gap-2">
+        <div className="no-print mb-4 flex items-center gap-2">
           <button className="btn btn-ghost" onClick={() => setShowPreview(false)}>
             Back to Editor
           </button>
@@ -246,25 +255,46 @@ export default function Proposal() {
             <FileDown className="w-4 h-4" />
             Download DOCX
           </button>
+          <label className="ml-4 flex items-center gap-2 cursor-pointer text-sm text-text-secondary select-none">
+            <input
+              type="checkbox"
+              checked={showCoverPage}
+              onChange={(e) => setShowCoverPage(e.target.checked)}
+              style={{ width: 'auto', accentColor: '#5B8DEF' }}
+            />
+            <BookOpen className="w-4 h-4" />
+            Cover Page
+          </label>
         </div>
-        <ProposalPreview
-          ref={printRef}
-          company={company}
-          title={title}
-          contractRef={contractRef}
-          location={location}
-          scopeDescription={scopeDescription}
-          zones={computedZones}
-          materials={materials}
-          assumptions={assumptions}
-          totalAnnualHours={totalAnnualHours}
-          totalLabor={totalLabor}
-          totalMaterials={totalMaterials}
-          grandTotal={grandTotal}
-          monthlyTotal={monthlyTotal}
-          burdenRate={burdenRate}
-          burdenProfileName={selectedBurden?.name ?? ''}
-        />
+        <div ref={printRef}>
+          {showCoverPage && (
+            <ProposalCoverPage
+              company={company}
+              title={title}
+              contractRef={contractRef}
+              location={location}
+              submittedTo={submittedTo}
+              date={today}
+            />
+          )}
+          <ProposalPreview
+            company={company}
+            title={title}
+            contractRef={contractRef}
+            location={location}
+            scopeDescription={scopeDescription}
+            zones={computedZones}
+            materials={materials}
+            assumptions={assumptions}
+            totalAnnualHours={totalAnnualHours}
+            totalLabor={totalLabor}
+            totalMaterials={totalMaterials}
+            grandTotal={grandTotal}
+            monthlyTotal={monthlyTotal}
+            burdenRate={burdenRate}
+            burdenProfileName={selectedBurden?.name ?? ''}
+          />
+        </div>
       </div>
     )
   }
@@ -348,6 +378,14 @@ export default function Proposal() {
                     </option>
                   ))}
                 </select>
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-xs text-text-tertiary mb-1">Submitted To (Agency/Office)</label>
+                <input
+                  value={submittedTo}
+                  onChange={(e) => setSubmittedTo(e.target.value)}
+                  placeholder="General Services Administration, PBS Region 4"
+                />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs text-text-tertiary mb-1">Scope of Work</label>
