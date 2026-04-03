@@ -1,4 +1,4 @@
-import type { Company, BurdenProfile, Quote, RateLibrary } from '@/types'
+import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate } from '@/types'
 import { DEFAULT_RATES } from './defaultRates'
 import { useSyncExternalStore } from 'react'
 
@@ -75,6 +75,9 @@ export const burdenProfilesStore = createStore<BurdenProfile[]>('burdenProfiles'
 
 // ---- Quotes ----
 export const quotesStore = createStore<Quote[]>('quotes', [])
+
+// ---- Building Templates ----
+export const templatesStore = createStore<BuildingTemplate[]>('buildingTemplates', [])
 
 // ---- Workload Draft (for Send to Quote flow) ----
 export interface WorkloadDraft {

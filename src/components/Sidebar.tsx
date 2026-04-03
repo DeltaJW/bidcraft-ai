@@ -8,6 +8,7 @@ import {
   FileText,
   FolderOpen,
   FileStack,
+  Settings,
   Sparkles,
 } from 'lucide-react'
 
@@ -20,6 +21,7 @@ const NAV_ITEMS = [
   { to: '/quote', icon: FileText, label: 'Task Order Quote' },
   { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
   { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
+  { to: '/settings', icon: Settings, label: 'Settings' },
 ]
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {

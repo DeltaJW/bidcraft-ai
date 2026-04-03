@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
-import { FolderOpen, FileText, FileStack, Trash2, Clock, DollarSign } from 'lucide-react'
+import { FolderOpen, FileText, FileStack, Trash2, Clock, DollarSign, Copy, Filter } from 'lucide-react'
+import { useState } from 'react'
 import GlassCard from '@/components/GlassCard'
 import { quotesStore, useStore } from '@/data/mockStore'
 import type { Quote } from '@/types'
@@ -19,9 +20,28 @@ const TYPE_ICONS: Record<string, typeof FileText> = {
 
 export default function SavedQuotes() {
   const quotes = useStore(quotesStore)
+  const [filterStatus, setFilterStatus] = useState<string>('all')
+  const [filterType, setFilterType] = useState<string>('all')
+
+  const filtered = quotes.filter((q) => {
+    if (filterStatus !== 'all' && q.status !== filterStatus) return false
+    if (filterType !== 'all' && q.quoteType !== filterType) return false
+    return true
+  })
 
   function deleteQuote(id: string) {
     quotesStore.update((prev) => prev.filter((q) => q.id !== id))
+  }
+
+  function duplicateQuote(q: Quote) {
+    const dup: Quote = {
+      ...q,
+      id: `quote-${Date.now()}`,
+      title: `${q.title} (Copy)`,
+      status: 'draft',
+      createdAt: new Date().toISOString(),
+    }
+    quotesStore.update((prev) => [...prev, dup])
   }
 
   function updateStatus(id: string, status: Quote['status']) {
@@ -38,17 +58,88 @@ export default function SavedQuotes() {
     })
   }
 
+  const totalValue = filtered.reduce((s, q) => s + q.grandTotal, 0)
+  const acceptedValue = filtered
+    .filter((q) => q.status === 'accepted')
+    .reduce((s, q) => s + q.grandTotal, 0)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       className="max-w-4xl"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <FolderOpen className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-white">Saved Quotes</h1>
-        <span className="text-sm text-navy-500 ml-2">{quotes.length} total</span>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <FolderOpen className="w-6 h-6 text-accent" />
+          <h1 className="text-2xl font-bold text-white">Saved Quotes</h1>
+          <span className="text-sm text-navy-500">{quotes.length} total</span>
+        </div>
       </div>
+
+      {quotes.length > 0 && (
+        <>
+          {/* Stats row */}
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <GlassCard className="!p-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center">
+                <FileText className="w-4 h-4 text-accent" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-white">{filtered.length}</div>
+                <div className="text-xs text-navy-500">Showing</div>
+              </div>
+            </GlassCard>
+            <GlassCard className="!p-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center">
+                <DollarSign className="w-4 h-4 text-accent" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-white">
+                  ${totalValue >= 1000 ? `${(totalValue / 1000).toFixed(0)}K` : totalValue.toFixed(0)}
+                </div>
+                <div className="text-xs text-navy-500">Total Value</div>
+              </div>
+            </GlassCard>
+            <GlassCard className="!p-4 flex items-center gap-3">
+              <div className="w-8 h-8 rounded bg-emerald-500/10 flex items-center justify-center">
+                <DollarSign className="w-4 h-4 text-emerald-400" />
+              </div>
+              <div>
+                <div className="text-lg font-bold text-white">
+                  ${acceptedValue >= 1000 ? `${(acceptedValue / 1000).toFixed(0)}K` : acceptedValue.toFixed(0)}
+                </div>
+                <div className="text-xs text-navy-500">Won Value</div>
+              </div>
+            </GlassCard>
+          </div>
+
+          {/* Filters */}
+          <div className="flex items-center gap-3 mb-4">
+            <Filter className="w-4 h-4 text-navy-500" />
+            <select
+              className="!w-32 !text-xs !py-1.5"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="all">All Status</option>
+              <option value="draft">Draft</option>
+              <option value="sent">Sent</option>
+              <option value="accepted">Accepted</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <select
+              className="!w-36 !text-xs !py-1.5"
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+            >
+              <option value="all">All Types</option>
+              <option value="task_order">Task Orders</option>
+              <option value="proposal">Proposals</option>
+            </select>
+          </div>
+        </>
+      )}
 
       {quotes.length === 0 ? (
         <GlassCard className="text-center py-16">
@@ -58,9 +149,13 @@ export default function SavedQuotes() {
             Create a Task Order Quote or Full Proposal and click "Save" to see it here
           </p>
         </GlassCard>
+      ) : filtered.length === 0 ? (
+        <GlassCard className="text-center py-12">
+          <p className="text-navy-400">No quotes match your filters</p>
+        </GlassCard>
       ) : (
         <div className="flex flex-col gap-3">
-          {[...quotes].reverse().map((q) => {
+          {[...filtered].reverse().map((q) => {
             const Icon = TYPE_ICONS[q.quoteType] ?? FileText
             return (
               <GlassCard key={q.id} className="!p-0 glass-hover">
@@ -106,8 +201,16 @@ export default function SavedQuotes() {
                       <option value="rejected">Rejected</option>
                     </select>
                     <button
+                      className="p-1.5 text-navy-500 hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+                      onClick={() => duplicateQuote(q)}
+                      title="Duplicate"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </button>
+                    <button
                       className="p-1.5 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
                       onClick={() => deleteQuote(q.id)}
+                      title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, Search, Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
+import { BookOpen, Search, Plus, Trash2, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { rateLibraryStore, useStore } from '@/data/mockStore'
-import { RATE_CATEGORIES } from '@/data/defaultRates'
+import { DEFAULT_RATES, RATE_CATEGORIES } from '@/data/defaultRates'
 import type { RateItem } from '@/types'
 
 export default function RateLibrary() {
@@ -79,6 +79,17 @@ export default function RateLibrary() {
     setEditingId(newRate.id)
   }
 
+  function resetToDefaults() {
+    rateLibraryStore.set({
+      id: 'default-library',
+      name: 'Default',
+      rates: [...DEFAULT_RATES],
+    })
+  }
+
+  const customCount = library.rates.filter((r) => r.isCustom).length
+  const totalCount = library.rates.length
+
   function formatRate(r: RateItem): string {
     // Restrooms and per-unit items have low sqft values — show as "units/hr"
     if (r.sqftPerHour < 100) return `${r.sqftPerHour} units/hr`
@@ -97,10 +108,18 @@ export default function RateLibrary() {
           <BookOpen className="w-6 h-6 text-accent" />
           <h1 className="text-2xl font-bold text-white">Rate Library</h1>
         </div>
-        <button className="btn btn-primary" onClick={addCustomRate}>
-          <Plus className="w-4 h-4" />
-          Add Custom Rate
-        </button>
+        <div className="flex gap-2">
+          {customCount > 0 && (
+            <button className="btn btn-ghost" onClick={resetToDefaults}>
+              <RotateCcw className="w-4 h-4" />
+              Reset Defaults
+            </button>
+          )}
+          <button className="btn btn-primary" onClick={addCustomRate}>
+            <Plus className="w-4 h-4" />
+            Add Custom Rate
+          </button>
+        </div>
       </div>
 
       {/* Search */}
@@ -115,7 +134,7 @@ export default function RateLibrary() {
       </div>
 
       <p className="text-xs text-navy-500 mb-4">
-        Industry-standard field-validated cleaning production rates. All rates are editable.
+        {totalCount} industry-standard field-validated cleaning production rates{customCount > 0 ? ` (${customCount} custom)` : ''}. Click any value to edit.
       </p>
 
       {/* Categories */}

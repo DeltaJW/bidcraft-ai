@@ -134,3 +134,11 @@ export interface QuoteTask {
   hours: number
   laborCost: number
 }
+
+export interface BuildingTemplate {
+  id: string
+  name: string
+  description: string
+  zones: Zone[]
+  createdAt: string
+}

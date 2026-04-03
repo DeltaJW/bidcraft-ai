@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ClipboardList, Plus, Trash2, MapPin, Send } from 'lucide-react'
+import { ClipboardList, Plus, Trash2, MapPin, Send, Save, FolderOpen, Download } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
-import { rateLibraryStore, burdenProfilesStore, workloadDraftStore, useStore } from '@/data/mockStore'
+import { rateLibraryStore, burdenProfilesStore, workloadDraftStore, templatesStore, useStore } from '@/data/mockStore'
 import type { Zone, ZoneTask, Frequency } from '@/types'
 import { FREQUENCY_ANNUAL_MULTIPLIER, FREQUENCY_LABELS } from '@/types'
 
@@ -14,9 +14,12 @@ export default function Workloading() {
   const navigate = useNavigate()
   const library = useStore(rateLibraryStore)
   const burdenProfiles = useStore(burdenProfilesStore)
+  const templates = useStore(templatesStore)
   const [buildingName, setBuildingName] = useState('')
   const [zones, setZones] = useState<Zone[]>([])
   const [selectedBurdenId, setSelectedBurdenId] = useState('')
+  const [showTemplates, setShowTemplates] = useState(false)
+  const [templateSaved, setTemplateSaved] = useState(false)
 
   const selectedBurden = burdenProfiles.find((b) => b.id === selectedBurdenId)
 
@@ -87,6 +90,51 @@ export default function Workloading() {
     })
   }
 
+  // Templates
+  function saveAsTemplate() {
+    if (zones.length === 0) return
+    templatesStore.update((prev) => [
+      ...prev,
+      {
+        id: `tmpl-${Date.now()}`,
+        name: buildingName || `Template ${prev.length + 1}`,
+        description: `${zones.length} zones, ${zones.reduce((s, z) => s + z.tasks.length, 0)} tasks`,
+        zones: zones.map((z) => ({
+          ...z,
+          id: `zone-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          tasks: z.tasks.map((t) => ({
+            ...t,
+            id: `zt-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+          })),
+        })),
+        createdAt: new Date().toISOString(),
+      },
+    ])
+    setTemplateSaved(true)
+    setTimeout(() => setTemplateSaved(false), 2000)
+  }
+
+  function loadTemplate(templateId: string) {
+    const tmpl = templates.find((t) => t.id === templateId)
+    if (!tmpl) return
+    setBuildingName(tmpl.name)
+    setZones(
+      tmpl.zones.map((z) => ({
+        ...z,
+        id: `zone-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        tasks: z.tasks.map((t) => ({
+          ...t,
+          id: `zt-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        })),
+      }))
+    )
+    setShowTemplates(false)
+  }
+
+  function deleteTemplate(templateId: string) {
+    templatesStore.update((prev) => prev.filter((t) => t.id !== templateId))
+  }
+
   // Calculations
   function taskAnnualHours(t: ZoneTask): number {
     if (t.sqftPerHour <= 0 || t.sqft <= 0) return 0
@@ -115,11 +163,61 @@ export default function Workloading() {
           <ClipboardList className="w-6 h-6 text-accent" />
           <h1 className="text-2xl font-bold text-white">Workloading Calculator</h1>
         </div>
-        <button className="btn btn-primary" onClick={addZone}>
-          <Plus className="w-4 h-4" />
-          Add Zone
-        </button>
+        <div className="flex gap-2">
+          {templates.length > 0 && (
+            <button className="btn btn-ghost" onClick={() => setShowTemplates(!showTemplates)}>
+              <FolderOpen className="w-4 h-4" />
+              Templates
+            </button>
+          )}
+          {zones.length > 0 && (
+            <button className="btn btn-ghost" onClick={saveAsTemplate}>
+              <Download className="w-4 h-4" />
+              {templateSaved ? 'Saved!' : 'Save Template'}
+            </button>
+          )}
+          <button className="btn btn-primary" onClick={addZone}>
+            <Plus className="w-4 h-4" />
+            Add Zone
+          </button>
+        </div>
       </div>
+
+      {/* Template picker */}
+      {showTemplates && templates.length > 0 && (
+        <div className="mb-6 glass p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold text-white">Load from Template</h3>
+            <button
+              className="text-xs text-navy-500 hover:text-navy-300 bg-transparent border-none cursor-pointer"
+              onClick={() => setShowTemplates(false)}
+            >
+              Close
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {templates.map((tmpl) => (
+              <div
+                key={tmpl.id}
+                className="glass glass-hover p-3 cursor-pointer group relative"
+                onClick={() => loadTemplate(tmpl.id)}
+              >
+                <h4 className="text-sm font-medium text-white">{tmpl.name}</h4>
+                <p className="text-xs text-navy-500 mt-0.5">{tmpl.description}</p>
+                <p className="text-xs text-navy-600 mt-1">
+                  {new Date(tmpl.createdAt).toLocaleDateString()}
+                </p>
+                <button
+                  className="absolute top-2 right-2 p-1 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer opacity-0 group-hover:opacity-100"
+                  onClick={(e) => { e.stopPropagation(); deleteTemplate(tmpl.id) }}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Building info row */}
       <div className="flex gap-4 mb-6">

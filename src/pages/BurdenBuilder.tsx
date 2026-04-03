@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2 } from 'lucide-react'
+import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { burdenProfilesStore, useStore } from '@/data/mockStore'
 import type { BurdenProfile } from '@/types'
@@ -49,6 +49,7 @@ export default function BurdenBuilder() {
   const [profile, setProfile] = useState<BurdenProfile>(emptyProfile())
   const [saved, setSaved] = useState(false)
   const [suiState, setSuiState] = useState('')
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   function update<K extends keyof BurdenProfile>(field: K, value: BurdenProfile[K]) {
     setProfile((prev) => ({ ...prev, [field]: value }))
@@ -80,13 +81,29 @@ export default function BurdenBuilder() {
       name: profile.name || 'Unnamed Profile',
       computedRate: fullyBurdened,
     }
-    burdenProfilesStore.update((profiles) => [...profiles, completed])
+    if (editingId) {
+      // Update existing profile
+      burdenProfilesStore.update((profiles) =>
+        profiles.map((p) => (p.id === editingId ? completed : p))
+      )
+    } else {
+      // Add new profile
+      burdenProfilesStore.update((profiles) => [...profiles, completed])
+    }
     setSaved(true)
     setTimeout(() => {
       setSaved(false)
       setProfile(emptyProfile())
+      setEditingId(null)
       setStep(0)
     }, 2000)
+  }
+
+  function loadProfile(bp: BurdenProfile) {
+    setProfile({ ...bp })
+    setEditingId(bp.id)
+    setStep(0)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   function handleSuiStateChange(st: string) {
@@ -102,9 +119,25 @@ export default function BurdenBuilder() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <Calculator className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-white">Burden Rate Builder</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <Calculator className="w-6 h-6 text-accent" />
+          <h1 className="text-2xl font-bold text-white">Burden Rate Builder</h1>
+          {editingId && (
+            <span className="text-xs bg-amber-500/15 text-amber-400 px-2 py-1 rounded-full font-medium">
+              Editing
+            </span>
+          )}
+        </div>
+        {editingId && (
+          <button
+            className="btn btn-ghost"
+            onClick={() => { setProfile(emptyProfile()); setEditingId(null); setStep(0) }}
+          >
+            <Plus className="w-4 h-4" />
+            New Profile
+          </button>
+        )}
       </div>
 
       {/* Profile name */}
@@ -336,7 +369,7 @@ export default function BurdenBuilder() {
                       </button>
                       <button className="btn btn-primary" onClick={handleSave}>
                         <Save className="w-4 h-4" />
-                        {saved ? 'Saved!' : 'Save Profile'}
+                        {saved ? 'Saved!' : editingId ? 'Update Profile' : 'Save Profile'}
                       </button>
                     </div>
                   )}
@@ -388,8 +421,11 @@ export default function BurdenBuilder() {
           <h2 className="text-lg font-semibold text-white mb-4">Saved Burden Profiles</h2>
           <div className="grid grid-cols-3 gap-3">
             {savedProfiles.map((bp) => (
-              <GlassCard key={bp.id} className="glass-hover relative group">
-                <div className="flex justify-between items-start">
+              <GlassCard
+                key={bp.id}
+                className={`glass-hover relative group cursor-pointer ${editingId === bp.id ? 'border-accent/40 ring-1 ring-accent/20' : ''}`}
+              >
+                <div className="flex justify-between items-start" onClick={() => loadProfile(bp)}>
                   <div>
                     <h3 className="text-sm font-semibold text-white">{bp.name}</h3>
                     <div className="text-2xl font-bold text-accent font-mono mt-1">
@@ -399,12 +435,20 @@ export default function BurdenBuilder() {
                       Base: ${bp.baseWage.toFixed(2)} | Markup: {bp.baseWage > 0 ? ((bp.computedRate! / bp.baseWage - 1) * 100).toFixed(0) : 0}%
                     </p>
                   </div>
-                  <button
-                    className="p-1.5 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer opacity-0 group-hover:opacity-100"
-                    onClick={() => burdenProfilesStore.update((prev) => prev.filter((p) => p.id !== bp.id))}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
+                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button
+                      className="p-1.5 text-navy-400 hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+                      onClick={(e) => { e.stopPropagation(); loadProfile(bp) }}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </button>
+                    <button
+                      className="p-1.5 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
+                      onClick={(e) => { e.stopPropagation(); burdenProfilesStore.update((prev) => prev.filter((p) => p.id !== bp.id)) }}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
                 <div className="flex gap-3 mt-3 text-xs text-navy-500">
                   <span>H&W: ${bp.hwRate.toFixed(2)}</span>
