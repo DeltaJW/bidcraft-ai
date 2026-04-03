@@ -241,7 +241,7 @@ export default function Landing() {
           </motion.p>
 
           <motion.div variants={heroItem} className="flex items-center gap-3">
-            <Link to="/" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-brand-navy text-white text-sm font-semibold no-underline hover:bg-brand-navy-light transition-all hover:-translate-y-px hover:shadow-lg">
+            <Link to="/" className="btn btn-cta !text-sm !px-6 !py-2.5 no-underline">
               Start Free
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -453,10 +453,10 @@ export default function Landing() {
 
                     <Link
                       to="/"
-                      className={`flex items-center justify-center gap-1.5 w-full py-2 rounded-md text-xs font-semibold no-underline transition-all ${
+                      className={`flex items-center justify-center gap-1.5 w-full py-2 rounded-md text-xs no-underline transition-all ${
                         tier.highlighted
-                          ? 'bg-brand-navy text-white hover:bg-brand-navy-light'
-                          : 'border border-border-default text-text-secondary hover:text-text-primary hover:border-border-strong hover:bg-surface-2'
+                          ? 'btn-cta'
+                          : 'border border-border-default text-text-secondary font-semibold hover:text-text-primary hover:border-border-strong hover:bg-surface-2'
                       }`}
                     >
                       {tier.cta}
@@ -488,7 +488,7 @@ export default function Landing() {
             professional proposals, and burden rates calculated in seconds.
           </motion.p>
           <motion.div variants={cardReveal}>
-            <Link to="/" className="inline-flex items-center gap-2 px-8 py-3 rounded-md bg-brand-navy text-white text-sm font-semibold no-underline hover:bg-brand-navy-light transition-all hover:-translate-y-px hover:shadow-lg">
+            <Link to="/" className="btn btn-cta !text-sm !px-8 !py-3 no-underline">
               Start Free Today
               <ArrowRight className="w-4 h-4" />
             </Link>
