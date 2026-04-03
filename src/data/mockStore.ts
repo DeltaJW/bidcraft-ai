@@ -1,4 +1,4 @@
-import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory, Client, Contract, InspectionRecord, ContractPL } from '@/types'
+import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory, Client, Contract, InspectionRecord, ContractPL, AIConversation } from '@/types'
 import type { SupplyItem } from './defaultSupplies'
 import { DEFAULT_SUPPLIES } from './defaultSupplies'
 import { DEFAULT_RATES } from './defaultRates'
@@ -112,6 +112,7 @@ export interface WorkloadDraft {
       sqftPerHour: number
       frequency: string
       annualHours: number
+      laborCategoryId?: string
     }>
   }>
   totalAnnualHours: number
@@ -152,6 +153,9 @@ export const aiSettingsStore = createStore<AISettings>('aiSettings', {
   apiKey: '',
   model: 'claude-sonnet-4-20250514',
 })
+
+// ---- AI Conversations ----
+export const aiConversationsStore = createStore<AIConversation[]>('aiConversations', [])
 
 // React hook helper
 export function useStore<T>(store: {

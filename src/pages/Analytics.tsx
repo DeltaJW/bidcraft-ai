@@ -97,6 +97,16 @@ export default function Analytics() {
   // --- Top quotes (3 highest value) ---
   const topQuotes = [...quotes].sort((a, b) => b.grandTotal - a.grandTotal).slice(0, 3)
 
+  // --- Loss Reasons ---
+  const rejectedWithReason = quotes.filter((q) => q.status === 'rejected' && q.lossReason)
+  const lossReasonCounts: Record<string, number> = {}
+  rejectedWithReason.forEach((q) => {
+    const reason = q.lossReason!
+    lossReasonCounts[reason] = (lossReasonCounts[reason] || 0) + 1
+  })
+  const lossReasonEntries = Object.entries(lossReasonCounts).sort((a, b) => b[1] - a[1])
+  const maxLossCount = lossReasonEntries.length > 0 ? lossReasonEntries[0][1] : 0
+
   // --- Empty state ---
   if (totalCount === 0) {
     return (
@@ -348,6 +358,34 @@ export default function Analytics() {
           </div>
         </GlassCard>
       </motion.div>
+
+      {/* 7. Loss Reasons */}
+      {lossReasonEntries.length > 0 && (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mb-8">
+          <GlassCard title="Loss Reasons" subtitle={`${rejectedWithReason.length} rejected quote${rejectedWithReason.length !== 1 ? 's' : ''} with reasons tracked`}>
+            <div className="flex flex-col gap-3">
+              {lossReasonEntries.map(([reason, count]) => (
+                <div key={reason} className="flex items-center gap-3">
+                  <div className="w-16 text-right">
+                    <span className="font-mono font-bold text-text-primary text-sm">{count}</span>
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 h-6 bg-surface-2 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-rose-400/70 rounded-full transition-all"
+                          style={{ width: `${maxLossCount > 0 ? (count / maxLossCount) * 100 : 0}%` }}
+                        />
+                      </div>
+                      <span className="text-sm text-text-secondary w-48 shrink-0">{reason}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </GlassCard>
+        </motion.div>
+      )}
     </div>
   )
 }

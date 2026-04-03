@@ -6,7 +6,7 @@ import GlassCard from '@/components/GlassCard'
 import HelpTip from '@/components/HelpTip'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import { toast } from '@/components/Toast'
-import { rateLibraryStore, burdenProfilesStore, workloadDraftStore, templatesStore, useStore } from '@/data/mockStore'
+import { rateLibraryStore, burdenProfilesStore, laborCategoriesStore, workloadDraftStore, templatesStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
 import type { Zone, ZoneTask, Frequency } from '@/types'
 import { FREQUENCY_ANNUAL_MULTIPLIER, FREQUENCY_LABELS } from '@/types'
@@ -18,6 +18,7 @@ export default function Workloading() {
   const navigate = useNavigate()
   const library = useStore(rateLibraryStore)
   const burdenProfiles = useStore(burdenProfilesStore)
+  const laborCategories = useStore(laborCategoriesStore)
   const templates = useStore(templatesStore)
   const [buildingName, setBuildingName] = useState('')
   const [zones, setZones] = useState<Zone[]>([])
@@ -27,6 +28,18 @@ export default function Workloading() {
   const [deleteTemplateId, setDeleteTemplateId] = useState<string | null>(null)
 
   const selectedBurden = burdenProfiles.find((b) => b.id === selectedBurdenId)
+
+  // Get the effective burdened rate for a task: category override > page-level default
+  function getTaskBurdenRate(task: ZoneTask): number | null {
+    if (task.laborCategoryId) {
+      const cat = laborCategories.find((c) => c.id === task.laborCategoryId)
+      if (cat?.burdenProfileId) {
+        const bp = burdenProfiles.find((b) => b.id === cat.burdenProfileId)
+        if (bp?.computedRate) return bp.computedRate
+      }
+    }
+    return selectedBurden?.computedRate ?? null
+  }
 
   function addZone() {
     setZones((prev) => [
@@ -150,12 +163,16 @@ export default function Workloading() {
   }
 
   function handleExportWorkloadCSV() {
-    const headers = ['Zone', 'Task', 'Equipment', 'Sq Ft', 'Frequency', 'Rate', 'Annual Hours', 'Annual Cost']
+    const headers = ['Zone', 'Task', 'Equipment', 'Sq Ft', 'Frequency', 'Rate', 'Labor Category', 'Annual Hours', 'Annual Cost']
     const rows: (string | number)[][] = []
     zones.forEach((z) => {
       z.tasks.forEach((t) => {
         const annHrs = taskAnnualHours(t)
-        const annCost = selectedBurden?.computedRate ? annHrs * selectedBurden.computedRate : 0
+        const burdenRate = getTaskBurdenRate(t)
+        const annCost = burdenRate ? annHrs * burdenRate : 0
+        const catName = t.laborCategoryId
+          ? laborCategories.find((c) => c.id === t.laborCategoryId)?.name ?? ''
+          : '(Default)'
         rows.push([
           z.name,
           t.taskName,
@@ -163,6 +180,7 @@ export default function Workloading() {
           t.sqft,
           FREQUENCY_LABELS[t.frequency],
           t.sqftPerHour,
+          catName,
           Number(annHrs.toFixed(1)),
           Number(annCost.toFixed(2)),
         ])
@@ -179,9 +197,40 @@ export default function Workloading() {
   const totalWeeklyHours = totalAnnualHours / 52
   const totalDailyHours = totalAnnualHours / WORK_DAYS_PER_YEAR
   const fteCount = totalAnnualHours / (PRODUCTIVE_HOURS_PER_DAY * WORK_DAYS_PER_YEAR)
-  const annualLaborCost = selectedBurden?.computedRate
-    ? totalAnnualHours * selectedBurden.computedRate
+
+  // Per-task cost calculation: each task uses its own category rate or falls back to page default
+  const taskCosts = allTasks.map((t) => {
+    const hrs = taskAnnualHours(t)
+    const rate = getTaskBurdenRate(t)
+    return { task: t, hours: hrs, rate, cost: rate ? hrs * rate : null }
+  })
+  const hasCostData = taskCosts.some((tc) => tc.cost !== null)
+  const annualLaborCost = hasCostData
+    ? taskCosts.reduce((sum, tc) => sum + (tc.cost ?? 0), 0)
     : null
+  const blendedEffectiveRate = annualLaborCost !== null && totalAnnualHours > 0
+    ? annualLaborCost / totalAnnualHours
+    : null
+
+  // Cost breakdown by labor category
+  type CategoryBreakdown = { id: string; name: string; hours: number; cost: number }
+  const categoryBreakdownMap = new Map<string, CategoryBreakdown>()
+  if (hasCostData) {
+    for (const tc of taskCosts) {
+      const catId = tc.task.laborCategoryId || '__default__'
+      const catName = tc.task.laborCategoryId
+        ? laborCategories.find((c) => c.id === tc.task.laborCategoryId)?.name ?? 'Unknown'
+        : '(Default)'
+      const existing = categoryBreakdownMap.get(catId)
+      if (existing) {
+        existing.hours += tc.hours
+        existing.cost += tc.cost ?? 0
+      } else {
+        categoryBreakdownMap.set(catId, { id: catId, name: catName, hours: tc.hours, cost: tc.cost ?? 0 })
+      }
+    }
+  }
+  const categoryBreakdown = Array.from(categoryBreakdownMap.values()).filter((cb) => cb.hours > 0)
 
   return (
     <motion.div
@@ -338,6 +387,9 @@ export default function Workloading() {
                       <th className="text-left px-4 py-2 font-medium">Task</th>
                       <th className="text-right px-4 py-2 font-medium w-28">Sq Ft / Qty</th>
                       <th className="text-left px-4 py-2 font-medium w-44">Frequency</th>
+                      {laborCategories.length > 0 && (
+                        <th className="text-left px-4 py-2 font-medium w-36">Labor Cat.</th>
+                      )}
                       <th className="text-right px-4 py-2 font-medium w-24">Rate</th>
                       <th className="text-right px-4 py-2 font-medium w-24">Hrs/Year</th>
                       <th className="w-10"></th>
@@ -387,6 +439,26 @@ export default function Workloading() {
                               ))}
                             </select>
                           </td>
+                          {laborCategories.length > 0 && (
+                            <td className="px-4 py-2">
+                              <select
+                                value={task.laborCategoryId || ''}
+                                onChange={(e) =>
+                                  updateTask(zone.id, task.id, {
+                                    laborCategoryId: e.target.value || undefined,
+                                  })
+                                }
+                                className="!text-xs"
+                              >
+                                <option value="">Default</option>
+                                {laborCategories.map((cat) => (
+                                  <option key={cat.id} value={cat.id}>
+                                    {cat.name}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          )}
                           <td className="px-4 py-2 text-right font-mono text-xs text-text-tertiary">
                             {task.sqftPerHour < 100
                               ? `${task.sqftPerHour}/hr`
@@ -455,6 +527,32 @@ export default function Workloading() {
                       ${(annualLaborCost / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </span>
                   </div>
+
+                  {/* Blended effective rate */}
+                  {blendedEffectiveRate !== null && (
+                    <div className="flex justify-between">
+                      <span className="text-text-tertiary">Blended Rate</span>
+                      <span className="font-mono text-text-secondary">
+                        ${blendedEffectiveRate.toFixed(2)}/hr
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Cost breakdown by labor category */}
+                  {categoryBreakdown.length > 1 && (
+                    <>
+                      <div className="border-t border-border-subtle my-1" />
+                      <span className="text-xs font-medium text-text-secondary">By Labor Category</span>
+                      {categoryBreakdown.map((cb) => (
+                        <div key={cb.id} className="flex justify-between text-xs">
+                          <span className="text-text-tertiary truncate mr-2">{cb.name}</span>
+                          <span className="font-mono text-text-secondary whitespace-nowrap">
+                            {cb.hours.toFixed(0)} hrs &middot; ${cb.cost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                          </span>
+                        </div>
+                      ))}
+                    </>
+                  )}
                 </>
               )}
 
@@ -473,6 +571,7 @@ export default function Workloading() {
                           sqftPerHour: t.sqftPerHour,
                           frequency: t.frequency,
                           annualHours: taskAnnualHours(t),
+                          laborCategoryId: t.laborCategoryId,
                         })),
                       })),
                       totalAnnualHours,

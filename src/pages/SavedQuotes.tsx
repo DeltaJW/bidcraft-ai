@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { FolderOpen, FileText, FileStack, Trash2, Clock, DollarSign, Copy, Filter, Download, GitBranch, Mail } from 'lucide-react'
+import { FolderOpen, FileText, FileStack, Trash2, Clock, DollarSign, Copy, Filter, Download, GitBranch, Mail, X } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import GlassCard from '@/components/GlassCard'
@@ -7,6 +7,17 @@ import { toast } from '@/components/Toast'
 import { quotesStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
 import type { Quote } from '@/types'
+
+const LOSS_REASONS = [
+  'Price too high',
+  'Incumbent advantage',
+  'Technical score too low',
+  'Late submission',
+  'Set-aside requirement',
+  'Scope mismatch',
+  'No-bid (withdrew)',
+  'Other',
+] as const
 
 const STATUS_STYLES: Record<string, string> = {
   draft: 'bg-surface-3 text-text-secondary',
@@ -25,6 +36,8 @@ export default function SavedQuotes() {
   const quotes = useStore(quotesStore)
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterType, setFilterType] = useState<string>('all')
+  const [lossReasonModal, setLossReasonModal] = useState<{ quoteId: string } | null>(null)
+  const [selectedLossReason, setSelectedLossReason] = useState<string>('')
 
   const filtered = quotes.filter((q) => {
     if (filterStatus !== 'all' && q.status !== filterStatus) return false
@@ -73,9 +86,28 @@ export default function SavedQuotes() {
   }
 
   function updateStatus(id: string, status: Quote['status']) {
+    if (status === 'rejected') {
+      setLossReasonModal({ quoteId: id })
+      setSelectedLossReason('')
+      return
+    }
     quotesStore.update((prev) =>
-      prev.map((q) => (q.id === id ? { ...q, status } : q))
+      prev.map((q) => (q.id === id ? { ...q, status, lossReason: undefined } : q))
     )
+  }
+
+  function confirmLossReason() {
+    if (!lossReasonModal || !selectedLossReason) return
+    quotesStore.update((prev) =>
+      prev.map((q) =>
+        q.id === lossReasonModal.quoteId
+          ? { ...q, status: 'rejected' as const, lossReason: selectedLossReason }
+          : q
+      )
+    )
+    toast(`Quote marked as rejected: ${selectedLossReason}`, 'info')
+    setLossReasonModal(null)
+    setSelectedLossReason('')
   }
 
   function formatDate(iso: string) {
@@ -231,6 +263,11 @@ export default function SavedQuotes() {
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLES[q.status]}`}>
                         {q.status}
                       </span>
+                      {q.status === 'rejected' && q.lossReason && (
+                        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-500/10 text-rose-400 font-medium">
+                          {q.lossReason}
+                        </span>
+                      )}
                     </div>
                     <div className="flex items-center gap-4 text-xs text-text-tertiary">
                       <span className="flex items-center gap-1">
@@ -302,6 +339,48 @@ export default function SavedQuotes() {
         </div>
       )}
 
+      {/* Loss Reason Modal */}
+      {lossReasonModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <GlassCard className="w-full max-w-md relative">
+            <button
+              className="absolute top-3 right-3 p-1 text-text-tertiary hover:text-text-primary bg-transparent border-none cursor-pointer"
+              onClick={() => setLossReasonModal(null)}
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <h3 className="text-lg font-semibold text-text-primary mb-1">Loss Reason</h3>
+            <p className="text-sm text-text-tertiary mb-4">Why was this quote rejected?</p>
+            <div className="flex flex-col gap-2 mb-4">
+              {LOSS_REASONS.map((reason) => (
+                <button
+                  key={reason}
+                  className={`text-left px-3 py-2 rounded-lg text-sm transition-colors border cursor-pointer ${
+                    selectedLossReason === reason
+                      ? 'bg-accent/15 border-accent text-accent'
+                      : 'bg-transparent border-surface-3 text-text-secondary hover:border-text-tertiary'
+                  }`}
+                  onClick={() => setSelectedLossReason(reason)}
+                >
+                  {reason}
+                </button>
+              ))}
+            </div>
+            <div className="flex justify-end gap-2">
+              <button className="btn btn-ghost" onClick={() => setLossReasonModal(null)}>
+                Cancel
+              </button>
+              <button
+                className="btn btn-primary"
+                disabled={!selectedLossReason}
+                onClick={confirmLossReason}
+              >
+                Mark Rejected
+              </button>
+            </div>
+          </GlassCard>
+        </div>
+      )}
     </motion.div>
   )
 }

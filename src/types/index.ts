@@ -124,6 +124,7 @@ export interface Quote {
   totalMaterials: number
   grandTotal: number
   status: 'draft' | 'sent' | 'accepted' | 'rejected'
+  lossReason?: string
   createdAt: string
   version?: number
   parentQuoteId?: string
@@ -202,6 +203,13 @@ export interface PLMonth {
   actualMaterials: number
   actualOverhead: number
   notes: string
+}
+
+export interface AIConversation {
+  id: string
+  title: string
+  messages: Array<{ role: 'user' | 'assistant'; content: string }>
+  createdAt: string
 }
 
 export interface InspectionItem {
