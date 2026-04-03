@@ -45,6 +45,7 @@ export default function Workloading() {
 
   function addTaskToZone(zoneId: string) {
     const firstRate = library.rates[0]
+    if (!firstRate) return
     const newTask: ZoneTask = {
       id: `zt-${Date.now()}`,
       rateItemId: firstRate.id,
@@ -154,7 +155,7 @@ export default function Workloading() {
     zones.forEach((z) => {
       z.tasks.forEach((t) => {
         const annHrs = taskAnnualHours(t)
-        const annCost = selectedBurden ? annHrs * selectedBurden.computedRate! : 0
+        const annCost = selectedBurden?.computedRate ? annHrs * selectedBurden.computedRate : 0
         rows.push([
           z.name,
           t.taskName,
@@ -178,8 +179,8 @@ export default function Workloading() {
   const totalWeeklyHours = totalAnnualHours / 52
   const totalDailyHours = totalAnnualHours / WORK_DAYS_PER_YEAR
   const fteCount = totalAnnualHours / (PRODUCTIVE_HOURS_PER_DAY * WORK_DAYS_PER_YEAR)
-  const annualLaborCost = selectedBurden
-    ? totalAnnualHours * selectedBurden.computedRate!
+  const annualLaborCost = selectedBurden?.computedRate
+    ? totalAnnualHours * selectedBurden.computedRate
     : null
 
   return (

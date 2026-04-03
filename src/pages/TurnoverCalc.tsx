@@ -65,7 +65,7 @@ export default function TurnoverCalc() {
                 <select value={selectedBurdenId} onChange={(e) => setSelectedBurdenId(e.target.value)}>
                   <option value="">— Select —</option>
                   {burdenProfiles.map((bp) => (
-                    <option key={bp.id} value={bp.id}>{bp.name} (${bp.computedRate?.toFixed(2)}/hr)</option>
+                    <option key={bp.id} value={bp.id}>{bp.name} (${(bp.computedRate ?? 0).toFixed(2)}/hr)</option>
                   ))}
                 </select>
               </div>

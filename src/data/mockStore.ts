@@ -120,6 +120,15 @@ export interface WorkloadDraft {
 
 export const workloadDraftStore = createStore<WorkloadDraft | null>('workloadDraft', null)
 
+// ---- Last SCA Lookup ----
+export interface LastSCALookup {
+  wdNumber: string
+  revision: number
+  janitorRate: number | null
+  hwRate: number | null
+}
+export const lastSCALookupStore = createStore<LastSCALookup | null>('lastSCALookup', null)
+
 // ---- Onboarding Dismissed ----
 export const onboardingDismissedStore = createStore<boolean>('onboardingDismissed', false)
 

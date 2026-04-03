@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { Search, FileText, Download, ArrowRight, Loader2, AlertTriangle, Shield } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
+import { lastSCALookupStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
 import { fetchWageDetermination, type WageDetermination, type WageRate, COMMON_CATEGORIES } from '@/services/sca'
 import { burdenProfilesStore } from '@/data/mockStore'
@@ -30,6 +31,14 @@ export default function SCALookup() {
     try {
       const wd = await fetchWageDetermination(num, revision ? parseInt(revision) : undefined)
       setResult(wd)
+      // Save for wage floor validation in Burden Builder
+      const janitor = wd.rates.find(r => r.code === '11150')
+      lastSCALookupStore.set({
+        wdNumber: wd.wdNumber,
+        revision: wd.revision,
+        janitorRate: janitor?.rate ?? null,
+        hwRate: wd.hwRate,
+      })
       toast(`Found WD ${wd.wdNumber} Rev ${wd.revision} — ${wd.rates.length} labor categories`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Lookup failed')

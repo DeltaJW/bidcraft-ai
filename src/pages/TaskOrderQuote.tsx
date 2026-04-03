@@ -33,6 +33,7 @@ export default function TaskOrderQuote() {
 
   function addTask() {
     const first = library.rates[0]
+    if (!first) return
     const newTask: QuoteTask = {
       id: `qt-${Date.now()}`,
       rateItemId: first.id,

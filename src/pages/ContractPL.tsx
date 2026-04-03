@@ -177,10 +177,6 @@ export default function ContractPL() {
 
   const projectedAnnual = monthCount > 0 ? (ytdActualTotal / monthCount) * 12 : 0
 
-  const bidMargin = selected && selected.bidTotal > 0
-    ? ((selected.bidTotal - (selected.bidLaborAnnual + selected.bidMaterialsAnnual)) / selected.bidTotal) * 100
-    : 0
-
   const actualMargin = projectedAnnual > 0 && selected
     ? ((selected.bidTotal - projectedAnnual) / selected.bidTotal) * 100
     : 0
@@ -660,16 +656,10 @@ export default function ContractPL() {
                     highlight={projectedAnnual > selected.bidTotal ? 'red' : 'green'}
                   />
                   <div className="border-t border-border-subtle my-1" />
-                  <MetricRow label="Bid Margin" value={pct(bidMargin)} />
                   <MetricRow
                     label="Actual Margin"
                     value={monthCount > 0 ? pct(actualMargin) : '--'}
-                    highlight={actualMargin < bidMargin * 0.5 ? 'red' : actualMargin >= bidMargin ? 'green' : undefined}
-                  />
-                  <MetricRow
-                    label="Margin Delta"
-                    value={monthCount > 0 ? `${actualMargin >= bidMargin ? '+' : ''}${pct(actualMargin - bidMargin)}` : '--'}
-                    highlight={actualMargin >= bidMargin ? 'green' : 'red'}
+                    highlight={actualMargin < 0 ? 'red' : actualMargin > 0 ? 'green' : undefined}
                   />
                 </div>
 

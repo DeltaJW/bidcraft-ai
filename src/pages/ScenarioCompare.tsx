@@ -140,7 +140,7 @@ export default function ScenarioCompare() {
                     <option value="">Keep original</option>
                     {burdenProfiles.map((bp) => (
                       <option key={bp.id} value={bp.id}>
-                        {bp.name} (${bp.computedRate?.toFixed(2)})
+                        {bp.name} (${(bp.computedRate ?? 0).toFixed(2)})
                       </option>
                     ))}
                   </select>

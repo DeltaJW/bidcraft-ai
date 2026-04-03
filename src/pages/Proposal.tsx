@@ -440,7 +440,7 @@ export default function Proposal() {
                             <td className="px-3 py-1.5">{t.taskName}</td>
                             <td className="px-3 py-1.5 text-text-tertiary">{t.equipment}</td>
                             <td className="px-3 py-1.5 text-right font-mono text-xs">{t.sqft.toLocaleString()}</td>
-                            <td className="px-3 py-1.5 text-text-tertiary text-xs">{t.frequency.replace('_', 'x/')}</td>
+                            <td className="px-3 py-1.5 text-text-tertiary text-xs">{t.frequency.replace('_', '/')}</td>
                             <td className="px-3 py-1.5 text-right font-mono text-xs">{t.annualHours.toFixed(1)}</td>
                             <td className="px-3 py-1.5 text-right font-mono text-xs text-accent">
                               ${t.laborCost.toFixed(2)}

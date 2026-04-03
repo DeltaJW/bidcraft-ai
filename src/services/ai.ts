@@ -45,7 +45,7 @@ function buildSystemPrompt(): string {
   const profiles = burdenProfilesStore.get()
   if (profiles.length > 0) {
     const profileLines = profiles.map(p =>
-      `- "${p.name}": $${p.baseWage.toFixed(2)} base → $${p.computedRate?.toFixed(2)}/hr burdened (G&A: ${p.gaPct}%, Fee: ${p.feePct}%)`
+      `- "${p.name}": $${p.baseWage.toFixed(2)} base → $${(p.computedRate ?? 0).toFixed(2)}/hr burdened (G&A: ${p.gaPct}%, Fee: ${p.feePct}%)`
     ).join('\n')
     parts.push(`\n## User's Burden Profiles\n${profileLines}\nUse these when the user asks to price work — reference their actual profiles by name.`)
   }

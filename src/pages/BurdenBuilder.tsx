@@ -5,7 +5,7 @@ import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, P
 import GlassCard from '@/components/GlassCard'
 import HelpTip from '@/components/HelpTip'
 import { toast } from '@/components/Toast'
-import { burdenProfilesStore, useStore } from '@/data/mockStore'
+import { burdenProfilesStore, lastSCALookupStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
 import type { BurdenProfile } from '@/types'
 
@@ -49,6 +49,7 @@ function emptyProfile(): BurdenProfile {
 
 export default function BurdenBuilder() {
   const savedProfiles = useStore(burdenProfilesStore)
+  const lastSCA = useStore(lastSCALookupStore)
   const [step, setStep] = useState(0)
   const [profile, setProfile] = useState<BurdenProfile>(emptyProfile())
   const [saved, setSaved] = useState(false)
@@ -110,6 +111,13 @@ export default function BurdenBuilder() {
     if (!profile.name.trim()) {
       toast('Profile name is required', 'error')
       return
+    }
+    // SCA wage floor validation
+    if (lastSCA?.janitorRate && profile.baseWage < lastSCA.janitorRate) {
+      toast(
+        `Warning: $${profile.baseWage.toFixed(2)}/hr is below the SCA minimum of $${lastSCA.janitorRate.toFixed(2)}/hr (WD ${lastSCA.wdNumber}). Verify compliance.`,
+        'error'
+      )
     }
     const completed: BurdenProfile = {
       ...profile,
@@ -525,10 +533,10 @@ export default function BurdenBuilder() {
                   <div>
                     <h3 className="text-sm font-semibold text-text-primary">{bp.name}</h3>
                     <div className="text-2xl font-bold text-accent font-mono mt-1">
-                      ${bp.computedRate?.toFixed(2)}
+                      ${bp.computedRate != null ? bp.computedRate.toFixed(2) : '—'}
                     </div>
                     <p className="text-xs text-text-tertiary mt-1">
-                      Base: ${bp.baseWage.toFixed(2)} | Markup: {bp.baseWage > 0 ? ((bp.computedRate! / bp.baseWage - 1) * 100).toFixed(0) : 0}%
+                      Base: ${bp.baseWage.toFixed(2)} | Markup: {bp.baseWage > 0 && bp.computedRate != null ? (((bp.computedRate / bp.baseWage) - 1) * 100).toFixed(0) : 0}%
                     </p>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
