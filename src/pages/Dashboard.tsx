@@ -96,7 +96,7 @@ export default function Dashboard() {
         <p className="text-text-secondary text-lg mb-4">
           Price the work. Win the bid. Generate the proposal.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Link to="/burden" className="btn btn-primary no-underline">
             <Calculator className="w-4 h-4" />
             New Burden Rate
@@ -123,7 +123,7 @@ export default function Dashboard() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-4 gap-4 mb-8"
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
       >
         <GlassCard className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-lg bg-accent/15 flex items-center justify-center">
@@ -223,7 +223,7 @@ export default function Dashboard() {
               Open Workloading
             </Link>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {templates.slice(0, 3).map((tmpl) => (
               <Link key={tmpl.id} to="/workload" className="block no-underline">
                 <div className="glass glass-hover p-4">
@@ -244,7 +244,7 @@ export default function Dashboard() {
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-3 gap-4"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
       >
         {FEATURES.map((f) => (
           <motion.div key={f.to} variants={item}>

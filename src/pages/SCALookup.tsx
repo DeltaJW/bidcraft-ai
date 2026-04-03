@@ -102,7 +102,7 @@ export default function SCALookup() {
 
       {/* Search */}
       <GlassCard title="Look Up Wage Determination" subtitle="Enter the WD number from your RFP or contract solicitation">
-        <div className="flex gap-3 items-end">
+        <div className="flex flex-col sm:flex-row gap-3 sm:items-end">
           <div className="flex-1">
             <label className="label">WD Number</label>
             <input
@@ -113,7 +113,7 @@ export default function SCALookup() {
             />
             <p className="helper-text">Found in Section J of the solicitation or on the SF-1449</p>
           </div>
-          <div className="w-32">
+          <div className="sm:w-32">
             <label className="label">Revision (optional)</label>
             <input
               type="number"

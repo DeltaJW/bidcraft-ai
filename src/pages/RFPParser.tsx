@@ -41,15 +41,6 @@ interface ParsedRFP {
   evaluationCriteria: string[]
 }
 
-const EMPTY_RESULT: ParsedRFP = {
-  buildings: [],
-  wageDeterm: null,
-  naicsCode: null,
-  setAside: null,
-  scopeItems: [],
-  evaluationCriteria: [],
-}
-
 // ---- Extraction prompt ----
 
 const EXTRACTION_PROMPT = `You are a government contract RFP/solicitation document parser. Analyze the provided RFP text and extract structured data.

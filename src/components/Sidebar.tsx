@@ -13,6 +13,8 @@ import {
   Bot,
   Shield,
   BarChart3,
+  FileSearch,
+  Users,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -20,7 +22,9 @@ const NAV_ITEMS = [
   { to: '/company', icon: Building2, label: 'Company Profile' },
   { to: '/rates', icon: BookOpen, label: 'Rate Library' },
   { to: '/burden', icon: Calculator, label: 'Burden Builder' },
+  { to: '/labor', icon: Users, label: 'Labor Categories' },
   { to: '/sca', icon: Shield, label: 'SCA Wage Lookup' },
+  { to: '/rfp', icon: FileSearch, label: 'RFP Parser' },
   { to: '/workload', icon: ClipboardList, label: 'Workloading' },
   { to: '/quote', icon: FileText, label: 'Task Order Quote' },
   { to: '/proposal', icon: FileStack, label: 'Full Proposal' },

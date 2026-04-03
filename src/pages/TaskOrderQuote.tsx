@@ -200,12 +200,12 @@ export default function TaskOrderQuote() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 flex flex-col gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 flex flex-col gap-5">
           {/* Quote info */}
           <GlassCard title="Quote Details">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
                 <label className="block text-xs text-text-tertiary mb-1">Quote Title</label>
                 <input
                   value={title}
@@ -229,7 +229,7 @@ export default function TaskOrderQuote() {
                   placeholder="Federal Building, 123 Main St"
                 />
               </div>
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <label className="block text-xs text-text-tertiary mb-1">Scope Description</label>
                 <textarea
                   rows={2}

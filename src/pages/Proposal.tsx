@@ -270,12 +270,12 @@ export default function Proposal() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
-        <div className="col-span-2 flex flex-col gap-5">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 flex flex-col gap-5">
           {/* Proposal info */}
           <GlassCard title="Proposal Details">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
                 <label className="block text-xs text-text-tertiary mb-1">Proposal Title</label>
                 <input
                   value={title}
@@ -313,7 +313,7 @@ export default function Proposal() {
                   ))}
                 </select>
               </div>
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <label className="block text-xs text-text-tertiary mb-1">Scope of Work</label>
                 <textarea
                   rows={3}

@@ -135,7 +135,7 @@ export default function Settings() {
       <div className="flex flex-col gap-6">
         {/* Data Summary */}
         <GlassCard title="Data Summary" subtitle="What's stored in your browser">
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <DataRow icon={Database} label="Company Profile" value={company.name ? 'Configured' : 'Not set'} />
             <DataRow icon={Database} label="Rate Library" value={`${rateLibrary.rates.length} rates`} />
             <DataRow icon={Database} label="Burden Profiles" value={`${burdenProfiles.length} saved`} />

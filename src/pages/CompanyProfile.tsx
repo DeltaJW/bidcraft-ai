@@ -64,9 +64,9 @@ export default function CompanyProfile() {
       <div className="flex flex-col gap-6">
         {/* Logo & Company Info */}
         <GlassCard title="Company Information" subtitle="Used on all generated quotes and proposals">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Logo upload */}
-            <div className="col-span-2 flex items-center gap-4 mb-2">
+            <div className="sm:col-span-2 flex items-center gap-4 mb-2">
               <div className="w-20 h-20 rounded-lg bg-surface-2 border border-border-subtle flex items-center justify-center overflow-hidden">
                 {form.logoUrl ? (
                   <img src={form.logoUrl} alt="Logo" className="w-full h-full object-contain" />
@@ -107,7 +107,7 @@ export default function CompanyProfile() {
                 ))}
               </select>
             </div>
-            <div className="col-span-2">
+            <div className="sm:col-span-2">
               <label className="block text-xs text-text-tertiary mb-1">Address</label>
               <input
                 value={form.address}
@@ -136,7 +136,7 @@ export default function CompanyProfile() {
 
         {/* Contact Info */}
         <GlassCard title="Primary Contact" subtitle="Shown on quotes as the point of contact">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs text-text-tertiary mb-1">Full Name</label>
               <input

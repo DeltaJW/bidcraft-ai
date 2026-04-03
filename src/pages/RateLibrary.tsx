@@ -179,12 +179,12 @@ export default function RateLibrary() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
     >
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
           <BookOpen className="w-6 h-6 text-accent" />
           <h1 className="text-2xl font-bold text-text-primary">Rate Library</h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button className="btn btn-ghost" onClick={handleExportRates}>
             <Download className="w-4 h-4" />
             Export
@@ -212,7 +212,7 @@ export default function RateLibrary() {
       </div>
 
       {/* Industry Packs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 mb-4">
         {(Object.entries(INDUSTRIES) as [IndustryType, typeof INDUSTRIES[IndustryType]][]).map(([key, info]) => (
           <button
             key={key}

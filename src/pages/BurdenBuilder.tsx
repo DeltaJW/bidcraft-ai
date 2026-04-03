@@ -184,16 +184,16 @@ export default function BurdenBuilder() {
         />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Steps */}
-        <div className="col-span-2">
+        <div className="lg:col-span-2">
           {/* Step indicators */}
-          <div className="flex items-center gap-1 mb-6">
+          <div className="flex items-center gap-1 mb-6 overflow-x-auto">
             {STEPS.map((s, i) => (
               <button
                 key={i}
                 onClick={() => setStep(i)}
-                className={`flex-1 py-2 px-2 text-xs font-medium rounded-lg border transition-all cursor-pointer ${
+                className={`flex-1 min-w-[80px] py-2 px-2 text-xs font-medium rounded-lg border transition-all cursor-pointer ${
                   i === step
                     ? 'bg-accent/15 border-accent/30 text-accent'
                     : i < step
@@ -253,7 +253,7 @@ export default function BurdenBuilder() {
                 )}
 
                 {step === 2 && (
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs text-text-tertiary mb-1">FICA (%)</label>
                       <input
@@ -310,7 +310,7 @@ export default function BurdenBuilder() {
                 )}
 
                 {step === 3 && (
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                       <label className="block text-xs text-text-tertiary mb-1">Vacation Days / Year</label>
                       <input
@@ -335,7 +335,7 @@ export default function BurdenBuilder() {
                         onChange={(e) => update('sickDays', Number(e.target.value))}
                       />
                     </div>
-                    <div className="col-span-3 glass !bg-surface-2 p-3 rounded-lg">
+                    <div className="sm:col-span-3 glass !bg-surface-2 p-3 rounded-lg">
                       <p className="text-xs text-text-tertiary">
                         <strong className="text-text-secondary">Calculated impact:</strong>{' '}
                         {totalPaidDays} paid non-work days = {leavePct.toFixed(2)}% cost increase.
@@ -461,7 +461,7 @@ export default function BurdenBuilder() {
       {savedProfiles.length > 0 && (
         <div className="mt-8">
           <h2 className="text-lg font-semibold text-text-primary mb-4">Saved Burden Profiles</h2>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {savedProfiles.map((bp) => (
               <GlassCard
                 key={bp.id}

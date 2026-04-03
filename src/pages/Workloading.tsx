@@ -185,12 +185,12 @@ export default function Workloading() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-6xl"
     >
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
           <ClipboardList className="w-6 h-6 text-accent" />
           <h1 className="text-2xl font-bold text-text-primary">Workloading Calculator</h1>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           {templates.length > 0 && (
             <button className="btn btn-ghost" onClick={() => setShowTemplates(!showTemplates)}>
               <FolderOpen className="w-4 h-4" />
@@ -222,7 +222,7 @@ export default function Workloading() {
               Close
             </button>
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {templates.map((tmpl) => (
               <div
                 key={tmpl.id}
@@ -247,7 +247,7 @@ export default function Workloading() {
       )}
 
       {/* Building info row */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <div className="flex-1">
           <input
             placeholder="Building name (e.g. Federal Building 101)"
@@ -255,7 +255,7 @@ export default function Workloading() {
             onChange={(e) => setBuildingName(e.target.value)}
           />
         </div>
-        <div className="w-72">
+        <div className="sm:w-72">
           <select
             value={selectedBurdenId}
             onChange={(e) => setSelectedBurdenId(e.target.value)}
@@ -276,9 +276,9 @@ export default function Workloading() {
         </div>
       )}
 
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Zones */}
-        <div className="col-span-3 flex flex-col gap-4">
+        <div className="lg:col-span-3 flex flex-col gap-4">
           {zones.length === 0 && (
             <GlassCard className="text-center py-12">
               <MapPin className="w-8 h-8 text-text-disabled mx-auto mb-3" />

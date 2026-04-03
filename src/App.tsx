@@ -14,11 +14,31 @@ import Analytics from '@/pages/Analytics'
 import Settings from '@/pages/Settings'
 import AIAssistant from '@/pages/AIAssistant'
 import SCALookup from '@/pages/SCALookup'
+import RFPParser from '@/pages/RFPParser'
+import LaborCategories from '@/pages/LaborCategories'
 import ToastContainer from '@/components/Toast'
-import { themeStore, useStore } from '@/data/mockStore'
+import Onboarding from '@/components/Onboarding'
+import {
+  themeStore,
+  companyStore,
+  burdenProfilesStore,
+  quotesStore,
+  onboardingDismissedStore,
+  useStore,
+} from '@/data/mockStore'
 
 function App() {
   const theme = useStore(themeStore)
+  const company = useStore(companyStore)
+  const burdenProfiles = useStore(burdenProfilesStore)
+  const quotes = useStore(quotesStore)
+  const onboardingDismissed = useStore(onboardingDismissedStore)
+
+  const showOnboarding =
+    !onboardingDismissed &&
+    !company.name &&
+    burdenProfiles.length === 0 &&
+    quotes.length === 0
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
@@ -42,9 +62,12 @@ function App() {
           <Route path="analytics" element={<Analytics />} />
           <Route path="ai" element={<AIAssistant />} />
           <Route path="sca" element={<SCALookup />} />
+          <Route path="labor" element={<LaborCategories />} />
+          <Route path="rfp" element={<RFPParser />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
+      {showOnboarding && <Onboarding />}
       <ToastContainer />
     </HashRouter>
   )

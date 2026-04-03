@@ -60,6 +60,7 @@ export interface ZoneTask {
   frequency: Frequency
   equipment: string
   sqftPerHour: number
+  laborCategoryId?: string
 }
 
 export type Frequency =
@@ -134,6 +135,13 @@ export interface QuoteTask {
   sqftPerHour: number
   hours: number
   laborCost: number
+}
+
+export interface LaborCategory {
+  id: string
+  name: string
+  burdenProfileId: string
+  headcount: number // how many workers in this category
 }
 
 export interface BuildingTemplate {

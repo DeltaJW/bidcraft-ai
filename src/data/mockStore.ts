@@ -1,4 +1,4 @@
-import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate } from '@/types'
+import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory } from '@/types'
 import { DEFAULT_RATES } from './defaultRates'
 import { useSyncExternalStore } from 'react'
 
@@ -74,6 +74,9 @@ export const rateLibraryStore = createStore<RateLibrary>('rateLibrary', defaultL
 // ---- Burden Profiles ----
 export const burdenProfilesStore = createStore<BurdenProfile[]>('burdenProfiles', [])
 
+// ---- Labor Categories ----
+export const laborCategoriesStore = createStore<LaborCategory[]>('laborCategories', [])
+
 // ---- Quotes ----
 export const quotesStore = createStore<Quote[]>('quotes', [])
 
@@ -99,6 +102,9 @@ export interface WorkloadDraft {
 }
 
 export const workloadDraftStore = createStore<WorkloadDraft | null>('workloadDraft', null)
+
+// ---- Onboarding Dismissed ----
+export const onboardingDismissedStore = createStore<boolean>('onboardingDismissed', false)
 
 // ---- Theme ----
 export const themeStore = createStore<'dark' | 'light'>('theme', 'dark')
