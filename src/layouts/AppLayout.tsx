@@ -1,10 +1,23 @@
-import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { useState, useMemo } from 'react'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Sidebar from '@/components/Sidebar'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 
 export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const navigate = useNavigate()
+
+  const shortcuts = useMemo(
+    () => ({
+      'ctrl+k': () => navigate('/ai'),
+      'ctrl+s': () => {
+        /* no-op — prevent browser save dialog */
+      },
+    }),
+    [navigate]
+  )
+  useKeyboardShortcuts(shortcuts)
 
   return (
     <div className="flex min-h-screen">

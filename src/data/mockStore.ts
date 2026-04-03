@@ -100,6 +100,9 @@ export interface WorkloadDraft {
 
 export const workloadDraftStore = createStore<WorkloadDraft | null>('workloadDraft', null)
 
+// ---- Theme ----
+export const themeStore = createStore<'dark' | 'light'>('theme', 'dark')
+
 // ---- AI Settings ----
 export interface AISettings {
   apiKey: string

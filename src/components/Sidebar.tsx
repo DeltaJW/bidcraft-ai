@@ -11,6 +11,8 @@ import {
   Settings,
   Sparkles,
   Bot,
+  Shield,
+  BarChart3,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -18,10 +20,12 @@ const NAV_ITEMS = [
   { to: '/company', icon: Building2, label: 'Company Profile' },
   { to: '/rates', icon: BookOpen, label: 'Rate Library' },
   { to: '/burden', icon: Calculator, label: 'Burden Builder' },
+  { to: '/sca', icon: Shield, label: 'SCA Wage Lookup' },
   { to: '/workload', icon: ClipboardList, label: 'Workloading' },
   { to: '/quote', icon: FileText, label: 'Task Order Quote' },
   { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
   { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
+  { to: '/analytics', icon: BarChart3, label: 'Analytics' },
   { to: '/ai', icon: Bot, label: 'AI Assistant' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ]

@@ -21,6 +21,7 @@ import {
   quotesStore,
   templatesStore,
   aiSettingsStore,
+  themeStore,
   useStore,
 } from '@/data/mockStore'
 import { DEFAULT_RATES } from '@/data/defaultRates'
@@ -33,6 +34,7 @@ export default function Settings() {
   const templates = useStore(templatesStore)
 
   const aiSettings = useStore(aiSettingsStore)
+  const theme = useStore(themeStore)
 
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [showApiKey, setShowApiKey] = useState(false)
@@ -140,6 +142,35 @@ export default function Settings() {
             <DataRow icon={Database} label="Saved Quotes" value={`${quotes.length} quotes`} />
             <DataRow icon={Database} label="Building Templates" value={`${templates.length} templates`} />
             <DataRow icon={Database} label="Storage Used" value={formatBytes(storageUsed)} />
+          </div>
+        </GlassCard>
+
+        {/* Appearance */}
+        <GlassCard title="Appearance" subtitle="Customize the look and feel">
+          <div>
+            <label className="label">Theme</label>
+            <div className="flex gap-2">
+              <button
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer border ${
+                  theme === 'dark'
+                    ? 'bg-accent-muted border-accent/30 text-accent'
+                    : 'bg-transparent border-border-default text-text-secondary hover:bg-surface-3'
+                }`}
+                onClick={() => themeStore.set('dark')}
+              >
+                Dark
+              </button>
+              <button
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer border ${
+                  theme === 'light'
+                    ? 'bg-accent-muted border-accent/30 text-accent'
+                    : 'bg-transparent border-border-default text-text-secondary hover:bg-surface-3'
+                }`}
+                onClick={() => themeStore.set('light')}
+              >
+                Light
+              </button>
+            </div>
           </div>
         </GlassCard>
 

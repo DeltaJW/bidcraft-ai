@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download } from 'lucide-react'
+import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download, FileDown } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import ProposalPreview from '@/components/ProposalPreview'
@@ -185,6 +185,30 @@ export default function Proposal() {
     }
   }
 
+  async function handleDOCX() {
+    const { downloadDOCX } = await import('@/utils/docx')
+    await downloadDOCX(
+      {
+        company,
+        title,
+        contractRef,
+        location,
+        scopeDescription,
+        zones: computedZones,
+        materials,
+        assumptions,
+        totalAnnualHours: totalAnnualHours,
+        totalLabor,
+        totalMaterials,
+        grandTotal,
+        monthlyTotal,
+        burdenRate,
+        burdenProfileName: selectedBurden?.name ?? '',
+      },
+      `${title || 'Proposal'}.docx`
+    )
+  }
+
   if (showPreview) {
     return (
       <div>
@@ -195,6 +219,10 @@ export default function Proposal() {
           <button className="btn btn-primary" onClick={handlePDF}>
             <Download className="w-4 h-4" />
             Download PDF
+          </button>
+          <button className="btn btn-ghost" onClick={handleDOCX}>
+            <FileDown className="w-4 h-4" />
+            Download DOCX
           </button>
         </div>
         <ProposalPreview

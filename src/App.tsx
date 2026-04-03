@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import AppLayout from '@/layouts/AppLayout'
 import Dashboard from '@/pages/Dashboard'
@@ -9,11 +10,20 @@ import TaskOrderQuote from '@/pages/TaskOrderQuote'
 import Proposal from '@/pages/Proposal'
 import Landing from '@/pages/Landing'
 import SavedQuotes from '@/pages/SavedQuotes'
+import Analytics from '@/pages/Analytics'
 import Settings from '@/pages/Settings'
 import AIAssistant from '@/pages/AIAssistant'
+import SCALookup from '@/pages/SCALookup'
 import ToastContainer from '@/components/Toast'
+import { themeStore, useStore } from '@/data/mockStore'
 
 function App() {
+  const theme = useStore(themeStore)
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+  }, [theme])
+
   return (
     <HashRouter>
       <Routes>
@@ -29,7 +39,9 @@ function App() {
           <Route path="quote" element={<TaskOrderQuote />} />
           <Route path="proposal" element={<Proposal />} />
           <Route path="saved" element={<SavedQuotes />} />
+          <Route path="analytics" element={<Analytics />} />
           <Route path="ai" element={<AIAssistant />} />
+          <Route path="sca" element={<SCALookup />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

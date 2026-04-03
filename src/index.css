@@ -82,6 +82,111 @@
   --duration-normal: 200ms;
 }
 
+/* ===== LIGHT THEME OVERRIDES ===== */
+[data-theme="light"] {
+  --color-surface-0: #F5F7FA;
+  --color-surface-1: #FFFFFF;
+  --color-surface-2: #F0F2F5;
+  --color-surface-3: #E8EBF0;
+  --color-surface-4: #DDE1E8;
+
+  --color-border-subtle: #E2E6ED;
+  --color-border-default: #CDD3DC;
+  --color-border-strong: #B0B8C6;
+
+  --color-text-primary: #1A1F2E;
+  --color-text-secondary: #4A5568;
+  --color-text-tertiary: #718096;
+  --color-text-disabled: #A0AEC0;
+
+  --color-accent: #2B6CB0;
+  --color-accent-hover: #2C5282;
+  --color-accent-muted: #2B6CB01A;
+
+  --color-navy-950: #F5F7FA;
+  --color-navy-900: #FFFFFF;
+  --color-navy-800: #F0F2F5;
+  --color-navy-700: #E8EBF0;
+  --color-navy-600: #DDE1E8;
+  --color-navy-500: #B0B8C6;
+  --color-navy-400: #2B6CB0;
+  --color-navy-300: #4A5568;
+  --color-navy-200: #CDD3DC;
+  --color-navy-100: #1A1F2E;
+}
+
+[data-theme="light"] .glass {
+  background: #FFFFFF;
+  border-color: #CDD3DC;
+}
+
+[data-theme="light"] .glass-hover:hover {
+  border-color: #B0B8C6;
+}
+
+[data-theme="light"] .card-elevated {
+  background: #FFFFFF;
+  border-color: #CDD3DC;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .card-inset {
+  background: #F5F7FA;
+  border-color: #E2E6ED;
+}
+
+[data-theme="light"] .card-brand {
+  background: linear-gradient(135deg, #17355E08, #17355E12);
+  border-color: #17355E40;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background: #FFFFFF;
+  border-color: #CDD3DC;
+  color: #1A1F2E;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  border-color: #2B6CB0;
+  box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.15);
+}
+
+[data-theme="light"] .btn-primary {
+  background: #17355E;
+  color: white;
+}
+
+[data-theme="light"] .btn-ghost {
+  color: #4A5568;
+  border-color: #CDD3DC;
+}
+
+[data-theme="light"] .btn-ghost:hover:not(:disabled) {
+  background: #E8EBF0;
+  color: #1A1F2E;
+}
+
+[data-theme="light"] .data-table thead th {
+  background: #E8EBF0;
+  color: #718096;
+}
+
+[data-theme="light"] .data-table tbody tr:nth-child(even) {
+  background: #F5F7FA;
+}
+
+[data-theme="light"] .data-table tbody tr:hover {
+  background: #E8EBF0;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(43, 108, 176, 0.2);
+}
+
 /* ===== BASE ===== */
 html {
   font-family: var(--font-sans);
