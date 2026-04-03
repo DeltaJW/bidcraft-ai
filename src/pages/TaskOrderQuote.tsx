@@ -30,6 +30,7 @@ export default function TaskOrderQuote() {
     const first = library.rates[0]
     const newTask: QuoteTask = {
       id: `qt-${Date.now()}`,
+      rateItemId: first.id,
       taskName: first.task,
       equipment: first.equipment,
       sqft: 0,
@@ -59,6 +60,7 @@ export default function TaskOrderQuote() {
     const rate = library.rates.find((r) => r.id === rateId)
     if (!rate) return
     updateTaskField(taskId, {
+      rateItemId: rateId,
       taskName: rate.task,
       equipment: rate.equipment,
       sqftPerHour: rate.sqftPerHour,
@@ -257,9 +259,7 @@ export default function TaskOrderQuote() {
                     <tr key={task.id} className="border-t border-navy-700/20">
                       <td className="px-2 py-2">
                         <select
-                          value={library.rates.find(
-                            (r) => r.task === task.taskName && r.equipment === task.equipment
-                          )?.id ?? ''}
+                          value={task.rateItemId ?? ''}
                           onChange={(e) => handleRateSelect(task.id, e.target.value)}
                           className="!text-xs"
                         >

@@ -11,8 +11,9 @@ function createStore<T>(key: string, initial: T) {
   try {
     const saved = localStorage.getItem(`bidcraft:${key}`)
     if (saved) state = JSON.parse(saved)
-  } catch {
-    // ignore parse errors, use default
+  } catch (err) {
+    console.warn(`BidCraft: failed to load "${key}" from storage, using defaults`, err)
+    localStorage.removeItem(`bidcraft:${key}`)
   }
 
   const listeners = new Set<Listener>()

@@ -127,6 +127,7 @@ export interface Quote {
 
 export interface QuoteTask {
   id: string
+  rateItemId?: string
   taskName: string
   equipment: string
   sqft: number

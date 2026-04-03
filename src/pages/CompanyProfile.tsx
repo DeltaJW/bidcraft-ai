@@ -34,8 +34,16 @@ export default function CompanyProfile() {
   function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const url = URL.createObjectURL(file)
-    setForm((prev) => ({ ...prev, logoUrl: url }))
+    if (file.size > 2 * 1024 * 1024) {
+      toast('Logo must be under 2MB', 'error')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const dataUrl = ev.target?.result as string
+      setForm((prev) => ({ ...prev, logoUrl: dataUrl }))
+    }
+    reader.readAsDataURL(file)
   }
 
   return (

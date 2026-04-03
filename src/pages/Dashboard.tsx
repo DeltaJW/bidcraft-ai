@@ -13,6 +13,7 @@ import {
   FolderOpen,
 } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { loadDemoData } from '@/data/demoData'
 import { quotesStore, burdenProfilesStore, useStore } from '@/data/mockStore'
 
 const FEATURES = [
@@ -107,6 +108,12 @@ export default function Dashboard() {
             <FileText className="w-4 h-4" />
             Quick Quote
           </Link>
+          {quotes.length === 0 && burdenProfiles.length === 0 && (
+            <button className="btn btn-ghost" onClick={loadDemoData}>
+              <Sparkles className="w-4 h-4" />
+              Load Demo Data
+            </button>
+          )}
         </div>
       </motion.div>
 
