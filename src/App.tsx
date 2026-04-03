@@ -24,6 +24,7 @@ import CrewScheduler from '@/pages/CrewScheduler'
 import QuickEstimate from '@/pages/QuickEstimate'
 import ProfitOptimizer from '@/pages/ProfitOptimizer'
 import CompetitiveIntel from '@/pages/CompetitiveIntel'
+import DocumentHub from '@/pages/DocumentHub'
 import TurnoverCalc from '@/pages/TurnoverCalc'
 import MultiBuilding from '@/pages/MultiBuilding'
 import ScenarioCompare from '@/pages/ScenarioCompare'
@@ -96,6 +97,7 @@ function App() {
           <Route path="narrative" element={<NarrativeWriter />} />
           <Route path="pl-tracker" element={<ContractPL />} />
           <Route path="regional" element={<RegionalCost />} />
+          <Route path="documents" element={<DocumentHub />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

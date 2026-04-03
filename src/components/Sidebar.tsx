@@ -31,6 +31,7 @@ import {
   UserMinus,
   ClipboardCheck,
   PenTool,
+  Upload,
   ChevronDown,
   type LucideIcon,
 } from 'lucide-react'
@@ -73,6 +74,7 @@ const NAV_SECTIONS: NavSection[] = [
       { to: '/bid-decision', icon: Scale, label: 'Bid / No-Bid' },
       { to: '/intel', icon: Eye, label: 'Competitive Intel' },
       { to: '/recompete', icon: Radar, label: 'Recompete Radar' },
+      { to: '/documents', icon: Upload, label: 'Document Hub' },
       { to: '/ai', icon: Bot, label: 'AI Assistant' },
     ],
   },
