@@ -145,14 +145,16 @@ export default function SavedQuotes() {
       className="max-w-4xl"
     >
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <FolderOpen className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Saved Quotes</h1>
-          <span className="text-sm text-text-tertiary">{quotes.length} total</span>
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Pipeline</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Saved Quotes</h1>
+            <span className="text-[11px] font-mono text-text-disabled">{quotes.length} total</span>
+          </div>
         </div>
         {quotes.length > 0 && (
-          <button className="btn btn-ghost" onClick={handleExportCSV}>
-            <Download className="w-4 h-4" />
+          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-default text-text-secondary text-xs font-medium bg-transparent cursor-pointer hover:text-text-primary hover:border-border-strong transition-all" onClick={handleExportCSV}>
+            <Download className="w-3.5 h-3.5" />
             Export CSV
           </button>
         )}
@@ -160,39 +162,33 @@ export default function SavedQuotes() {
 
       {quotes.length > 0 && (
         <>
-          {/* Stats row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <GlassCard className="!p-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center">
+          {/* Stats row — stat-card style */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
+            <div className="stat-card p-4">
+              <div className="flex items-center justify-between mb-2">
                 <FileText className="w-4 h-4 text-accent" />
+                <span className="text-[10px] tracking-widest uppercase font-semibold text-text-disabled">Showing</span>
               </div>
-              <div>
-                <div className="text-lg font-bold text-text-primary">{filtered.length}</div>
-                <div className="text-xs text-text-tertiary">Showing</div>
-              </div>
-            </GlassCard>
-            <GlassCard className="!p-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center">
+              <div className="font-mono text-2xl font-bold text-text-primary tracking-tight">{filtered.length}</div>
+            </div>
+            <div className="stat-card p-4">
+              <div className="flex items-center justify-between mb-2">
                 <DollarSign className="w-4 h-4 text-accent" />
+                <span className="text-[10px] tracking-widest uppercase font-semibold text-text-disabled">Total Value</span>
               </div>
-              <div>
-                <div className="text-lg font-bold text-text-primary">
-                  ${totalValue >= 1000 ? `${(totalValue / 1000).toFixed(0)}K` : totalValue.toFixed(0)}
-                </div>
-                <div className="text-xs text-text-tertiary">Total Value</div>
+              <div className="font-mono text-2xl font-bold text-text-primary tracking-tight">
+                ${totalValue >= 1000 ? `${(totalValue / 1000).toFixed(0)}K` : totalValue.toFixed(0)}
               </div>
-            </GlassCard>
-            <GlassCard className="!p-4 flex items-center gap-3">
-              <div className="w-8 h-8 rounded bg-emerald-500/10 flex items-center justify-center">
+            </div>
+            <div className="stat-card p-4">
+              <div className="flex items-center justify-between mb-2">
                 <DollarSign className="w-4 h-4 text-emerald-400" />
+                <span className="text-[10px] tracking-widest uppercase font-semibold text-text-disabled">Won Value</span>
               </div>
-              <div>
-                <div className="text-lg font-bold text-text-primary">
-                  ${acceptedValue >= 1000 ? `${(acceptedValue / 1000).toFixed(0)}K` : acceptedValue.toFixed(0)}
-                </div>
-                <div className="text-xs text-text-tertiary">Won Value</div>
+              <div className="font-mono text-2xl font-bold text-emerald-400 tracking-tight">
+                ${acceptedValue >= 1000 ? `${(acceptedValue / 1000).toFixed(0)}K` : acceptedValue.toFixed(0)}
               </div>
-            </GlassCard>
+            </div>
           </div>
 
           {/* Filters */}
