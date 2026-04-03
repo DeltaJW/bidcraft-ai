@@ -158,12 +158,12 @@ export default function Onboarding() {
             <div className="w-12 h-12 rounded-lg bg-brand-navy flex items-center justify-center mx-auto mb-4">
               <span className="text-white text-sm font-bold font-mono">BC</span>
             </div>
-            <p className="section-label mb-2">Getting Started</p>
+            <p className="section-label mb-2">Let's Win</p>
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">
               Welcome to BidCraft <span className="text-accent font-normal">AI</span>
             </h1>
             <p className="text-sm text-text-tertiary mt-1">
-              Choose your path
+              How do you want to start winning?
             </p>
           </motion.div>
 

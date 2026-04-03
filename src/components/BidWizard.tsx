@@ -72,7 +72,7 @@ export default function BidWizard() {
       >
         <div className="flex items-center gap-3">
           <h3 className="text-[10px] font-semibold text-text-disabled uppercase tracking-widest">
-            Bid Progress
+            Win Track
           </h3>
           {!expanded && nextStep && (
             <span className="text-[10px] text-text-tertiary">
@@ -161,7 +161,7 @@ export default function BidWizard() {
 
             {allDone && (
               <div className="mx-3 mb-3 p-2 rounded-md bg-success/10 text-center">
-                <p className="text-[10px] text-success font-semibold tracking-wide uppercase">Ready to submit your bid</p>
+                <p className="text-[10px] text-success font-semibold tracking-wide uppercase">Ready to win</p>
               </div>
             )}
           </motion.div>

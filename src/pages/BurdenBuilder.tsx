@@ -505,19 +505,21 @@ export default function BurdenBuilder() {
               <BreakdownRow label={`Fee ${profile.feePct}%`} value={feeDollar} />
             </div>
 
-            {/* Total — prominent */}
-            <div className="px-4 py-3 bg-brand-navy/20 border-t border-accent/20">
+            {/* Total — the answer */}
+            <div className="px-4 py-4 bg-brand-navy/20 border-t border-accent/20">
               <div className="flex justify-between items-center">
-                <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-wide">Fully Burdened</span>
-                <span className="text-2xl font-bold text-accent font-mono tracking-tight">
+                <div>
+                  <span className="text-[10px] font-semibold text-text-disabled uppercase tracking-widest block">Your Burdened Rate</span>
+                  {profile.baseWage > 0 && (
+                    <span className="text-[10px] text-text-disabled font-mono">
+                      {((fullyBurdened / profile.baseWage - 1) * 100).toFixed(1)}% above base
+                    </span>
+                  )}
+                </div>
+                <span className="text-3xl font-bold text-accent font-mono tracking-tight">
                   ${fullyBurdened.toFixed(2)}
                 </span>
               </div>
-              {profile.baseWage > 0 && (
-                <p className="text-[10px] text-text-disabled mt-1 text-right font-mono">
-                  {((fullyBurdened / profile.baseWage - 1) * 100).toFixed(1)}% markup
-                </p>
-              )}
             </div>
 
             {/* Cost Waterfall */}

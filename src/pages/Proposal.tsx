@@ -606,7 +606,7 @@ export default function Proposal() {
         <motion.div variants={fadeIn}>
           <div className="stat-card sticky top-8">
             <div className="px-4 py-3 border-b border-border-subtle">
-              <p className="text-[10px] tracking-widest uppercase font-semibold text-accent">Cost Summary</p>
+              <p className="text-[10px] tracking-widest uppercase font-semibold text-accent">Your Bid</p>
             </div>
 
             <div className="px-4 py-3 flex flex-col gap-2 text-[12px]">
@@ -638,7 +638,7 @@ export default function Proposal() {
             {/* Grand total — navy bar */}
             <div className="px-4 py-3 bg-brand-navy/20 border-t border-accent/20">
               <div className="flex justify-between items-center">
-                <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-wide">Annual Total</span>
+                <span className="text-[10px] font-semibold text-text-disabled uppercase tracking-widest">Your Price</span>
                 <span className="text-2xl font-bold text-accent font-mono tracking-tight">
                   ${grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </span>

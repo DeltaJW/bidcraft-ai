@@ -226,20 +226,18 @@ export default function Landing() {
             variants={heroItem}
             className="text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6"
           >
-            Price the work.
+            Your unfair advantage
             <br />
-            <span className="gradient-text">Win the bid.</span>
-            <br />
-            Generate the proposal.
+            <span className="gradient-text">in bid pricing.</span>
           </motion.h1>
 
           <motion.p
             variants={heroItem}
             className="text-lg text-text-secondary max-w-xl mb-10 leading-relaxed"
           >
-            Calculate production rates, build burdened labor rates, and generate
-            government-ready proposals — for janitorial, security, landscaping,
-            and maintenance.
+            Production rates, burdened labor costs, and government-ready
+            proposals — calculated in minutes, not days. For janitorial,
+            security, landscaping, and maintenance contractors who win.
           </motion.p>
 
           <motion.div variants={heroItem} className="flex items-center gap-3">
@@ -284,7 +282,7 @@ export default function Landing() {
           >
             <motion.div variants={cardReveal} className="mb-14">
               <p className="section-label mb-3">Capabilities</p>
-              <h2 className="text-3xl font-bold tracking-tight mb-3">Everything you need to price and win</h2>
+              <h2 className="text-3xl font-bold tracking-tight mb-3">Every tool you need to win</h2>
               <p className="text-text-tertiary max-w-lg text-sm leading-relaxed">
                 From production rates to professional proposals — one platform replaces
                 your spreadsheets, rate books, and Word templates.
@@ -481,11 +479,11 @@ export default function Landing() {
           className="relative max-w-2xl mx-auto text-center"
         >
           <motion.h2 variants={cardReveal} className="text-3xl font-bold tracking-tight mb-4">
-            Stop pricing on spreadsheets
+            Your competitors are using spreadsheets.
           </motion.h2>
           <motion.p variants={cardReveal} className="text-text-secondary text-sm mb-8 leading-relaxed">
-            Your competitors are still using Excel. Be the one with AI-powered pricing,
-            professional proposals, and burden rates calculated in seconds.
+            You're going to walk in with AI-powered pricing, professional proposals,
+            and burden rates calculated to the penny. That's the difference.
           </motion.p>
           <motion.div variants={cardReveal}>
             <Link to="/" className="btn btn-cta !text-sm !px-8 !py-3 no-underline">
