@@ -1,5 +1,3 @@
-import type { RateItem } from '@/types'
-
 // Rates below this threshold are per-unit, not per-sqft
 const PER_UNIT_THRESHOLD = 100
 
