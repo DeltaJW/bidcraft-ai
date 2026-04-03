@@ -21,6 +21,10 @@ import {
   Target,
   GitCompare,
   TrendingUp,
+  UserCog,
+  Scale,
+  Eye,
+  UserMinus,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -31,7 +35,9 @@ const NAV_ITEMS = [
   { to: '/rates', icon: BookOpen, label: 'Rate Library' },
   { to: '/burden', icon: Calculator, label: 'Burden Builder' },
   { to: '/labor', icon: Users, label: 'Labor Categories' },
+  { to: '/crew', icon: UserCog, label: 'Crew Scheduler' },
   { to: '/sca', icon: Shield, label: 'SCA Wage Lookup' },
+  { to: '/bid-decision', icon: Scale, label: 'Bid / No-Bid' },
   { to: '/rfp', icon: FileSearch, label: 'RFP Parser' },
   { to: '/workload', icon: ClipboardList, label: 'Workloading' },
   { to: '/quote', icon: FileText, label: 'Task Order Quote' },
@@ -43,6 +49,8 @@ const NAV_ITEMS = [
   { to: '/scenarios', icon: GitCompare, label: 'What-If Scenarios' },
   { to: '/calendar', icon: Calendar, label: 'Contract Calendar' },
   { to: '/escalation', icon: TrendingUp, label: 'Price Escalation' },
+  { to: '/intel', icon: Eye, label: 'Competitive Intel' },
+  { to: '/turnover', icon: UserMinus, label: 'Turnover Calculator' },
   { to: '/ai', icon: Bot, label: 'AI Assistant' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ]

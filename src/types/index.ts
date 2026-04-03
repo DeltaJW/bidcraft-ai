@@ -183,3 +183,25 @@ export interface Contract {
   notes: string
   createdAt: string
 }
+
+export interface InspectionItem {
+  id: string
+  zone: string
+  task: string
+  frequency: string
+  rating: number  // 1-5
+  pass: boolean
+  notes: string
+}
+
+export interface InspectionRecord {
+  id: string
+  quoteId: string
+  quoteTitle: string
+  inspectorName: string
+  inspectionDate: string
+  items: InspectionItem[]
+  overallScore: number
+  notes: string
+  createdAt: string
+}

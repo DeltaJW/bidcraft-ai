@@ -1,4 +1,4 @@
-import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory, Client, Contract } from '@/types'
+import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory, Client, Contract, InspectionRecord } from '@/types'
 import type { SupplyItem } from './defaultSupplies'
 import { DEFAULT_SUPPLIES } from './defaultSupplies'
 import { DEFAULT_RATES } from './defaultRates'
@@ -88,6 +88,9 @@ export const clientsStore = createStore<Client[]>('clients', [])
 // ---- Contracts ----
 export const contractsStore = createStore<Contract[]>('contracts', [])
 
+// ---- Inspections ----
+export const inspectionsStore = createStore<InspectionRecord[]>('inspections', [])
+
 // ---- Supplies Catalog ----
 export const suppliesStore = createStore<SupplyItem[]>('supplies', [...DEFAULT_SUPPLIES])
 
@@ -119,6 +122,10 @@ export const onboardingDismissedStore = createStore<boolean>('onboardingDismisse
 
 // ---- Theme ----
 export const themeStore = createStore<'dark' | 'light'>('theme', 'dark')
+
+// ---- Bid Decisions ----
+import type { BidDecision } from '@/pages/BidNoBid'
+export const bidDecisionsStore = createStore<BidDecision[]>('bidDecisions', [])
 
 // ---- AI Settings ----
 export interface AISettings {

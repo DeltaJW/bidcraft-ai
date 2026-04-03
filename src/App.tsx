@@ -19,10 +19,14 @@ import AIAssistant from '@/pages/AIAssistant'
 import SCALookup from '@/pages/SCALookup'
 import RFPParser from '@/pages/RFPParser'
 import LaborCategories from '@/pages/LaborCategories'
+import CrewScheduler from '@/pages/CrewScheduler'
 import QuickEstimate from '@/pages/QuickEstimate'
 import ProfitOptimizer from '@/pages/ProfitOptimizer'
+import CompetitiveIntel from '@/pages/CompetitiveIntel'
+import TurnoverCalc from '@/pages/TurnoverCalc'
 import MultiBuilding from '@/pages/MultiBuilding'
 import ScenarioCompare from '@/pages/ScenarioCompare'
+import BidNoBid from '@/pages/BidNoBid'
 import ToastContainer from '@/components/Toast'
 import Onboarding from '@/components/Onboarding'
 import {
@@ -73,11 +77,15 @@ function App() {
           <Route path="ai" element={<AIAssistant />} />
           <Route path="sca" element={<SCALookup />} />
           <Route path="labor" element={<LaborCategories />} />
+          <Route path="crew" element={<CrewScheduler />} />
           <Route path="rfp" element={<RFPParser />} />
           <Route path="estimate" element={<QuickEstimate />} />
           <Route path="optimizer" element={<ProfitOptimizer />} />
           <Route path="multi" element={<MultiBuilding />} />
           <Route path="scenarios" element={<ScenarioCompare />} />
+          <Route path="intel" element={<CompetitiveIntel />} />
+          <Route path="turnover" element={<TurnoverCalc />} />
+          <Route path="bid-decision" element={<BidNoBid />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
