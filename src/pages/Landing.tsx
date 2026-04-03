@@ -221,15 +221,14 @@ export default function Landing() {
             </span>
           </motion.div>
 
-          {/* Headline — dramatic size, tight leading */}
-          <motion.div variants={heroItem} className="mb-6">
-            <h1 className="text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight">
-              Price the work.
-            </h1>
-            <p className="text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight gradient-text text-center">
-              Win the bid.
-            </p>
-          </motion.div>
+          {/* Headline */}
+          <motion.h1
+            variants={heroItem}
+            className="text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6 inline-block"
+          >
+            <span className="block">Price the work.</span>
+            <span className="block text-center gradient-text">Win the bid.</span>
+          </motion.h1>
 
           <motion.p
             variants={heroItem}
