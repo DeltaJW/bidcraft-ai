@@ -18,23 +18,23 @@
   --color-brand-red: #A41E22;
   --color-brand-red-light: #C4282D;
 
-  /* ---- SURFACES ---- */
-  --color-surface-0: #0C1220;
-  --color-surface-1: #111A2E;
-  --color-surface-2: #172236;
-  --color-surface-3: #1D2B42;
-  --color-surface-4: #24344D;
+  /* ---- SURFACES (warm dark — GitHub-inspired, not cold navy) ---- */
+  --color-surface-0: #0D1117;        /* page bg — warm near-black (GitHub dark) */
+  --color-surface-1: #161B22;        /* cards — visible lift from bg */
+  --color-surface-2: #1C2128;        /* inputs, hover states */
+  --color-surface-3: #21262D;        /* table headers, pressed */
+  --color-surface-4: #282E36;        /* elevated elements */
 
   /* ---- BORDERS ---- */
-  --color-border-subtle: #1E2D47;
-  --color-border-default: #283A58;
-  --color-border-strong: #3A5070;
+  --color-border-subtle: #21262D;
+  --color-border-default: #30363D;
+  --color-border-strong: #484F58;
 
   /* ---- TEXT ---- */
   --color-text-primary: #E8ECF1;
   --color-text-secondary: #9CABC2;
-  --color-text-tertiary: #8A9DB5;   /* WCAG 4.5:1+ on surface-1 (#111A2E). Was #6B7D98 */
-  --color-text-disabled: #7B92AC;   /* WCAG 4.5:1+ on surface-1 (#111A2E). Was #4A5B73 */
+  --color-text-tertiary: #8B949E;   /* WCAG 4.5:1+ on surface-1 (#161B22). Warm gray */
+  --color-text-disabled: #7D8590;   /* WCAG 4.5:1+ on surface-1 (#161B22) */
 
   /* ---- ACCENT ---- */
   --color-accent: #5B8DEF;
@@ -61,14 +61,14 @@
   --color-info-muted: #1E3A5F;
 
   /* ---- LEGACY COMPAT (used in Tailwind classes) ---- */
-  --color-navy-950: #0C1220;
-  --color-navy-900: #111A2E;
-  --color-navy-800: #172236;
-  --color-navy-700: #1D2B42;
-  --color-navy-600: #24344D;
-  --color-navy-500: #3A5070;
+  --color-navy-950: #0D1117;
+  --color-navy-900: #161B22;
+  --color-navy-800: #1C2128;
+  --color-navy-700: #21262D;
+  --color-navy-600: #282E36;
+  --color-navy-500: #484F58;
   --color-navy-400: #5B8DEF;
-  --color-navy-300: #9CABC2;
+  --color-navy-300: #8B949E;
   --color-navy-200: #b8d1fa;
   --color-navy-100: #E8ECF1;
 
