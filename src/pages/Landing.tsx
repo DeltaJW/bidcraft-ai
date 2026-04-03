@@ -200,10 +200,12 @@ export default function Landing() {
 
       {/* ── Hero ── */}
       <section className="relative pt-28 pb-24 px-6 overflow-hidden">
-        {/* Dot grid background — this is the "Linear signature" */}
-        <div className="absolute inset-0 dot-grid opacity-40" />
-        {/* Radial fade so the dots don't dominate */}
-        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-transparent to-surface-0" />
+        {/* Gradient mesh — the "this is alive" layer */}
+        <div className="absolute inset-0 hero-gradient" />
+        {/* Radial glow behind headline */}
+        <div className="absolute inset-0 hero-glow" />
+        {/* Dot grid for texture */}
+        <div className="absolute inset-0 dot-grid opacity-20" />
 
         <motion.div
           initial="hidden"
@@ -272,8 +274,7 @@ export default function Landing() {
       </section>
 
       {/* ── Features ── */}
-      <section id="features" className="py-24 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-surface-1/30 to-surface-0" />
+      <section id="features" className="py-24 px-6 relative section-lifted">
         <div className="relative max-w-5xl mx-auto">
           <motion.div
             initial="hidden"
@@ -354,8 +355,7 @@ export default function Landing() {
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-24 px-6 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-surface-1/30 to-surface-0" />
+      <section className="py-24 px-6 relative section-lifted">
         <div className="relative max-w-4xl mx-auto">
           <motion.div
             initial="hidden"
@@ -471,8 +471,8 @@ export default function Landing() {
 
       {/* ── CTA ── */}
       <section className="py-24 px-6 relative">
-        <div className="absolute inset-0 dot-grid opacity-20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-transparent to-surface-0" />
+        <div className="absolute inset-0 hero-gradient" />
+        <div className="absolute inset-0 hero-glow" />
         <motion.div
           initial="hidden"
           whileInView="show"
