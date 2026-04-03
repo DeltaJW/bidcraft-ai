@@ -2,17 +2,27 @@ import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckCircle, AlertTriangle, Info, X } from 'lucide-react'
 
+interface ToastAction {
+  label: string
+  onClick: () => void
+}
+
 interface ToastMessage {
   id: number
   type: 'success' | 'error' | 'info'
   message: string
+  action?: ToastAction
 }
 
 let toastId = 0
 const listeners = new Set<(msg: ToastMessage) => void>()
 
-export function toast(message: string, type: 'success' | 'error' | 'info' = 'success') {
-  const msg: ToastMessage = { id: ++toastId, type, message }
+export function toast(
+  message: string,
+  type: 'success' | 'error' | 'info' = 'success',
+  action?: ToastAction
+) {
+  const msg: ToastMessage = { id: ++toastId, type, message, action }
   listeners.forEach((fn) => fn(msg))
 }
 
@@ -33,9 +43,10 @@ export default function ToastContainer() {
 
   const addToast = useCallback((msg: ToastMessage) => {
     setToasts((prev) => [...prev, msg])
+    const timeout = msg.action ? 10000 : 3000
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== msg.id))
-    }, 3000)
+    }, timeout)
   }, [])
 
   useEffect(() => {
@@ -62,6 +73,17 @@ export default function ToastContainer() {
             >
               <Icon className="w-4 h-4 shrink-0" />
               <span className="text-sm font-medium">{t.message}</span>
+              {t.action && (
+                <button
+                  onClick={() => {
+                    t.action!.onClick()
+                    dismiss(t.id)
+                  }}
+                  className="px-2 py-0.5 text-xs font-semibold text-accent hover:text-accent-hover bg-accent/10 hover:bg-accent/20 rounded transition-colors border-none cursor-pointer"
+                >
+                  {t.action.label}
+                </button>
+              )}
               <button
                 onClick={() => dismiss(t.id)}
                 className="p-0.5 opacity-60 hover:opacity-100 transition-opacity bg-transparent border-none cursor-pointer text-current"

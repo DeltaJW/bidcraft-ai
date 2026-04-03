@@ -28,6 +28,8 @@ import TurnoverCalc from '@/pages/TurnoverCalc'
 import MultiBuilding from '@/pages/MultiBuilding'
 import ScenarioCompare from '@/pages/ScenarioCompare'
 import BidNoBid from '@/pages/BidNoBid'
+import RecompeteRadar from '@/pages/RecompeteRadar'
+import NarrativeWriter from '@/pages/NarrativeWriter'
 import ToastContainer from '@/components/Toast'
 import Onboarding from '@/components/Onboarding'
 import {
@@ -88,6 +90,8 @@ function App() {
           <Route path="intel" element={<CompetitiveIntel />} />
           <Route path="turnover" element={<TurnoverCalc />} />
           <Route path="bid-decision" element={<BidNoBid />} />
+          <Route path="recompete" element={<RecompeteRadar />} />
+          <Route path="narrative" element={<NarrativeWriter />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

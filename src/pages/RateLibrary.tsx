@@ -60,10 +60,23 @@ export default function RateLibrary() {
   }
 
   function deleteRate(id: string) {
+    const deletedRate = library.rates.find((r) => r.id === id)
     rateLibraryStore.update((lib) => ({
       ...lib,
       rates: lib.rates.filter((r) => r.id !== id),
     }))
+    if (deletedRate) {
+      toast('Custom rate deleted', 'info', {
+        label: 'Undo',
+        onClick: () => {
+          rateLibraryStore.update((lib) => ({
+            ...lib,
+            rates: [...lib.rates, deletedRate],
+          }))
+          toast('Custom rate restored', 'success')
+        },
+      })
+    }
   }
 
   function addCustomRate() {

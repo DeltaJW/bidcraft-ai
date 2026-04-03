@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil, Download, Search } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import HelpTip from '@/components/HelpTip'
-import ConfirmDialog from '@/components/ConfirmDialog'
 import { toast } from '@/components/Toast'
 import { burdenProfilesStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
@@ -55,7 +54,6 @@ export default function BurdenBuilder() {
   const [saved, setSaved] = useState(false)
   const [suiState, setSuiState] = useState('')
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [deleteProfileId, setDeleteProfileId] = useState<string | null>(null)
 
   function update<K extends keyof BurdenProfile>(field: K, value: BurdenProfile[K]) {
     setProfile((prev) => ({ ...prev, [field]: value }))
@@ -475,6 +473,39 @@ export default function BurdenBuilder() {
                   Markup: {((fullyBurdened / profile.baseWage - 1) * 100).toFixed(1)}% over base wage
                 </p>
               )}
+
+              {/* Cost Waterfall */}
+              {fullyBurdened > 0 && (
+                <div className="mt-4 pt-3 border-t border-border-subtle">
+                  <h4 className="text-xs font-semibold text-text-secondary mb-2">Cost Waterfall</h4>
+                  <div className="flex flex-col gap-1">
+                    {[
+                      { label: 'Base', value: profile.baseWage, color: 'bg-accent' },
+                      { label: 'H&W', value: profile.hwRate, color: 'bg-blue-400' },
+                      { label: 'Taxes', value: taxTotal, color: 'bg-amber-400' },
+                      { label: 'Leave', value: leaveDollar, color: 'bg-purple-400' },
+                      { label: 'G&A', value: gaDollar, color: 'bg-emerald-400' },
+                      { label: 'Profit', value: feeDollar, color: 'bg-rose-400' },
+                    ].map((seg) => {
+                      const pct = fullyBurdened > 0 ? (seg.value / fullyBurdened) * 100 : 0
+                      return (
+                        <div key={seg.label} className="flex items-center gap-2">
+                          <span className="text-[10px] text-text-disabled w-10 text-right">{seg.label}</span>
+                          <div className="flex-1 h-3.5 bg-surface-0 rounded overflow-hidden">
+                            <div
+                              className={`h-full ${seg.color} rounded transition-all duration-300`}
+                              style={{ width: `${pct}%` }}
+                            />
+                          </div>
+                          <span className="text-[10px] font-mono text-text-tertiary w-12 text-right">
+                            {pct.toFixed(0)}%
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           </GlassCard>
         </div>
@@ -509,7 +540,25 @@ export default function BurdenBuilder() {
                     </button>
                     <button
                       className="p-1.5 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
-                      onClick={(e) => { e.stopPropagation(); setDeleteProfileId(bp.id) }}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        const deletedProfile = savedProfiles.find((p) => p.id === bp.id)
+                        burdenProfilesStore.update((prev) => prev.filter((p) => p.id !== bp.id))
+                        if (editingId === bp.id) {
+                          setProfile(emptyProfile())
+                          setEditingId(null)
+                          setStep(0)
+                        }
+                        if (deletedProfile) {
+                          toast('Burden profile deleted', 'info', {
+                            label: 'Undo',
+                            onClick: () => {
+                              burdenProfilesStore.update((prev) => [...prev, deletedProfile])
+                              toast('Burden profile restored', 'success')
+                            },
+                          })
+                        }
+                      }}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -525,24 +574,6 @@ export default function BurdenBuilder() {
           </div>
         </div>
       )}
-      <ConfirmDialog
-        open={deleteProfileId !== null}
-        title="Delete Burden Profile"
-        message="This will permanently remove this burden profile. Any quotes using it will retain their saved values, but you won't be able to recalculate with this profile."
-        confirmLabel="Delete Profile"
-        onConfirm={() => {
-          if (deleteProfileId) {
-            burdenProfilesStore.update((prev) => prev.filter((p) => p.id !== deleteProfileId))
-            if (editingId === deleteProfileId) {
-              setProfile(emptyProfile())
-              setEditingId(null)
-              setStep(0)
-            }
-          }
-          setDeleteProfileId(null)
-        }}
-        onCancel={() => setDeleteProfileId(null)}
-      />
     </motion.div>
   )
 }

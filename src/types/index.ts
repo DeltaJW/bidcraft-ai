@@ -184,6 +184,26 @@ export interface Contract {
   createdAt: string
 }
 
+export interface ContractPL {
+  id: string
+  name: string
+  quoteId: string | null  // linked saved quote for bid numbers
+  bidLaborAnnual: number
+  bidMaterialsAnnual: number
+  bidTotal: number
+  months: PLMonth[]
+  createdAt: string
+}
+
+export interface PLMonth {
+  id: string
+  month: string  // "2026-01"
+  actualLabor: number
+  actualMaterials: number
+  actualOverhead: number
+  notes: string
+}
+
 export interface InspectionItem {
   id: string
   zone: string

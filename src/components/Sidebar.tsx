@@ -25,8 +25,10 @@ import {
   UserCog,
   Scale,
   Eye,
+  Radar,
   UserMinus,
   ClipboardCheck,
+  PenTool,
   ChevronDown,
   type LucideIcon,
 } from 'lucide-react'
@@ -68,6 +70,7 @@ const NAV_SECTIONS: NavSection[] = [
       { to: '/rfp', icon: FileSearch, label: 'RFP Parser' },
       { to: '/bid-decision', icon: Scale, label: 'Bid / No-Bid' },
       { to: '/intel', icon: Eye, label: 'Competitive Intel' },
+      { to: '/recompete', icon: Radar, label: 'Recompete Radar' },
       { to: '/ai', icon: Bot, label: 'AI Assistant' },
     ],
   },
@@ -79,6 +82,7 @@ const NAV_SECTIONS: NavSection[] = [
       { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
       { to: '/multi', icon: Building2, label: 'Multi-Building' },
       { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
+      { to: '/narrative', icon: PenTool, label: 'Narrative Writer' },
     ],
   },
   {

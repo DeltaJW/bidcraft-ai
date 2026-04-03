@@ -1,4 +1,4 @@
-import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory, Client, Contract, InspectionRecord } from '@/types'
+import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory, Client, Contract, InspectionRecord, ContractPL } from '@/types'
 import type { SupplyItem } from './defaultSupplies'
 import { DEFAULT_SUPPLIES } from './defaultSupplies'
 import { DEFAULT_RATES } from './defaultRates'
@@ -90,6 +90,9 @@ export const contractsStore = createStore<Contract[]>('contracts', [])
 
 // ---- Inspections ----
 export const inspectionsStore = createStore<InspectionRecord[]>('inspections', [])
+
+// ---- Contract P&L Tracking ----
+export const contractPLStore = createStore<ContractPL[]>('contractPL', [])
 
 // ---- Supplies Catalog ----
 export const suppliesStore = createStore<SupplyItem[]>('supplies', [...DEFAULT_SUPPLIES])

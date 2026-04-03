@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
-import ConfirmDialog from '@/components/ConfirmDialog'
 import { quotesStore, useStore } from '@/data/mockStore'
 import { downloadCSV } from '@/utils/csv'
 import type { Quote } from '@/types'
@@ -26,7 +25,6 @@ export default function SavedQuotes() {
   const quotes = useStore(quotesStore)
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [filterType, setFilterType] = useState<string>('all')
-  const [deleteQuoteId, setDeleteQuoteId] = useState<string | null>(null)
 
   const filtered = quotes.filter((q) => {
     if (filterStatus !== 'all' && q.status !== filterStatus) return false
@@ -35,7 +33,17 @@ export default function SavedQuotes() {
   })
 
   function deleteQuote(id: string) {
+    const deletedQuote = quotes.find((q) => q.id === id)
     quotesStore.update((prev) => prev.filter((q) => q.id !== id))
+    if (deletedQuote) {
+      toast('Quote deleted', 'info', {
+        label: 'Undo',
+        onClick: () => {
+          quotesStore.update((prev) => [...prev, deletedQuote])
+          toast('Quote restored', 'success')
+        },
+      })
+    }
   }
 
   function duplicateQuote(q: Quote) {
@@ -281,7 +289,7 @@ export default function SavedQuotes() {
                     </button>
                     <button
                       className="p-1.5 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
-                      onClick={() => setDeleteQuoteId(q.id)}
+                      onClick={() => deleteQuote(q.id)}
                       title="Delete"
                     >
                       <Trash2 className="w-4 h-4" />
@@ -294,17 +302,6 @@ export default function SavedQuotes() {
         </div>
       )}
 
-      <ConfirmDialog
-        open={deleteQuoteId !== null}
-        title="Delete Quote"
-        message="This will permanently remove this saved quote. This cannot be undone."
-        confirmLabel="Delete Quote"
-        onConfirm={() => {
-          if (deleteQuoteId) deleteQuote(deleteQuoteId)
-          setDeleteQuoteId(null)
-        }}
-        onCancel={() => setDeleteQuoteId(null)}
-      />
     </motion.div>
   )
 }
