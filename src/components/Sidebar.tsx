@@ -231,9 +231,14 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             </>
           )}
         </NavLink>
-        <div className="mt-2 px-2.5">
-          <span className="text-[9px] font-mono text-text-disabled tracking-wide">v1.0 — MVP</span>
-        </div>
+        <NavLink
+          to="/landing"
+          onClick={onNavigate}
+          className="flex items-center gap-2 px-2.5 py-1 rounded-md text-[12px] font-medium text-text-disabled hover:text-text-tertiary transition-all"
+        >
+          <span className="text-[9px] font-mono tracking-wide">v1.0</span>
+          <span className="text-[10px]">· View Site</span>
+        </NavLink>
       </div>
     </aside>
   )

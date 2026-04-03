@@ -45,8 +45,7 @@ import {
   useStore,
 } from '@/data/mockStore'
 
-function App() {
-  const theme = useStore(themeStore)
+function AppWithOnboarding() {
   const company = useStore(companyStore)
   const burdenProfiles = useStore(burdenProfilesStore)
   const quotes = useStore(quotesStore)
@@ -58,6 +57,17 @@ function App() {
     burdenProfiles.length === 0 &&
     quotes.length === 0
 
+  return (
+    <>
+      <AppLayout />
+      {showOnboarding && <Onboarding />}
+    </>
+  )
+}
+
+function App() {
+  const theme = useStore(themeStore)
+
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
@@ -65,10 +75,10 @@ function App() {
   return (
     <HashRouter>
       <Routes>
-        {/* Marketing landing page */}
+        {/* Marketing landing page — no sidebar, no onboarding */}
         <Route path="landing" element={<Landing />} />
-        {/* App */}
-        <Route element={<AppLayout />}>
+        {/* App — with sidebar, onboarding, wizard */}
+        <Route element={<AppWithOnboarding />}>
           <Route index element={<Dashboard />} />
           <Route path="company" element={<CompanyProfile />} />
           <Route path="clients" element={<Clients />} />
@@ -103,7 +113,6 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
-      {showOnboarding && <Onboarding />}
       <ToastContainer />
     </HashRouter>
   )
