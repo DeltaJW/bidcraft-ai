@@ -229,8 +229,6 @@ export default function Landing() {
             Price the work.
             <br />
             <span className="gradient-text">Win the bid.</span>
-            <br />
-            Generate the proposal.
           </motion.h1>
 
           <motion.p
