@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import {
-  Settings as SettingsIcon,
   Download,
   Upload,
   Trash2,
@@ -130,9 +129,9 @@ export default function Settings() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-3xl"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <SettingsIcon className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Settings</h1>
+      <div className="mb-6">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">System</p>
+        <h1 className="text-2xl font-bold text-text-primary tracking-tight">Settings</h1>
       </div>
 
       <div className="flex flex-col gap-6">

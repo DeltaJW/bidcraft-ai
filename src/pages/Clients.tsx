@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Briefcase,
   Plus,
   Search,
   Pencil,
@@ -189,12 +188,14 @@ export default function Clients() {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Briefcase className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Clients</h1>
-          {clients.length > 0 && (
-            <span className="text-sm text-text-tertiary">({clients.length})</span>
-          )}
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Setup</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Clients</h1>
+            {clients.length > 0 && (
+              <span className="text-sm text-text-tertiary">({clients.length})</span>
+            )}
+          </div>
         </div>
         <button className="btn btn-primary" onClick={openAddForm}>
           <Plus className="w-4 h-4" />

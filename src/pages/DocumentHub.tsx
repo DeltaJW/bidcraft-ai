@@ -241,10 +241,12 @@ export default function DocumentHub() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
     >
-      <div className="flex items-center gap-3 mb-2">
-        <Upload className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Document Hub</h1>
-        <span className="badge badge-blue">AI-Powered</span>
+      <div className="mb-2">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Document Hub</h1>
+          <span className="badge badge-blue">AI-Powered</span>
+        </div>
       </div>
       <p className="text-text-tertiary text-sm mb-6">
         Drop your contract documents here. AI extracts the data and fills out the rest of the app for you —

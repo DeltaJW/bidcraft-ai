@@ -57,9 +57,9 @@ export default function CompanyProfile() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-3xl"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <Building2 className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Company Profile</h1>
+      <div className="mb-6">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Setup</p>
+        <h1 className="text-2xl font-bold text-text-primary tracking-tight">Company Profile</h1>
       </div>
 
       <div className="flex flex-col gap-6">

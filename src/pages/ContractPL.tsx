@@ -199,9 +199,9 @@ export default function ContractPL() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-6xl"
     >
-      <div className="flex items-center gap-3 mb-2">
-        <Receipt className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Contract P&L Tracker</h1>
+      <div className="mb-2">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Operations</p>
+        <h1 className="text-2xl font-bold text-text-primary tracking-tight">Contract P&L Tracker</h1>
       </div>
       <p className="text-text-tertiary text-sm mb-6">
         Track actual costs against bid estimates. See where you're making money and where you're bleeding.

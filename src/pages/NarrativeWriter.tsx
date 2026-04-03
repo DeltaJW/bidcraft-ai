@@ -402,10 +402,12 @@ export default function NarrativeWriter() {
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <PenTool className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Narrative Writer</h1>
-          <span className="badge badge-blue">AI-Powered</span>
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">AI Tools</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Narrative Writer</h1>
+            <span className="badge badge-blue">AI-Powered</span>
+          </div>
         </div>
         {completedCount > 0 && (
           <button className="btn btn-primary" onClick={handleExportAll}>

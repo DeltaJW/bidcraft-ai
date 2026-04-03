@@ -285,10 +285,12 @@ export default function RecompeteRadar() {
       className="max-w-6xl"
     >
       {/* Header */}
-      <div className="flex items-center gap-3 mb-2">
-        <Radar className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Recompete Radar</h1>
-        <span className="badge badge-blue">USASpending</span>
+      <div className="mb-2">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Recompete Radar</h1>
+          <span className="badge badge-blue">USASpending</span>
+        </div>
       </div>
       <p className="text-text-tertiary text-sm mb-6">
         Find federal contracts expiring in your market. Track recompete opportunities before they hit the street.

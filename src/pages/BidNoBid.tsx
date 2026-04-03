@@ -158,9 +158,9 @@ export default function BidNoBid() {
   if (view === 'list') {
     return (
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl">
-        <div className="flex items-center gap-3 mb-2">
-          <Scale className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Bid / No-Bid Decision</h1>
+        <div className="mb-2">
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Bid / No-Bid Decision</h1>
         </div>
         <p className="text-text-tertiary text-sm mb-6">
           Structured decision matrix to evaluate opportunities before committing bid resources.
@@ -240,9 +240,9 @@ export default function BidNoBid() {
 
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="max-w-6xl">
-      <div className="flex items-center gap-3 mb-2">
-        <Scale className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Bid / No-Bid Scorecard</h1>
+      <div className="mb-2">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+        <h1 className="text-2xl font-bold text-text-primary tracking-tight">Bid / No-Bid Scorecard</h1>
       </div>
       <div className="flex items-center gap-3 mb-6">
         <button className="btn btn-ghost text-sm" onClick={() => setView('list')}>

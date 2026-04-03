@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, Search, Plus, Trash2, ChevronDown, ChevronRight, RotateCcw, Download, Upload, FileSpreadsheet } from 'lucide-react'
+import { Search, Plus, Trash2, ChevronDown, ChevronRight, RotateCcw, Download, Upload, FileSpreadsheet } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { rateLibraryStore, useStore } from '@/data/mockStore'
@@ -195,9 +195,9 @@ export default function RateLibrary() {
       className="max-w-5xl"
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <div className="flex items-center gap-3">
-          <BookOpen className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Rate Library</h1>
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Rate Data</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Rate Library</h1>
         </div>
         <div className="flex flex-wrap gap-2">
           <button className="btn btn-ghost" onClick={handleExportRates}>

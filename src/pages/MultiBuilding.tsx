@@ -210,9 +210,9 @@ export default function MultiBuilding() {
       className="max-w-6xl"
     >
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Building2 className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Multi-Building Proposal</h1>
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Output</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Multi-Building Proposal</h1>
         </div>
         <button className="btn btn-primary" onClick={addBuilding}>
           <Plus className="w-4 h-4" />

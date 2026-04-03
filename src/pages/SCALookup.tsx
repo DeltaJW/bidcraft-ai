@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, FileText, Download, ArrowRight, Loader2, AlertTriangle, Shield } from 'lucide-react'
+import { Search, FileText, Download, ArrowRight, Loader2, AlertTriangle } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { lastSCALookupStore } from '@/data/mockStore'
@@ -106,10 +106,12 @@ export default function SCALookup() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <Shield className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">SCA Wage Determination Lookup</h1>
-        <span className="badge badge-blue">SAM.gov</span>
+      <div className="mb-6">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">SCA Wage Determination Lookup</h1>
+          <span className="badge badge-blue">SAM.gov</span>
+        </div>
       </div>
 
       {/* Search */}

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Target, AlertTriangle, CheckCircle, TrendingDown, DollarSign } from 'lucide-react'
+import { AlertTriangle, CheckCircle, TrendingDown, DollarSign } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { burdenProfilesStore, quotesStore, useStore } from '@/data/mockStore'
 
@@ -76,9 +76,9 @@ export default function ProfitOptimizer() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
     >
-      <div className="flex items-center gap-3 mb-2">
-        <Target className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Profit Optimizer</h1>
+      <div className="mb-2">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Analysis</p>
+        <h1 className="text-2xl font-bold text-text-primary tracking-tight">Profit Optimizer</h1>
       </div>
       <p className="text-text-tertiary text-sm mb-6">
         Enter a target price and see if you can make money. Works backwards from what the government will pay to find your maximum costs.

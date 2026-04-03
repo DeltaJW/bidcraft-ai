@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, Plus, Trash2, Printer, DollarSign, Save, Download, ListChecks, Package } from 'lucide-react'
+import { Plus, Trash2, Printer, DollarSign, Save, Download, ListChecks, Package } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import QuotePreview from '@/components/QuotePreview'
@@ -204,9 +204,9 @@ export default function TaskOrderQuote() {
       className="max-w-5xl"
     >
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <FileText className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Task Order Quote</h1>
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Output</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Task Order Quote</h1>
         </div>
         <div className="flex gap-2">
           <button className="btn btn-ghost" onClick={handleSave} disabled={tasks.length === 0}>

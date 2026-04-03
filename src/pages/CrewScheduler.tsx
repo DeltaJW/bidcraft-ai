@@ -253,9 +253,9 @@ export default function CrewScheduler() {
     <div className="max-w-7xl">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-        <div className="flex items-center gap-3 mb-2">
-          <UserCog className="w-8 h-8 text-accent" />
-          <h1 className="text-3xl font-bold text-text-primary">Crew Scheduling Calculator</h1>
+        <div className="mb-2">
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Planning</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Crew Scheduling Calculator</h1>
         </div>
         <p className="text-text-secondary text-lg">
           Calculate shift staffing requirements from workload hours. Determine headcount, overtime, and labor costs per shift.

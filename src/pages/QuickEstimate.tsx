@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Zap, Building2, ArrowRight } from 'lucide-react'
+import { Building2, ArrowRight } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { PREBUILT_TEMPLATES, type PrebuiltTemplate } from '@/data/buildingTemplates'
@@ -86,9 +86,9 @@ export default function QuickEstimate() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
     >
-      <div className="flex items-center gap-3 mb-2">
-        <Zap className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">Quick Estimate</h1>
+      <div className="mb-2">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Quick Start</p>
+        <h1 className="text-2xl font-bold text-text-primary tracking-tight">Quick Estimate</h1>
       </div>
       <p className="text-text-tertiary text-sm mb-6">
         Pick a pre-built building template, load it into a proposal, and adjust to fit your scope.

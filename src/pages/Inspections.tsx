@@ -222,9 +222,9 @@ export default function Inspections() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <ClipboardCheck className="w-8 h-8 text-accent" />
-            <h1 className="text-3xl font-bold text-text-primary">
+          <div className="mb-2">
+            <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Operations</p>
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">
               QC Inspections
             </h1>
           </div>
@@ -256,9 +256,9 @@ export default function Inspections() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-3 mb-2">
-            <ClipboardCheck className="w-8 h-8 text-accent" />
-            <h1 className="text-3xl font-bold text-text-primary">
+          <div className="mb-2">
+            <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Operations</p>
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">
               QC Inspections
             </h1>
           </div>

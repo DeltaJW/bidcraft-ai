@@ -87,9 +87,9 @@ export default function ScenarioCompare() {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
     >
-      <div className="flex items-center gap-3 mb-2">
-        <GitCompare className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-text-primary">What-If Scenarios</h1>
+      <div className="mb-2">
+        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Analysis</p>
+        <h1 className="text-2xl font-bold text-text-primary tracking-tight">What-If Scenarios</h1>
       </div>
       <p className="text-text-tertiary text-sm mb-6">
         Compare two quotes side by side, or take a quote and adjust variables to see how changes affect the bottom line.

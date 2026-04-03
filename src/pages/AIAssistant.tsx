@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Bot, Send, Trash2, Loader2, KeyRound, Plus, MessageSquare, X, ChevronLeft } from 'lucide-react'
+import { Send, Trash2, Loader2, KeyRound, Plus, MessageSquare, X, ChevronLeft } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
@@ -142,10 +142,12 @@ export default function AIAssistant() {
       className="max-w-5xl h-[calc(100vh-6rem)] flex flex-col"
     >
       <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
-          <Bot className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">AI Assistant</h1>
-          <span className="badge badge-blue">Beta</span>
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">AI Tools</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">AI Assistant</h1>
+            <span className="badge badge-blue">Beta</span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           {hasKey && (
