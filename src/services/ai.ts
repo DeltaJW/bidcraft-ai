@@ -1,11 +1,11 @@
-import { aiSettingsStore } from '@/data/mockStore'
+import { aiSettingsStore, companyStore, burdenProfilesStore, rateLibraryStore, quotesStore } from '@/data/mockStore'
 
 export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
 }
 
-const SYSTEM_PROMPT = `You are BidCraft AI, an expert assistant for facility services contractors who need to price bids, calculate labor, and generate proposals.
+const BASE_PROMPT = `You are BidCraft AI, an expert assistant for facility services contractors who need to price bids, calculate labor, and generate proposals.
 
 You know:
 - Industry-standard cleaning production rates (square feet per hour by task, equipment, and method)
@@ -28,6 +28,54 @@ When a user asks about burden rates:
 
 Keep responses concise and actionable. Use tables when showing rates or breakdowns. Format currency and numbers clearly. You are helping contractors WIN bids, not just calculate them.`
 
+function buildSystemPrompt(): string {
+  const parts = [BASE_PROMPT]
+
+  // Inject user's company context
+  const company = companyStore.get()
+  if (company.name) {
+    parts.push(`\n## User's Company
+- Name: ${company.name}
+- Set-aside: ${company.setAside || 'None specified'}
+- CAGE: ${company.cageCode || 'Not set'}
+- Location: ${company.address || 'Not set'}`)
+  }
+
+  // Inject burden profiles
+  const profiles = burdenProfilesStore.get()
+  if (profiles.length > 0) {
+    const profileLines = profiles.map(p =>
+      `- "${p.name}": $${p.baseWage.toFixed(2)} base → $${p.computedRate?.toFixed(2)}/hr burdened (G&A: ${p.gaPct}%, Fee: ${p.feePct}%)`
+    ).join('\n')
+    parts.push(`\n## User's Burden Profiles\n${profileLines}\nUse these when the user asks to price work — reference their actual profiles by name.`)
+  }
+
+  // Inject rate library summary
+  const library = rateLibraryStore.get()
+  const customRates = library.rates.filter(r => r.isCustom)
+  parts.push(`\n## User's Rate Library
+- Library: "${library.name}" with ${library.rates.length} rates
+- ${customRates.length} custom rates`)
+  if (customRates.length > 0 && customRates.length <= 10) {
+    const customLines = customRates.map(r =>
+      `- ${r.task} (${r.equipment}): ${r.sqftPerHour} ${r.sqftPerHour < 100 ? 'units' : 'sf'}/hr`
+    ).join('\n')
+    parts.push(`Custom rates:\n${customLines}`)
+  }
+
+  // Inject recent quotes summary
+  const quotes = quotesStore.get()
+  if (quotes.length > 0) {
+    const recent = [...quotes].reverse().slice(0, 5)
+    const quoteLines = recent.map(q =>
+      `- "${q.title}" (${q.quoteType}, ${q.status}): $${q.grandTotal.toLocaleString()} — ${q.totalHours.toFixed(0)} hrs`
+    ).join('\n')
+    parts.push(`\n## Recent Quotes\n${quoteLines}\nReference these if the user asks about their recent work or pricing history.`)
+  }
+
+  return parts.join('\n')
+}
+
 export async function sendMessage(
   messages: ChatMessage[],
   onChunk?: (text: string) => void
@@ -36,6 +84,8 @@ export async function sendMessage(
   if (!settings.apiKey) {
     throw new Error('No API key configured. Go to Settings to add your Claude API key.')
   }
+
+  const systemPrompt = buildSystemPrompt()
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -48,7 +98,7 @@ export async function sendMessage(
     body: JSON.stringify({
       model: settings.model,
       max_tokens: 2048,
-      system: SYSTEM_PROMPT,
+      system: systemPrompt,
       stream: !!onChunk,
       messages: messages.map((m) => ({
         role: m.role,

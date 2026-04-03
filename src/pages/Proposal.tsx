@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { FileText, Plus, Trash2, Printer, Save, DollarSign } from 'lucide-react'
+import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import ProposalPreview from '@/components/ProposalPreview'
@@ -176,12 +176,25 @@ export default function Proposal() {
     setTimeout(() => window.print(), 300)
   }
 
+  async function handlePDF() {
+    setShowPreview(true)
+    await new Promise(r => setTimeout(r, 300))
+    if (printRef.current) {
+      const { downloadPDF } = await import('@/utils/pdf')
+      await downloadPDF(printRef.current, `${title || 'Proposal'}.pdf`)
+    }
+  }
+
   if (showPreview) {
     return (
       <div>
-        <div className="no-print mb-4">
+        <div className="no-print mb-4 flex gap-2">
           <button className="btn btn-ghost" onClick={() => setShowPreview(false)}>
             Back to Editor
+          </button>
+          <button className="btn btn-primary" onClick={handlePDF}>
+            <Download className="w-4 h-4" />
+            Download PDF
           </button>
         </div>
         <ProposalPreview
