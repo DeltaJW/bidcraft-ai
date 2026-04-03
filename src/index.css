@@ -36,10 +36,10 @@
   --color-text-tertiary: #8B949E;   /* WCAG 4.5:1+ on surface-1 (#161B22). Warm gray */
   --color-text-disabled: #7D8590;   /* WCAG 4.5:1+ on surface-1 (#161B22) */
 
-  /* ---- ACCENT ---- */
-  --color-accent: #5B8DEF;
-  --color-accent-hover: #7BA3F5;
-  --color-accent-muted: #5B8DEF1A;  /* reduced opacity: 10% instead of 15% for better contrast */
+  /* ---- ACCENT (warm amber — authority, precision, money) ---- */
+  --color-accent: #D97706;
+  --color-accent-hover: #F59E0B;
+  --color-accent-muted: #D977061A;
 
   /* ---- WARM ACCENT (structural labels, non-interactive) ---- */
   --color-label: #C09B7A;           /* desaturated copper — WCAG 5.4:1 on surface-0 */
@@ -108,9 +108,9 @@
   --color-text-tertiary: #637389;   /* darkened for contrast on white backgrounds */
   --color-text-disabled: #8E9BB0;   /* darkened for WCAG 4.5:1 on light surfaces */
 
-  --color-accent: #2B6CB0;
-  --color-accent-hover: #2C5282;
-  --color-accent-muted: #2B6CB01A;
+  --color-accent: #B45309;
+  --color-accent-hover: #92400E;
+  --color-accent-muted: #B453091A;
 
   --color-label: #8B6D4F;           /* warm copper for light theme */
   --color-label-muted: #8B6D4F15;
@@ -213,7 +213,7 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(ellipse 70% 50% at 65% 20%, rgba(23, 53, 94, 0.08), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 65% 20%, rgba(217, 119, 6, 0.03), transparent 60%),
     var(--color-surface-0);
   color: var(--color-text-secondary);
   min-height: 100vh;
@@ -233,8 +233,8 @@ body {
 /* ===== SCROLLBAR ===== */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(91,141,239,0.2); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(91,141,239,0.4); }
+::-webkit-scrollbar-thumb { background: rgba(217,119,6,0.2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(217,119,6,0.4); }
 
 /* ===== FOCUS ===== */
 *:focus-visible {
@@ -297,15 +297,15 @@ body {
 /* ===== HERO GRADIENT MESH ===== */
 .hero-gradient {
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(23, 53, 94, 0.7), transparent),
-    radial-gradient(ellipse 50% 50% at 90% 20%, rgba(91, 141, 239, 0.15), transparent),
-    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(99, 59, 130, 0.12), transparent),
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(23, 53, 94, 0.5), transparent),
+    radial-gradient(ellipse 50% 50% at 90% 20%, rgba(217, 119, 6, 0.08), transparent),
+    radial-gradient(ellipse 40% 40% at 10% 80%, rgba(180, 83, 9, 0.06), transparent),
     radial-gradient(ellipse 60% 30% at 70% 90%, rgba(34, 197, 94, 0.04), transparent);
 }
 
 /* Radial glow behind hero text */
 .hero-glow {
-  background: radial-gradient(ellipse 700px 500px at 30% 40%, rgba(91, 141, 239, 0.15), transparent 70%);
+  background: radial-gradient(ellipse 700px 500px at 30% 40%, rgba(217, 119, 6, 0.1), transparent 70%);
 }
 
 /* Slightly lifted section — visible contrast from page bg */
@@ -323,7 +323,7 @@ body {
 
 /* ===== ANIMATED GRADIENT TEXT ===== */
 .gradient-text {
-  background: linear-gradient(135deg, #5B8DEF 0%, #7BA3F5 25%, #93B9F6 50%, #5B8DEF 75%, #3B6FD9 100%);
+  background: linear-gradient(135deg, #D97706 0%, #F59E0B 25%, #FBBF24 50%, #D97706 75%, #B45309 100%);
   background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -352,7 +352,7 @@ body {
 
 /* ===== GLOW RING (for highlighted elements) ===== */
 .glow-ring {
-  box-shadow: 0 0 0 1px var(--color-accent), 0 0 20px rgba(91, 141, 239, 0.15), 0 0 40px rgba(91, 141, 239, 0.05);
+  box-shadow: 0 0 0 1px var(--color-accent), 0 0 20px rgba(217, 119, 6, 0.15), 0 0 40px rgba(217, 119, 6, 0.05);
 }
 
 /* ===== STAT CARD (command center style) ===== */
