@@ -23,6 +23,7 @@ import {
   templatesStore,
   aiSettingsStore,
   themeStore,
+  userModeStore,
   useStore,
 } from '@/data/mockStore'
 import { DEFAULT_RATES } from '@/data/defaultRates'
@@ -36,6 +37,7 @@ export default function Settings() {
 
   const aiSettings = useStore(aiSettingsStore)
   const theme = useStore(themeStore)
+  const userMode = useStore(userModeStore)
 
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [showApiKey, setShowApiKey] = useState(false)
@@ -172,6 +174,36 @@ export default function Settings() {
                 Light
               </button>
             </div>
+          </div>
+          <div className="mt-4">
+            <label className="label">Experience Mode</label>
+            <div className="flex gap-2">
+              <button
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer border ${
+                  userMode === 'guided'
+                    ? 'bg-accent-muted border-accent/30 text-accent'
+                    : 'bg-transparent border-border-default text-text-secondary hover:bg-surface-3'
+                }`}
+                onClick={() => userModeStore.set('guided')}
+              >
+                Guided
+              </button>
+              <button
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all cursor-pointer border ${
+                  userMode === 'expert'
+                    ? 'bg-accent-muted border-accent/30 text-accent'
+                    : 'bg-transparent border-border-default text-text-secondary hover:bg-surface-3'
+                }`}
+                onClick={() => userModeStore.set('expert')}
+              >
+                Expert
+              </button>
+            </div>
+            <p className="helper-text mt-1">
+              {userMode === 'guided'
+                ? 'Shows bid progress tracker and inline help. Best for new users.'
+                : 'Hides the wizard rail. All tools accessible. Best for experienced estimators.'}
+            </p>
           </div>
         </GlassCard>
 

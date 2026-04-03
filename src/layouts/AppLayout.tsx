@@ -1,21 +1,31 @@
 import { useState, useMemo } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import Sidebar from '@/components/Sidebar'
+import BidWizard from '@/components/BidWizard'
+import CommandPalette from '@/components/CommandPalette'
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
+import { userModeStore, useStore } from '@/data/mockStore'
+
+// Pages where the bid wizard is relevant
+const WIZARD_PAGES = ['/', '/company', '/rates', '/burden', '/workload', '/quote', '/proposal', '/multi']
 
 export default function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const navigate = useNavigate()
+  const [showPalette, setShowPalette] = useState(false)
+  const location = useLocation()
+  const userMode = useStore(userModeStore)
+
+  const showWizard = userMode === 'guided' && WIZARD_PAGES.includes(location.pathname)
 
   const shortcuts = useMemo(
     () => ({
-      'ctrl+k': () => navigate('/ai'),
+      'ctrl+k': () => setShowPalette((prev) => !prev),
       'ctrl+s': () => {
         /* no-op — prevent browser save dialog */
       },
     }),
-    [navigate]
+    []
   )
   useKeyboardShortcuts(shortcuts)
 
@@ -47,8 +57,11 @@ export default function AppLayout() {
       </div>
 
       <main className="flex-1 lg:ml-64 p-4 lg:p-8 pt-16 lg:pt-8">
+        {showWizard && <BidWizard />}
         <Outlet />
       </main>
+
+      <CommandPalette open={showPalette} onClose={() => setShowPalette(false)} />
     </div>
   )
 }

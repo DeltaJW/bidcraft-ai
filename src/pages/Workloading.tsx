@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ClipboardList, Plus, Trash2, MapPin, Send, FolderOpen, Download } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import HelpTip from '@/components/HelpTip'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import { toast } from '@/components/Toast'
 import { rateLibraryStore, burdenProfilesStore, workloadDraftStore, templatesStore, useStore } from '@/data/mockStore'
@@ -430,9 +431,12 @@ export default function Workloading() {
               <SummaryRow label="Weekly Hours" value={`${totalWeeklyHours.toFixed(1)}`} />
               <SummaryRow label="Daily Hours" value={`${totalDailyHours.toFixed(1)}`} />
               <div className="border-t border-border-subtle my-1" />
-              <SummaryRow label="FTEs Needed" value={fteCount.toFixed(2)} bold />
+              <div className="flex justify-between items-center">
+                <span className="text-text-primary font-medium">FTEs Needed <HelpTip text="Full-Time Equivalent = Annual Hours / (Productive Hours/Day x Work Days/Year). Example: 3,380 hrs / (6.5 x 260) = 2.0 FTEs" /></span>
+                <span className="font-mono text-text-primary font-medium">{fteCount.toFixed(2)}</span>
+              </div>
               <p className="text-xs text-text-tertiary">
-                Based on {PRODUCTIVE_HOURS_PER_DAY} productive hrs/day, {WORK_DAYS_PER_YEAR} work days/yr
+                Based on {PRODUCTIVE_HOURS_PER_DAY} productive hrs/day <HelpTip text="Industry standard is 6.5 productive hours per 8-hour shift. Accounts for travel between zones, breaks, restocking supplies, and supervisor check-ins." />, {WORK_DAYS_PER_YEAR} work days/yr
               </p>
 
               {annualLaborCost !== null && (

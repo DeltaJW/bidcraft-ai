@@ -490,6 +490,113 @@ textarea {
   border-bottom: 2px solid var(--color-border-default);
 }
 
+/* ===== HELP TOOLTIPS ===== */
+.help-tip-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.help-tip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-disabled);
+  cursor: help;
+  transition: color 0.15s ease;
+  line-height: 1;
+}
+
+.help-tip-icon:hover,
+.help-tip-icon:focus-visible {
+  color: var(--color-accent);
+}
+
+.help-tip-bubble {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  max-width: 280px;
+  min-width: 200px;
+  padding: 10px 12px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border-default);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  white-space: normal;
+}
+
+.help-tip-bubble.help-tip-above {
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%) translateY(4px);
+}
+
+.help-tip-bubble.help-tip-below {
+  top: calc(100% + 8px);
+  transform: translateX(-50%) translateY(-4px);
+}
+
+.help-tip-bubble.help-tip-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.help-tip-bubble.help-tip-above.help-tip-visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.help-tip-bubble.help-tip-below.help-tip-visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.help-tip-arrow {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: var(--color-surface-3);
+  border: 1px solid var(--color-border-default);
+}
+
+.help-tip-above .help-tip-arrow {
+  bottom: -5px;
+  border-top: none;
+  border-left: none;
+}
+
+.help-tip-below .help-tip-arrow {
+  top: -5px;
+  border-bottom: none;
+  border-right: none;
+}
+
+[data-theme="light"] .help-tip-bubble {
+  background: #FFFFFF;
+  border-color: #CDD3DC;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .help-tip-arrow {
+  background: #FFFFFF;
+  border-color: #CDD3DC;
+}
+
+@media print {
+  .help-tip-wrapper {
+    display: none !important;
+  }
+}
+
 /* ===== ANIMATIONS ===== */
 @keyframes skeleton-pulse {
   0%, 100% { opacity: 0.4; }

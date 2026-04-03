@@ -123,6 +123,9 @@ export const onboardingDismissedStore = createStore<boolean>('onboardingDismisse
 // ---- Theme ----
 export const themeStore = createStore<'dark' | 'light'>('theme', 'dark')
 
+// ---- User Mode ----
+export const userModeStore = createStore<'guided' | 'expert'>('userMode', 'guided')
+
 // ---- Bid Decisions ----
 import type { BidDecision } from '@/pages/BidNoBid'
 export const bidDecisionsStore = createStore<BidDecision[]>('bidDecisions', [])

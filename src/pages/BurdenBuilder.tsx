@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil, Download, Search } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import HelpTip from '@/components/HelpTip'
 import ConfirmDialog from '@/components/ConfirmDialog'
 import { toast } from '@/components/Toast'
 import { burdenProfilesStore, useStore } from '@/data/mockStore'
@@ -222,7 +223,7 @@ export default function BurdenBuilder() {
                 {step === 0 && (
                   <div className="flex flex-col gap-4">
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Base Hourly Wage ($)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Base Hourly Wage ($) <HelpTip text="The starting hourly rate from your SCA Wage Determination or your company's prevailing wage. For federal contracts, this must meet the SCA minimum for the labor category." /></label>
                       <input
                         type="number"
                         step="0.01"
@@ -256,7 +257,7 @@ export default function BurdenBuilder() {
                 {step === 1 && (
                   <div className="flex flex-col gap-4">
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Health & Welfare Rate ($/hr)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Health & Welfare Rate ($/hr) <HelpTip text="The fringe benefit rate from the Wage Determination. Typically $4-5/hr for SCA contracts. Can be paid as cash-in-lieu or used toward employer health plan costs." /></label>
                       <input
                         type="number"
                         step="0.01"
@@ -274,7 +275,7 @@ export default function BurdenBuilder() {
                 {step === 2 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">FICA (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">FICA (%) <HelpTip text="Federal Insurance Contributions Act — Social Security (6.2%) + Medicare (1.45%) = 7.65%. This is set by federal law and cannot be changed." /></label>
                       <input
                         type="number"
                         step="0.01"
@@ -284,7 +285,7 @@ export default function BurdenBuilder() {
                       <p className="text-xs text-text-tertiary mt-1">7.65% is federal law (Social Security 6.2% + Medicare 1.45%)</p>
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">State Unemployment — SUI (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">State Unemployment — SUI (%) <HelpTip text="State Unemployment Insurance. Rates vary by state and employer history. New employers typically pay the standard rate. Select your state for the default." /></label>
                       <div className="flex gap-2">
                         <select
                           className="!w-24"
@@ -305,7 +306,7 @@ export default function BurdenBuilder() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Workers Comp (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Workers Comp (%) <HelpTip text="Workers Compensation insurance rate. Varies by state and NCCI classification code. Janitorial (code 9014) typically ranges 3-7%." /></label>
                       <input
                         type="number"
                         step="0.01"
@@ -316,7 +317,7 @@ export default function BurdenBuilder() {
                       <p className="text-xs text-text-tertiary mt-1">Varies by state and classification code</p>
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">FUTA (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">FUTA (%) <HelpTip text="Federal Unemployment Tax Act. Standard rate is 6.0% but with state credit the effective rate is usually 0.6% on the first $7,000 per employee." /></label>
                       <input
                         type="number"
                         step="0.01"
@@ -330,6 +331,9 @@ export default function BurdenBuilder() {
 
                 {step === 3 && (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="sm:col-span-3">
+                      <p className="text-xs text-text-tertiary">Leave / PTO <HelpTip text="Paid time off reduces productive days. 260 work days/year minus holidays, vacation, and sick days = actual productive days. The cost of paying for non-productive days is spread across productive hours." /></p>
+                    </div>
                     <div>
                       <label className="block text-xs text-text-tertiary mb-1">Vacation Days / Year</label>
                       <input
@@ -366,7 +370,7 @@ export default function BurdenBuilder() {
 
                 {step === 4 && (
                   <div>
-                    <label className="block text-xs text-text-tertiary mb-1">G&A / Overhead Rate (%)</label>
+                    <label className="block text-xs text-text-tertiary mb-1">G&A / Overhead Rate (%) <HelpTip text="General & Administrative costs as a percentage of direct costs. Includes rent, utilities, management salaries, insurance, accounting, legal, etc. Typical range for janitorial contractors: 8-18%." /></label>
                     <input
                       type="number"
                       step="0.1"
@@ -382,7 +386,7 @@ export default function BurdenBuilder() {
 
                 {step === 5 && (
                   <div>
-                    <label className="block text-xs text-text-tertiary mb-1">Profit / Fee (%)</label>
+                    <label className="block text-xs text-text-tertiary mb-1">Profit / Fee (%) <HelpTip text="Your desired profit margin. Government contracts typically allow 5-12%. Commercial contracts commonly target 10-20%. Must cover business risk and return on investment." /></label>
                     <input
                       type="number"
                       step="0.1"
