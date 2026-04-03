@@ -4,7 +4,6 @@ import {
   Calculator,
   FileText,
   ClipboardList,
-  Zap,
   Shield,
   Clock,
   Check,
@@ -213,14 +212,6 @@ export default function Landing() {
           variants={heroStagger}
           className="relative max-w-2xl mx-auto"
         >
-          {/* Badge */}
-          <motion.div variants={heroItem} className="mb-8">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium text-text-tertiary border border-border-subtle bg-surface-1/60 tracking-wide uppercase">
-              <Zap className="w-3 h-3 text-accent" />
-              Facility Services Bid Pricing Platform
-            </span>
-          </motion.div>
-
           {/* Headline */}
           <motion.h1
             variants={heroItem}
@@ -232,11 +223,12 @@ export default function Landing() {
 
           <motion.p
             variants={heroItem}
-            className="text-lg text-text-secondary max-w-xl mb-10 leading-relaxed"
+            className="text-base text-text-secondary mb-8 leading-relaxed"
           >
-            Production rates, burdened labor costs, and government-ready
-            proposals — calculated in minutes, not days. For janitorial,
-            security, landscaping, and maintenance contractors who win.
+            You're spending days on proposals your competitors build in minutes.
+            BidCraft gives you production rates, burdened labor costs, and
+            government-ready proposals — so you stop losing bids to worse
+            contractors with better paperwork.
           </motion.p>
 
           <motion.div variants={heroItem} className="flex items-center gap-3">
@@ -245,7 +237,7 @@ export default function Landing() {
               <ArrowRight className="w-4 h-4" />
             </Link>
             <a href="#features" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md border border-border-default text-text-secondary text-sm font-medium no-underline hover:text-text-primary hover:border-border-strong hover:bg-surface-1 transition-all">
-              See Features
+              See How
               <ChevronRight className="w-3.5 h-3.5" />
             </a>
           </motion.div>
@@ -478,11 +470,11 @@ export default function Landing() {
           className="relative max-w-2xl mx-auto text-center"
         >
           <motion.h2 variants={cardReveal} className="text-3xl font-bold tracking-tight mb-4">
-            Your competitors are using spreadsheets.
+            Every bid you lose costs you money.
           </motion.h2>
           <motion.p variants={cardReveal} className="text-text-secondary text-sm mb-8 leading-relaxed">
-            You're going to walk in with AI-powered pricing, professional proposals,
-            and burden rates calculated to the penny. That's the difference.
+            How many contracts went to a worse contractor with a better proposal?
+            Stop leaving revenue on the table. Start pricing like you mean it.
           </motion.p>
           <motion.div variants={cardReveal}>
             <Link to="/" className="btn btn-cta !text-sm !px-8 !py-3 no-underline">
