@@ -30,6 +30,8 @@ import ScenarioCompare from '@/pages/ScenarioCompare'
 import BidNoBid from '@/pages/BidNoBid'
 import RecompeteRadar from '@/pages/RecompeteRadar'
 import NarrativeWriter from '@/pages/NarrativeWriter'
+import ContractPL from '@/pages/ContractPL'
+import RegionalCost from '@/pages/RegionalCost'
 import ToastContainer from '@/components/Toast'
 import Onboarding from '@/components/Onboarding'
 import {
@@ -92,6 +94,8 @@ function App() {
           <Route path="bid-decision" element={<BidNoBid />} />
           <Route path="recompete" element={<RecompeteRadar />} />
           <Route path="narrative" element={<NarrativeWriter />} />
+          <Route path="pl-tracker" element={<ContractPL />} />
+          <Route path="regional" element={<RegionalCost />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

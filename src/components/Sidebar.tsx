@@ -26,6 +26,8 @@ import {
   Scale,
   Eye,
   Radar,
+  MapPin,
+  Receipt,
   UserMinus,
   ClipboardCheck,
   PenTool,
@@ -95,6 +97,8 @@ const NAV_SECTIONS: NavSection[] = [
       { to: '/turnover', icon: UserMinus, label: 'Turnover Calculator' },
       { to: '/inspections', icon: ClipboardCheck, label: 'QC Inspections' },
       { to: '/calendar', icon: Calendar, label: 'Contract Calendar' },
+      { to: '/pl-tracker', icon: Receipt, label: 'P&L Tracker' },
+      { to: '/regional', icon: MapPin, label: 'Regional Cost' },
     ],
   },
 ]
