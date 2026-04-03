@@ -11,6 +11,7 @@ import Proposal from '@/pages/Proposal'
 import Landing from '@/pages/Landing'
 import SavedQuotes from '@/pages/SavedQuotes'
 import Analytics from '@/pages/Analytics'
+import Inspections from '@/pages/Inspections'
 import ContractCalendar from '@/pages/ContractCalendar'
 import PriceEscalation from '@/pages/PriceEscalation'
 import Clients from '@/pages/Clients'
@@ -72,6 +73,7 @@ function App() {
           <Route path="proposal" element={<Proposal />} />
           <Route path="saved" element={<SavedQuotes />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="inspections" element={<Inspections />} />
           <Route path="calendar" element={<ContractCalendar />} />
           <Route path="escalation" element={<PriceEscalation />} />
           <Route path="ai" element={<AIAssistant />} />
