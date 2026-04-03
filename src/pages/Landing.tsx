@@ -211,7 +211,7 @@ export default function Landing() {
           initial="hidden"
           animate="show"
           variants={heroStagger}
-          className="relative max-w-4xl mx-auto text-center"
+          className="relative max-w-2xl mx-auto"
         >
           {/* Badge */}
           <motion.div variants={heroItem} className="mb-8">
@@ -226,9 +226,8 @@ export default function Landing() {
             variants={heroItem}
             className="text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6"
           >
-            Price the work.
-            <br />
-            <span className="gradient-text">Win the bid.</span>
+            <span className="block">Price the work.</span>
+            <span className="block gradient-text">Win the bid.</span>
           </motion.h1>
 
           <motion.p
@@ -240,7 +239,7 @@ export default function Landing() {
             security, landscaping, and maintenance contractors who win.
           </motion.p>
 
-          <motion.div variants={heroItem} className="flex items-center justify-center gap-3">
+          <motion.div variants={heroItem} className="flex items-center gap-3">
             <Link to="/" className="btn btn-cta !text-sm !px-6 !py-2.5 no-underline">
               Start Free
               <ArrowRight className="w-4 h-4" />
@@ -254,7 +253,7 @@ export default function Landing() {
           {/* Trust bar — horizontal, minimal */}
           <motion.div
             variants={heroItem}
-            className="mt-16 pt-8 border-t border-border-subtle flex justify-center gap-8 items-center"
+            className="mt-16 pt-8 border-t border-border-subtle flex flex-wrap gap-6 items-center"
           >
             {[
               { icon: Building2, text: 'Built for federal contractors' },
