@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download, FileDown, ClipboardList } from 'lucide-react'
+import { FileText, Plus, Trash2, Printer, Save, DollarSign, Download, FileDown, ClipboardList, Package } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import ProposalPreview from '@/components/ProposalPreview'
+import SupplyCatalogModal from '@/components/SupplyCatalogModal'
 import {
   companyStore,
   burdenProfilesStore,
@@ -14,6 +15,7 @@ import {
   useStore,
 } from '@/data/mockStore'
 import type { MaterialItem, Quote } from '@/types'
+import type { SupplyItem } from '@/data/defaultSupplies'
 
 interface ProposalZone {
   id: string
@@ -55,6 +57,7 @@ export default function Proposal() {
     'Annual pricing subject to SCA wage determination adjustments',
   ])
   const [showPreview, setShowPreview] = useState(false)
+  const [showCatalog, setShowCatalog] = useState(false)
   const [saved, setSaved] = useState(false)
 
   // Load from workload draft if available
@@ -117,6 +120,20 @@ export default function Proposal() {
   }
   function removeMaterial(id: string) {
     setMaterials((prev) => prev.filter((m) => m.id !== id))
+  }
+
+  function addMaterialFromCatalog(item: SupplyItem) {
+    setMaterials((prev) => [
+      ...prev,
+      {
+        id: `mat-${Date.now()}`,
+        name: item.name,
+        unitCost: item.unitCost,
+        quantity: 12,
+        unit: item.unit,
+      },
+    ])
+    toast(`Added "${item.name}" to materials`)
   }
 
   // Assumptions CRUD
@@ -453,6 +470,8 @@ export default function Proposal() {
                           <option>case</option>
                           <option>box</option>
                           <option>roll</option>
+                          <option>pail</option>
+                          <option>bag</option>
                         </select>
                       </td>
                       <td className="px-2 py-2 text-right font-mono text-xs text-accent">
@@ -471,9 +490,14 @@ export default function Proposal() {
                 </tbody>
               </table>
             )}
-            <button className="btn btn-ghost !text-xs" onClick={addMaterial}>
-              <Plus className="w-3 h-3" /> Add Material
-            </button>
+            <div className="flex gap-2">
+              <button className="btn btn-ghost !text-xs" onClick={addMaterial}>
+                <Plus className="w-3 h-3" /> Add Material
+              </button>
+              <button className="btn btn-ghost !text-xs" onClick={() => setShowCatalog(true)}>
+                <Package className="w-3 h-3" /> Add from Catalog
+              </button>
+            </div>
           </GlassCard>
 
           {/* Assumptions */}
@@ -567,6 +591,12 @@ export default function Proposal() {
           </GlassCard>
         </div>
       </div>
+
+      <SupplyCatalogModal
+        open={showCatalog}
+        onClose={() => setShowCatalog(false)}
+        onSelect={addMaterialFromCatalog}
+      />
     </motion.div>
   )
 }

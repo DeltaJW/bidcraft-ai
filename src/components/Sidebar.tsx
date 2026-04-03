@@ -18,6 +18,9 @@ import {
   FileSearch,
   Users,
   Zap,
+  Target,
+  GitCompare,
+  TrendingUp,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -35,7 +38,10 @@ const NAV_ITEMS = [
   { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
   { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
   { to: '/analytics', icon: BarChart3, label: 'Analytics' },
+  { to: '/optimizer', icon: Target, label: 'Profit Optimizer' },
+  { to: '/scenarios', icon: GitCompare, label: 'What-If Scenarios' },
   { to: '/calendar', icon: Calendar, label: 'Contract Calendar' },
+  { to: '/escalation', icon: TrendingUp, label: 'Price Escalation' },
   { to: '/ai', icon: Bot, label: 'AI Assistant' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ]

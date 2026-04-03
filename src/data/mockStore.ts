@@ -1,4 +1,6 @@
 import type { Company, BurdenProfile, Quote, RateLibrary, BuildingTemplate, LaborCategory, Client, Contract } from '@/types'
+import type { SupplyItem } from './defaultSupplies'
+import { DEFAULT_SUPPLIES } from './defaultSupplies'
 import { DEFAULT_RATES } from './defaultRates'
 import { useSyncExternalStore } from 'react'
 
@@ -85,6 +87,9 @@ export const clientsStore = createStore<Client[]>('clients', [])
 
 // ---- Contracts ----
 export const contractsStore = createStore<Contract[]>('contracts', [])
+
+// ---- Supplies Catalog ----
+export const suppliesStore = createStore<SupplyItem[]>('supplies', [...DEFAULT_SUPPLIES])
 
 // ---- Building Templates ----
 export const templatesStore = createStore<BuildingTemplate[]>('buildingTemplates', [])

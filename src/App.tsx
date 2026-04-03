@@ -12,6 +12,7 @@ import Landing from '@/pages/Landing'
 import SavedQuotes from '@/pages/SavedQuotes'
 import Analytics from '@/pages/Analytics'
 import ContractCalendar from '@/pages/ContractCalendar'
+import PriceEscalation from '@/pages/PriceEscalation'
 import Clients from '@/pages/Clients'
 import Settings from '@/pages/Settings'
 import AIAssistant from '@/pages/AIAssistant'
@@ -19,6 +20,8 @@ import SCALookup from '@/pages/SCALookup'
 import RFPParser from '@/pages/RFPParser'
 import LaborCategories from '@/pages/LaborCategories'
 import QuickEstimate from '@/pages/QuickEstimate'
+import ProfitOptimizer from '@/pages/ProfitOptimizer'
+import ScenarioCompare from '@/pages/ScenarioCompare'
 import ToastContainer from '@/components/Toast'
 import Onboarding from '@/components/Onboarding'
 import {
@@ -65,11 +68,14 @@ function App() {
           <Route path="saved" element={<SavedQuotes />} />
           <Route path="analytics" element={<Analytics />} />
           <Route path="calendar" element={<ContractCalendar />} />
+          <Route path="escalation" element={<PriceEscalation />} />
           <Route path="ai" element={<AIAssistant />} />
           <Route path="sca" element={<SCALookup />} />
           <Route path="labor" element={<LaborCategories />} />
           <Route path="rfp" element={<RFPParser />} />
           <Route path="estimate" element={<QuickEstimate />} />
+          <Route path="optimizer" element={<ProfitOptimizer />} />
+          <Route path="scenarios" element={<ScenarioCompare />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
