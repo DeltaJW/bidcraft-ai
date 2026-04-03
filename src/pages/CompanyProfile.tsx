@@ -27,6 +27,10 @@ export default function CompanyProfile() {
   }
 
   function handleSave() {
+    if (!form.name.trim()) {
+      toast('Company name is required', 'error')
+      return
+    }
     companyStore.set({ ...form })
     toast('Company profile saved')
   }
@@ -54,7 +58,7 @@ export default function CompanyProfile() {
     >
       <div className="flex items-center gap-3 mb-6">
         <Building2 className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-white">Company Profile</h1>
+        <h1 className="text-2xl font-bold text-text-primary">Company Profile</h1>
       </div>
 
       <div className="flex flex-col gap-6">
@@ -63,11 +67,11 @@ export default function CompanyProfile() {
           <div className="grid grid-cols-2 gap-4">
             {/* Logo upload */}
             <div className="col-span-2 flex items-center gap-4 mb-2">
-              <div className="w-20 h-20 rounded-lg bg-navy-800/60 border border-navy-700/30 flex items-center justify-center overflow-hidden">
+              <div className="w-20 h-20 rounded-lg bg-surface-2 border border-border-subtle flex items-center justify-center overflow-hidden">
                 {form.logoUrl ? (
                   <img src={form.logoUrl} alt="Logo" className="w-full h-full object-contain" />
                 ) : (
-                  <Building2 className="w-8 h-8 text-navy-600" />
+                  <Building2 className="w-8 h-8 text-text-disabled" />
                 )}
               </div>
               <div>
@@ -81,12 +85,12 @@ export default function CompanyProfile() {
                     className="hidden"
                   />
                 </label>
-                <p className="text-xs text-navy-500 mt-1">PNG or SVG, max 2MB</p>
+                <p className="text-xs text-text-tertiary mt-1">PNG or SVG, max 2MB</p>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs text-navy-400 mb-1">Company Name</label>
+              <label className="block text-xs text-text-tertiary mb-1">Company Name</label>
               <input
                 value={form.name}
                 onChange={(e) => update('name', e.target.value)}
@@ -94,7 +98,7 @@ export default function CompanyProfile() {
               />
             </div>
             <div>
-              <label className="block text-xs text-navy-400 mb-1">Set-Aside Status</label>
+              <label className="block text-xs text-text-tertiary mb-1">Set-Aside Status</label>
               <select value={form.setAside} onChange={(e) => update('setAside', e.target.value)}>
                 {SET_ASIDE_OPTIONS.map((opt) => (
                   <option key={opt} value={opt}>
@@ -104,7 +108,7 @@ export default function CompanyProfile() {
               </select>
             </div>
             <div className="col-span-2">
-              <label className="block text-xs text-navy-400 mb-1">Address</label>
+              <label className="block text-xs text-text-tertiary mb-1">Address</label>
               <input
                 value={form.address}
                 onChange={(e) => update('address', e.target.value)}
@@ -112,7 +116,7 @@ export default function CompanyProfile() {
               />
             </div>
             <div>
-              <label className="block text-xs text-navy-400 mb-1">CAGE Code</label>
+              <label className="block text-xs text-text-tertiary mb-1">CAGE Code</label>
               <input
                 value={form.cageCode}
                 onChange={(e) => update('cageCode', e.target.value)}
@@ -120,7 +124,7 @@ export default function CompanyProfile() {
               />
             </div>
             <div>
-              <label className="block text-xs text-navy-400 mb-1">UEI (SAM.gov)</label>
+              <label className="block text-xs text-text-tertiary mb-1">UEI (SAM.gov)</label>
               <input
                 value={form.uei}
                 onChange={(e) => update('uei', e.target.value)}
@@ -134,7 +138,7 @@ export default function CompanyProfile() {
         <GlassCard title="Primary Contact" subtitle="Shown on quotes as the point of contact">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-navy-400 mb-1">Full Name</label>
+              <label className="block text-xs text-text-tertiary mb-1">Full Name</label>
               <input
                 value={form.contactName}
                 onChange={(e) => update('contactName', e.target.value)}
@@ -142,7 +146,7 @@ export default function CompanyProfile() {
               />
             </div>
             <div>
-              <label className="block text-xs text-navy-400 mb-1">Title</label>
+              <label className="block text-xs text-text-tertiary mb-1">Title</label>
               <input
                 value={form.contactTitle}
                 onChange={(e) => update('contactTitle', e.target.value)}
@@ -150,7 +154,7 @@ export default function CompanyProfile() {
               />
             </div>
             <div>
-              <label className="block text-xs text-navy-400 mb-1">Email</label>
+              <label className="block text-xs text-text-tertiary mb-1">Email</label>
               <input
                 type="email"
                 value={form.contactEmail}
@@ -159,7 +163,7 @@ export default function CompanyProfile() {
               />
             </div>
             <div>
-              <label className="block text-xs text-navy-400 mb-1">Phone</label>
+              <label className="block text-xs text-text-tertiary mb-1">Phone</label>
               <input
                 type="tel"
                 value={form.contactPhone}

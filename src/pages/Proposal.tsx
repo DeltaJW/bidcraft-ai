@@ -128,6 +128,14 @@ export default function Proposal() {
 
   // Save
   function handleSave() {
+    if (zones.length === 0) {
+      toast('No zones to save — use Workloading Calculator first', 'error')
+      return
+    }
+    if (!selectedBurdenId) {
+      toast('Select a burden profile to calculate costs', 'error')
+      return
+    }
     const quote: Quote = {
       id: `quote-${Date.now()}`,
       companyId: company.id,
@@ -207,7 +215,7 @@ export default function Proposal() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <FileText className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-white">Full Proposal</h1>
+          <h1 className="text-2xl font-bold text-text-primary">Full Proposal</h1>
         </div>
         <div className="flex gap-2">
           <button className="btn btn-ghost" onClick={handleSave}>
@@ -227,7 +235,7 @@ export default function Proposal() {
           <GlassCard title="Proposal Details">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="block text-xs text-navy-400 mb-1">Proposal Title</label>
+                <label className="block text-xs text-text-tertiary mb-1">Proposal Title</label>
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -235,7 +243,7 @@ export default function Proposal() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-navy-400 mb-1">Contract Reference</label>
+                <label className="block text-xs text-text-tertiary mb-1">Contract Reference</label>
                 <input
                   value={contractRef}
                   onChange={(e) => setContractRef(e.target.value)}
@@ -243,7 +251,7 @@ export default function Proposal() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-navy-400 mb-1">Location</label>
+                <label className="block text-xs text-text-tertiary mb-1">Location</label>
                 <input
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
@@ -251,7 +259,7 @@ export default function Proposal() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-navy-400 mb-1">Burden Profile</label>
+                <label className="block text-xs text-text-tertiary mb-1">Burden Profile</label>
                 <select
                   value={selectedBurdenId}
                   onChange={(e) => setSelectedBurdenId(e.target.value)}
@@ -265,7 +273,7 @@ export default function Proposal() {
                 </select>
               </div>
               <div className="col-span-2">
-                <label className="block text-xs text-navy-400 mb-1">Scope of Work</label>
+                <label className="block text-xs text-text-tertiary mb-1">Scope of Work</label>
                 <textarea
                   rows={3}
                   value={scopeDescription}
@@ -279,22 +287,22 @@ export default function Proposal() {
           {/* Zones with tasks (read from workload) */}
           <GlassCard title="Labor by Zone" subtitle="Imported from workloading calculator">
             {computedZones.length === 0 ? (
-              <div className="text-center py-8 text-navy-500 text-sm">
+              <div className="text-center py-8 text-text-tertiary text-sm">
                 No zones — use the Workloading Calculator to build zones and click "Send to Proposal"
               </div>
             ) : (
               <div className="flex flex-col gap-4">
                 {computedZones.map((zone) => (
-                  <div key={zone.id} className="border border-navy-700/20 rounded-lg overflow-hidden">
-                    <div className="bg-navy-800/30 px-4 py-2 flex justify-between items-center">
-                      <span className="text-sm font-semibold text-white">{zone.name}</span>
-                      <span className="text-xs text-navy-400">
+                  <div key={zone.id} className="border border-border-subtle rounded-lg overflow-hidden">
+                    <div className="bg-surface-2 px-4 py-2 flex justify-between items-center">
+                      <span className="text-sm font-semibold text-text-primary">{zone.name}</span>
+                      <span className="text-xs text-text-tertiary">
                         {zone.tasks.reduce((s, t) => s + t.annualHours, 0).toFixed(1)} hrs/yr
                       </span>
                     </div>
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="text-xs text-navy-500 border-t border-navy-700/20">
+                        <tr className="text-xs text-text-tertiary border-t border-border-subtle">
                           <th className="text-left px-3 py-1.5 font-medium">Task</th>
                           <th className="text-left px-3 py-1.5 font-medium">Equipment</th>
                           <th className="text-right px-3 py-1.5 font-medium">Sq Ft</th>
@@ -305,11 +313,11 @@ export default function Proposal() {
                       </thead>
                       <tbody>
                         {zone.tasks.map((t) => (
-                          <tr key={t.id} className="border-t border-navy-700/15">
+                          <tr key={t.id} className="border-t border-border-subtle">
                             <td className="px-3 py-1.5">{t.taskName}</td>
-                            <td className="px-3 py-1.5 text-navy-400">{t.equipment}</td>
+                            <td className="px-3 py-1.5 text-text-tertiary">{t.equipment}</td>
                             <td className="px-3 py-1.5 text-right font-mono text-xs">{t.sqft.toLocaleString()}</td>
-                            <td className="px-3 py-1.5 text-navy-400 text-xs">{t.frequency.replace('_', 'x/')}</td>
+                            <td className="px-3 py-1.5 text-text-tertiary text-xs">{t.frequency.replace('_', 'x/')}</td>
                             <td className="px-3 py-1.5 text-right font-mono text-xs">{t.annualHours.toFixed(1)}</td>
                             <td className="px-3 py-1.5 text-right font-mono text-xs text-accent">
                               ${t.laborCost.toFixed(2)}
@@ -329,7 +337,7 @@ export default function Proposal() {
             {materials.length > 0 && (
               <table className="w-full text-sm mb-4">
                 <thead>
-                  <tr className="text-xs text-navy-500">
+                  <tr className="text-xs text-text-tertiary">
                     <th className="text-left px-2 py-2 font-medium">Item</th>
                     <th className="text-right px-2 py-2 font-medium w-24">Unit Cost</th>
                     <th className="text-right px-2 py-2 font-medium w-16">Qty/Yr</th>
@@ -340,7 +348,7 @@ export default function Proposal() {
                 </thead>
                 <tbody>
                   {materials.map((m) => (
-                    <tr key={m.id} className="border-t border-navy-700/20">
+                    <tr key={m.id} className="border-t border-border-subtle">
                       <td className="px-2 py-2">
                         <input
                           className="!text-xs"
@@ -384,7 +392,7 @@ export default function Proposal() {
                       </td>
                       <td className="px-1 py-2">
                         <button
-                          className="p-1 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
+                          className="p-1 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
                           onClick={() => removeMaterial(m.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -405,14 +413,14 @@ export default function Proposal() {
             <div className="flex flex-col gap-2">
               {assumptions.map((a, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <span className="text-navy-500 mt-1.5 text-xs">{i + 1}.</span>
+                  <span className="text-text-tertiary mt-1.5 text-xs">{i + 1}.</span>
                   <input
                     className="!text-xs flex-1"
                     value={a}
                     onChange={(e) => updateAssumption(i, e.target.value)}
                   />
                   <button
-                    className="p-1 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer mt-0.5"
+                    className="p-1 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer mt-0.5"
                     onClick={() => removeAssumption(i)}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -431,31 +439,31 @@ export default function Proposal() {
           <GlassCard title="Cost Summary" className="sticky top-8">
             <div className="flex flex-col gap-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-navy-400">Annual Hours</span>
-                <span className="font-mono text-navy-300">{totalAnnualHours.toFixed(1)}</span>
+                <span className="text-text-tertiary">Annual Hours</span>
+                <span className="font-mono text-text-secondary">{totalAnnualHours.toFixed(1)}</span>
               </div>
               {burdenRate > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-navy-400">Burden Rate</span>
-                  <span className="font-mono text-navy-300">${burdenRate.toFixed(2)}/hr</span>
+                  <span className="text-text-tertiary">Burden Rate</span>
+                  <span className="font-mono text-text-secondary">${burdenRate.toFixed(2)}/hr</span>
                 </div>
               )}
-              <div className="border-t border-navy-700/30 my-1" />
+              <div className="border-t border-border-subtle my-1" />
               <div className="flex justify-between">
-                <span className="text-navy-300 font-medium">Annual Labor</span>
-                <span className="font-mono text-white font-medium">
+                <span className="text-text-secondary font-medium">Annual Labor</span>
+                <span className="font-mono text-text-primary font-medium">
                   ${totalLabor.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-navy-300 font-medium">Annual Materials</span>
-                <span className="font-mono text-white font-medium">
+                <span className="text-text-secondary font-medium">Annual Materials</span>
+                <span className="font-mono text-text-primary font-medium">
                   ${totalMaterials.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </span>
               </div>
-              <div className="border-t border-navy-700/30 my-1" />
+              <div className="border-t border-border-subtle my-1" />
               <div className="flex justify-between items-center">
-                <span className="font-bold text-white flex items-center gap-1">
+                <span className="font-bold text-text-primary flex items-center gap-1">
                   <DollarSign className="w-4 h-4" />
                   Annual Total
                 </span>
@@ -464,22 +472,22 @@ export default function Proposal() {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-navy-400">Monthly</span>
-                <span className="font-mono text-navy-300">
+                <span className="text-text-tertiary">Monthly</span>
+                <span className="font-mono text-text-secondary">
                   ${monthlyTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                 </span>
               </div>
 
               {computedZones.length > 0 && (
                 <>
-                  <div className="border-t border-navy-700/30 my-1" />
-                  <p className="text-xs text-navy-500 font-medium mb-1">By Zone</p>
+                  <div className="border-t border-border-subtle my-1" />
+                  <p className="text-xs text-text-tertiary font-medium mb-1">By Zone</p>
                   {computedZones.map((z) => {
                     const zoneCost = z.tasks.reduce((s, t) => s + t.laborCost, 0)
                     return (
                       <div key={z.id} className="flex justify-between">
-                        <span className="text-navy-400 text-xs">{z.name}</span>
-                        <span className="font-mono text-xs text-navy-300">
+                        <span className="text-text-tertiary text-xs">{z.name}</span>
+                        <span className="font-mono text-xs text-text-secondary">
                           ${zoneCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                         </span>
                       </div>

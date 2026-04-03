@@ -77,9 +77,18 @@ export default function BurdenBuilder() {
   const fullyBurdened = preProfit + feeDollar
 
   function handleSave() {
+    if (profile.baseWage <= 0) {
+      toast('Base wage is required', 'error')
+      setStep(0)
+      return
+    }
+    if (!profile.name.trim()) {
+      toast('Profile name is required', 'error')
+      return
+    }
     const completed: BurdenProfile = {
       ...profile,
-      name: profile.name || 'Unnamed Profile',
+      name: profile.name.trim(),
       computedRate: fullyBurdened,
     }
     if (editingId) {
@@ -124,7 +133,7 @@ export default function BurdenBuilder() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <Calculator className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-white">Burden Rate Builder</h1>
+          <h1 className="text-2xl font-bold text-text-primary">Burden Rate Builder</h1>
           {editingId && (
             <span className="text-xs bg-amber-500/15 text-amber-400 px-2 py-1 rounded-full font-medium">
               Editing
@@ -166,7 +175,7 @@ export default function BurdenBuilder() {
                     ? 'bg-accent/15 border-accent/30 text-accent'
                     : i < step
                       ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                      : 'bg-transparent border-navy-700/30 text-navy-500'
+                      : 'bg-transparent border-border-subtle text-text-tertiary'
                 }`}
               >
                 {i + 1}. {s.title}
@@ -187,7 +196,7 @@ export default function BurdenBuilder() {
                 {step === 0 && (
                   <div className="flex flex-col gap-4">
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">Base Hourly Wage ($)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Base Hourly Wage ($)</label>
                       <input
                         type="number"
                         step="0.01"
@@ -195,7 +204,7 @@ export default function BurdenBuilder() {
                         onChange={(e) => update('baseWage', Number(e.target.value))}
                         placeholder="17.75"
                       />
-                      <p className="text-xs text-navy-500 mt-1">
+                      <p className="text-xs text-text-tertiary mt-1">
                         Enter from SCA Wage Determination or your prevailing wage
                       </p>
                     </div>
@@ -205,7 +214,7 @@ export default function BurdenBuilder() {
                 {step === 1 && (
                   <div className="flex flex-col gap-4">
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">Health & Welfare Rate ($/hr)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Health & Welfare Rate ($/hr)</label>
                       <input
                         type="number"
                         step="0.01"
@@ -213,7 +222,7 @@ export default function BurdenBuilder() {
                         onChange={(e) => update('hwRate', Number(e.target.value))}
                         placeholder="4.60"
                       />
-                      <p className="text-xs text-navy-500 mt-1">
+                      <p className="text-xs text-text-tertiary mt-1">
                         From WD or your employer-provided health plan cost per hour
                       </p>
                     </div>
@@ -223,17 +232,17 @@ export default function BurdenBuilder() {
                 {step === 2 && (
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">FICA (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">FICA (%)</label>
                       <input
                         type="number"
                         step="0.01"
                         value={profile.ficaPct}
                         onChange={(e) => update('ficaPct', Number(e.target.value))}
                       />
-                      <p className="text-xs text-navy-500 mt-1">7.65% is federal law (Social Security 6.2% + Medicare 1.45%)</p>
+                      <p className="text-xs text-text-tertiary mt-1">7.65% is federal law (Social Security 6.2% + Medicare 1.45%)</p>
                     </div>
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">State Unemployment — SUI (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">State Unemployment — SUI (%)</label>
                       <div className="flex gap-2">
                         <select
                           className="!w-24"
@@ -254,7 +263,7 @@ export default function BurdenBuilder() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">Workers Comp (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Workers Comp (%)</label>
                       <input
                         type="number"
                         step="0.01"
@@ -262,17 +271,17 @@ export default function BurdenBuilder() {
                         onChange={(e) => update('wcPct', Number(e.target.value))}
                         placeholder="5.0"
                       />
-                      <p className="text-xs text-navy-500 mt-1">Varies by state and classification code</p>
+                      <p className="text-xs text-text-tertiary mt-1">Varies by state and classification code</p>
                     </div>
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">FUTA (%)</label>
+                      <label className="block text-xs text-text-tertiary mb-1">FUTA (%)</label>
                       <input
                         type="number"
                         step="0.01"
                         value={profile.futaPct}
                         onChange={(e) => update('futaPct', Number(e.target.value))}
                       />
-                      <p className="text-xs text-navy-500 mt-1">0.6% standard with state credit reduction</p>
+                      <p className="text-xs text-text-tertiary mt-1">0.6% standard with state credit reduction</p>
                     </div>
                   </div>
                 )}
@@ -280,7 +289,7 @@ export default function BurdenBuilder() {
                 {step === 3 && (
                   <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">Vacation Days / Year</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Vacation Days / Year</label>
                       <input
                         type="number"
                         value={profile.vacationDays}
@@ -288,7 +297,7 @@ export default function BurdenBuilder() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">Holidays / Year</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Holidays / Year</label>
                       <input
                         type="number"
                         value={profile.holidayDays}
@@ -296,16 +305,16 @@ export default function BurdenBuilder() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-navy-400 mb-1">Sick Days / Year</label>
+                      <label className="block text-xs text-text-tertiary mb-1">Sick Days / Year</label>
                       <input
                         type="number"
                         value={profile.sickDays}
                         onChange={(e) => update('sickDays', Number(e.target.value))}
                       />
                     </div>
-                    <div className="col-span-3 glass !bg-navy-800/30 p-3 rounded-lg">
-                      <p className="text-xs text-navy-400">
-                        <strong className="text-navy-300">Calculated impact:</strong>{' '}
+                    <div className="col-span-3 glass !bg-surface-2 p-3 rounded-lg">
+                      <p className="text-xs text-text-tertiary">
+                        <strong className="text-text-secondary">Calculated impact:</strong>{' '}
                         {totalPaidDays} paid non-work days = {leavePct.toFixed(2)}% cost increase.
                         Worker produces for {effectiveWorkDays} of {workDaysPerYear} paid days.
                       </p>
@@ -315,38 +324,38 @@ export default function BurdenBuilder() {
 
                 {step === 4 && (
                   <div>
-                    <label className="block text-xs text-navy-400 mb-1">G&A / Overhead Rate (%)</label>
+                    <label className="block text-xs text-text-tertiary mb-1">G&A / Overhead Rate (%)</label>
                     <input
                       type="number"
                       step="0.1"
                       value={profile.gaPct}
                       onChange={(e) => update('gaPct', Number(e.target.value))}
                     />
-                    <p className="text-xs text-navy-500 mt-2">
+                    <p className="text-xs text-text-tertiary mt-2">
                       This is the cost of running your company divided by total direct costs.
-                      Typical range: <strong className="text-navy-300">8-18%</strong> for janitorial contractors.
+                      Typical range: <strong className="text-text-secondary">8-18%</strong> for janitorial contractors.
                     </p>
                   </div>
                 )}
 
                 {step === 5 && (
                   <div>
-                    <label className="block text-xs text-navy-400 mb-1">Profit / Fee (%)</label>
+                    <label className="block text-xs text-text-tertiary mb-1">Profit / Fee (%)</label>
                     <input
                       type="number"
                       step="0.1"
                       value={profile.feePct}
                       onChange={(e) => update('feePct', Number(e.target.value))}
                     />
-                    <p className="text-xs text-navy-500 mt-2">
-                      Typical range: <strong className="text-navy-300">5-12%</strong> for government,{' '}
-                      <strong className="text-navy-300">10-20%</strong> for commercial.
+                    <p className="text-xs text-text-tertiary mt-2">
+                      Typical range: <strong className="text-text-secondary">5-12%</strong> for government,{' '}
+                      <strong className="text-text-secondary">10-20%</strong> for commercial.
                     </p>
                   </div>
                 )}
 
                 {/* Nav buttons */}
-                <div className="flex justify-between mt-6 pt-4 border-t border-navy-700/30">
+                <div className="flex justify-between mt-6 pt-4 border-t border-border-subtle">
                   <button
                     className="btn btn-ghost"
                     onClick={() => setStep(Math.max(0, step - 1))}
@@ -402,13 +411,13 @@ export default function BurdenBuilder() {
               <Row label={`Fee (${profile.feePct}%)`} value={feeDollar} />
               <Divider />
               <div className="flex justify-between items-center pt-2">
-                <span className="font-bold text-white">Fully Burdened</span>
+                <span className="font-bold text-text-primary">Fully Burdened</span>
                 <span className="text-xl font-bold text-accent font-mono">
                   ${fullyBurdened.toFixed(2)}
                 </span>
               </div>
               {profile.baseWage > 0 && (
-                <p className="text-xs text-navy-500 mt-2">
+                <p className="text-xs text-text-tertiary mt-2">
                   Markup: {((fullyBurdened / profile.baseWage - 1) * 100).toFixed(1)}% over base wage
                 </p>
               )}
@@ -420,7 +429,7 @@ export default function BurdenBuilder() {
       {/* Saved Profiles */}
       {savedProfiles.length > 0 && (
         <div className="mt-8">
-          <h2 className="text-lg font-semibold text-white mb-4">Saved Burden Profiles</h2>
+          <h2 className="text-lg font-semibold text-text-primary mb-4">Saved Burden Profiles</h2>
           <div className="grid grid-cols-3 gap-3">
             {savedProfiles.map((bp) => (
               <GlassCard
@@ -429,30 +438,30 @@ export default function BurdenBuilder() {
               >
                 <div className="flex justify-between items-start" onClick={() => loadProfile(bp)}>
                   <div>
-                    <h3 className="text-sm font-semibold text-white">{bp.name}</h3>
+                    <h3 className="text-sm font-semibold text-text-primary">{bp.name}</h3>
                     <div className="text-2xl font-bold text-accent font-mono mt-1">
                       ${bp.computedRate?.toFixed(2)}
                     </div>
-                    <p className="text-xs text-navy-500 mt-1">
+                    <p className="text-xs text-text-tertiary mt-1">
                       Base: ${bp.baseWage.toFixed(2)} | Markup: {bp.baseWage > 0 ? ((bp.computedRate! / bp.baseWage - 1) * 100).toFixed(0) : 0}%
                     </p>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                     <button
-                      className="p-1.5 text-navy-400 hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+                      className="p-1.5 text-text-tertiary hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
                       onClick={(e) => { e.stopPropagation(); loadProfile(bp) }}
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button
-                      className="p-1.5 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
+                      className="p-1.5 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
                       onClick={(e) => { e.stopPropagation(); burdenProfilesStore.update((prev) => prev.filter((p) => p.id !== bp.id)) }}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-                <div className="flex gap-3 mt-3 text-xs text-navy-500">
+                <div className="flex gap-3 mt-3 text-xs text-text-tertiary">
                   <span>H&W: ${bp.hwRate.toFixed(2)}</span>
                   <span>G&A: {bp.gaPct}%</span>
                   <span>Fee: {bp.feePct}%</span>
@@ -469,8 +478,8 @@ export default function BurdenBuilder() {
 function Row({ label, value, bold }: { label: string; value: number; bold?: boolean }) {
   return (
     <div className="flex justify-between">
-      <span className={bold ? 'text-navy-200 font-medium' : 'text-navy-400'}>{label}</span>
-      <span className={`font-mono ${bold ? 'text-white font-medium' : 'text-navy-300'}`}>
+      <span className={bold ? 'text-text-primary font-medium' : 'text-text-tertiary'}>{label}</span>
+      <span className={`font-mono ${bold ? 'text-text-primary font-medium' : 'text-text-secondary'}`}>
         ${value.toFixed(2)}
       </span>
     </div>
@@ -478,5 +487,5 @@ function Row({ label, value, bold }: { label: string; value: number; bold?: bool
 }
 
 function Divider() {
-  return <div className="border-t border-navy-700/30 my-1" />
+  return <div className="border-t border-border-subtle my-1" />
 }

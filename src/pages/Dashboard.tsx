@@ -14,7 +14,7 @@ import {
 } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { loadDemoData } from '@/data/demoData'
-import { quotesStore, burdenProfilesStore, useStore } from '@/data/mockStore'
+import { quotesStore, burdenProfilesStore, templatesStore, useStore } from '@/data/mockStore'
 
 const FEATURES = [
   {
@@ -74,6 +74,7 @@ const item = {
 export default function Dashboard() {
   const quotes = useStore(quotesStore)
   const burdenProfiles = useStore(burdenProfilesStore)
+  const templates = useStore(templatesStore)
 
   const totalQuoted = quotes.reduce((s, q) => s + q.grandTotal, 0)
   const acceptedCount = quotes.filter((q) => q.status === 'accepted').length
@@ -88,11 +89,11 @@ export default function Dashboard() {
       >
         <div className="flex items-center gap-3 mb-2">
           <Sparkles className="w-8 h-8 text-accent" />
-          <h1 className="text-3xl font-bold text-white">
+          <h1 className="text-3xl font-bold text-text-primary">
             BidCraft <span className="text-accent">AI</span>
           </h1>
         </div>
-        <p className="text-navy-300 text-lg mb-4">
+        <p className="text-text-secondary text-lg mb-4">
           Price the work. Win the bid. Generate the proposal.
         </p>
         <div className="flex gap-3">
@@ -129,8 +130,8 @@ export default function Dashboard() {
             <FolderOpen className="w-5 h-5 text-accent" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-white">{quotes.length}</div>
-            <div className="text-xs text-navy-400">Quotes Saved</div>
+            <div className="text-2xl font-bold text-text-primary">{quotes.length}</div>
+            <div className="text-xs text-text-tertiary">Quotes Saved</div>
           </div>
         </GlassCard>
         <GlassCard className="flex items-center gap-4">
@@ -138,10 +139,10 @@ export default function Dashboard() {
             <TrendingUp className="w-5 h-5 text-emerald-400" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-white">
+            <div className="text-2xl font-bold text-text-primary">
               ${totalQuoted >= 1000 ? `${(totalQuoted / 1000).toFixed(0)}K` : totalQuoted.toFixed(0)}
             </div>
-            <div className="text-xs text-navy-400">Total Quoted</div>
+            <div className="text-xs text-text-tertiary">Total Quoted</div>
           </div>
         </GlassCard>
         <GlassCard className="flex items-center gap-4">
@@ -149,8 +150,8 @@ export default function Dashboard() {
             <CheckCircle className="w-5 h-5 text-cyan-400" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-white">{acceptedCount}</div>
-            <div className="text-xs text-navy-400">Accepted</div>
+            <div className="text-2xl font-bold text-text-primary">{acceptedCount}</div>
+            <div className="text-xs text-text-tertiary">Accepted</div>
           </div>
         </GlassCard>
         <GlassCard className="flex items-center gap-4">
@@ -158,8 +159,8 @@ export default function Dashboard() {
             <Calculator className="w-5 h-5 text-amber-400" />
           </div>
           <div>
-            <div className="text-2xl font-bold text-white">{burdenProfiles.length}</div>
-            <div className="text-xs text-navy-400">Burden Profiles</div>
+            <div className="text-2xl font-bold text-text-primary">{burdenProfiles.length}</div>
+            <div className="text-xs text-text-tertiary">Burden Profiles</div>
           </div>
         </GlassCard>
       </motion.div>
@@ -173,7 +174,7 @@ export default function Dashboard() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-navy-300">Recent Quotes</h2>
+            <h2 className="text-sm font-semibold text-text-secondary">Recent Quotes</h2>
             <Link to="/saved" className="text-xs text-accent hover:text-accent-hover transition-colors no-underline">
               View all
             </Link>
@@ -193,8 +194,8 @@ export default function Dashboard() {
                       )}
                     </div>
                     <div>
-                      <p className="text-sm text-white font-medium truncate max-w-md">{q.title}</p>
-                      <p className="text-xs text-navy-500">
+                      <p className="text-sm text-text-primary font-medium truncate max-w-md">{q.title}</p>
+                      <p className="text-xs text-text-tertiary">
                         {new Date(q.createdAt).toLocaleDateString()} | {q.quoteType === 'proposal' ? 'Proposal' : 'Task Order'}
                       </p>
                     </div>
@@ -204,6 +205,36 @@ export default function Dashboard() {
                   </span>
                 </div>
               ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Building Templates */}
+      {templates.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mb-8"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-text-secondary">Building Templates</h2>
+            <Link to="/workload" className="text-xs text-accent hover:text-accent-hover transition-colors no-underline">
+              Open Workloading
+            </Link>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            {templates.slice(0, 3).map((tmpl) => (
+              <Link key={tmpl.id} to="/workload" className="block no-underline">
+                <div className="glass glass-hover p-4">
+                  <h4 className="text-sm font-medium text-text-primary">{tmpl.name}</h4>
+                  <p className="text-xs text-text-tertiary mt-0.5">{tmpl.description}</p>
+                  <p className="text-xs text-text-disabled mt-1">
+                    {new Date(tmpl.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </Link>
+            ))}
           </div>
         </motion.div>
       )}
@@ -224,10 +255,10 @@ export default function Dashboard() {
                     <f.icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-white mb-1">
+                    <h3 className="text-sm font-semibold text-text-primary mb-1">
                       {f.title}
                     </h3>
-                    <p className="text-xs text-navy-400">{f.desc}</p>
+                    <p className="text-xs text-text-tertiary">{f.desc}</p>
                   </div>
                 </div>
               </div>

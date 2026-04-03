@@ -120,7 +120,7 @@ export default function Settings() {
     >
       <div className="flex items-center gap-3 mb-6">
         <SettingsIcon className="w-6 h-6 text-accent" />
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
+        <h1 className="text-2xl font-bold text-text-primary">Settings</h1>
       </div>
 
       <div className="flex flex-col gap-6">
@@ -163,7 +163,7 @@ export default function Settings() {
             <AlertTriangle className="w-5 h-5 text-red-400" />
             <h2 className="text-lg font-semibold text-red-400">Danger Zone</h2>
           </div>
-          <p className="text-sm text-navy-400 mb-4">
+          <p className="text-sm text-text-tertiary mb-4">
             This will permanently delete all your data including company profile, rate library customizations,
             burden profiles, saved quotes, and building templates. This cannot be undone.
           </p>
@@ -189,13 +189,13 @@ export default function Settings() {
         <GlassCard>
           <div className="flex items-center gap-2 mb-3">
             <Info className="w-5 h-5 text-accent" />
-            <h2 className="text-lg font-semibold text-white">About BidCraft AI</h2>
+            <h2 className="text-lg font-semibold text-text-primary">About BidCraft AI</h2>
           </div>
-          <div className="text-sm text-navy-400 space-y-1">
+          <div className="text-sm text-text-tertiary space-y-1">
             <p>Version: 1.0.0-beta (Phase 1 MVP)</p>
             <p>All data is stored locally in your browser. No data is sent to any server.</p>
             <p>Production rates are industry-standard field-validated cleaning production rates.</p>
-            <p className="text-navy-500 mt-2">
+            <p className="text-text-tertiary mt-2">
               Future versions will include Azure cloud storage, team collaboration, and AI document parsing.
             </p>
           </div>
@@ -207,10 +207,10 @@ export default function Settings() {
 
 function DataRow({ icon: Icon, label, value }: { icon: typeof Database; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 p-2 rounded-lg bg-navy-800/20">
-      <Icon className="w-4 h-4 text-navy-500" />
-      <span className="text-sm text-navy-300 flex-1">{label}</span>
-      <span className="text-sm font-mono text-navy-400">{value}</span>
+    <div className="flex items-center gap-3 p-2 rounded-lg bg-surface-0">
+      <Icon className="w-4 h-4 text-text-tertiary" />
+      <span className="text-sm text-text-secondary flex-1">{label}</span>
+      <span className="text-sm font-mono text-text-tertiary">{value}</span>
     </div>
   )
 }

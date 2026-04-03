@@ -93,6 +93,14 @@ export default function TaskOrderQuote() {
   const grandTotal = totalLabor + totalMaterials
 
   function handleSave() {
+    if (tasks.length === 0) {
+      toast('Add at least one task before saving', 'error')
+      return
+    }
+    if (!selectedBurdenId) {
+      toast('Select a burden profile to calculate costs', 'error')
+      return
+    }
     const quote: Quote = {
       id: `quote-${Date.now()}`,
       companyId: company.id,
@@ -160,7 +168,7 @@ export default function TaskOrderQuote() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <FileText className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-white">Task Order Quote</h1>
+          <h1 className="text-2xl font-bold text-text-primary">Task Order Quote</h1>
         </div>
         <div className="flex gap-2">
           <button className="btn btn-ghost" onClick={handleSave} disabled={tasks.length === 0}>
@@ -184,7 +192,7 @@ export default function TaskOrderQuote() {
           <GlassCard title="Quote Details">
             <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2">
-                <label className="block text-xs text-navy-400 mb-1">Quote Title</label>
+                <label className="block text-xs text-text-tertiary mb-1">Quote Title</label>
                 <input
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -192,7 +200,7 @@ export default function TaskOrderQuote() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-navy-400 mb-1">Contract / PO Reference</label>
+                <label className="block text-xs text-text-tertiary mb-1">Contract / PO Reference</label>
                 <input
                   value={contractRef}
                   onChange={(e) => setContractRef(e.target.value)}
@@ -200,7 +208,7 @@ export default function TaskOrderQuote() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-navy-400 mb-1">Location</label>
+                <label className="block text-xs text-text-tertiary mb-1">Location</label>
                 <input
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
@@ -208,7 +216,7 @@ export default function TaskOrderQuote() {
                 />
               </div>
               <div className="col-span-2">
-                <label className="block text-xs text-navy-400 mb-1">Scope Description</label>
+                <label className="block text-xs text-text-tertiary mb-1">Scope Description</label>
                 <textarea
                   rows={2}
                   value={scopeDescription}
@@ -217,7 +225,7 @@ export default function TaskOrderQuote() {
                 />
               </div>
               <div>
-                <label className="block text-xs text-navy-400 mb-1">Burden Profile</label>
+                <label className="block text-xs text-text-tertiary mb-1">Burden Profile</label>
                 <select
                   value={selectedBurdenId}
                   onChange={(e) => setSelectedBurdenId(e.target.value)}
@@ -239,13 +247,13 @@ export default function TaskOrderQuote() {
             subtitle="Select tasks and enter square footage or quantity"
           >
             {tasks.length === 0 ? (
-              <div className="text-center py-8 text-navy-500 text-sm">
+              <div className="text-center py-8 text-text-tertiary text-sm">
                 No tasks added yet
               </div>
             ) : (
               <table className="w-full text-sm mb-4">
                 <thead>
-                  <tr className="text-xs text-navy-500">
+                  <tr className="text-xs text-text-tertiary">
                     <th className="text-left px-2 py-2 font-medium">Task</th>
                     <th className="text-right px-2 py-2 font-medium w-24">Sq Ft / Qty</th>
                     <th className="text-right px-2 py-2 font-medium w-20">Rate</th>
@@ -256,7 +264,7 @@ export default function TaskOrderQuote() {
                 </thead>
                 <tbody>
                   {tasks.map((task) => (
-                    <tr key={task.id} className="border-t border-navy-700/20">
+                    <tr key={task.id} className="border-t border-border-subtle">
                       <td className="px-2 py-2">
                         <select
                           value={task.rateItemId ?? ''}
@@ -281,12 +289,12 @@ export default function TaskOrderQuote() {
                           placeholder="0"
                         />
                       </td>
-                      <td className="px-2 py-2 text-right font-mono text-xs text-navy-400">
+                      <td className="px-2 py-2 text-right font-mono text-xs text-text-tertiary">
                         {task.sqftPerHour < 100
                           ? `${task.sqftPerHour}/hr`
                           : `${(task.sqftPerHour / 1000).toFixed(1)}K/hr`}
                       </td>
-                      <td className="px-2 py-2 text-right font-mono text-xs text-navy-300">
+                      <td className="px-2 py-2 text-right font-mono text-xs text-text-secondary">
                         {task.hours.toFixed(2)}
                       </td>
                       <td className="px-2 py-2 text-right font-mono text-xs text-accent">
@@ -294,7 +302,7 @@ export default function TaskOrderQuote() {
                       </td>
                       <td className="px-1 py-2">
                         <button
-                          className="p-1 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
+                          className="p-1 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
                           onClick={() => removeTask(task.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -315,7 +323,7 @@ export default function TaskOrderQuote() {
             {materials.length > 0 && (
               <table className="w-full text-sm mb-4">
                 <thead>
-                  <tr className="text-xs text-navy-500">
+                  <tr className="text-xs text-text-tertiary">
                     <th className="text-left px-2 py-2 font-medium">Item</th>
                     <th className="text-right px-2 py-2 font-medium w-20">Unit Cost</th>
                     <th className="text-right px-2 py-2 font-medium w-16">Qty</th>
@@ -326,7 +334,7 @@ export default function TaskOrderQuote() {
                 </thead>
                 <tbody>
                   {materials.map((m) => (
-                    <tr key={m.id} className="border-t border-navy-700/20">
+                    <tr key={m.id} className="border-t border-border-subtle">
                       <td className="px-2 py-2">
                         <input
                           className="!text-xs"
@@ -374,7 +382,7 @@ export default function TaskOrderQuote() {
                       </td>
                       <td className="px-1 py-2">
                         <button
-                          className="p-1 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
+                          className="p-1 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
                           onClick={() => removeMaterial(m.id)}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -396,27 +404,27 @@ export default function TaskOrderQuote() {
           <GlassCard title="Cost Summary" className="sticky top-8">
             <div className="flex flex-col gap-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-navy-400">Total Hours</span>
-                <span className="font-mono text-navy-300">{totalHours.toFixed(2)}</span>
+                <span className="text-text-tertiary">Total Hours</span>
+                <span className="font-mono text-text-secondary">{totalHours.toFixed(2)}</span>
               </div>
               {burdenRate > 0 && (
                 <div className="flex justify-between">
-                  <span className="text-navy-400">Burden Rate</span>
-                  <span className="font-mono text-navy-300">${burdenRate.toFixed(2)}/hr</span>
+                  <span className="text-text-tertiary">Burden Rate</span>
+                  <span className="font-mono text-text-secondary">${burdenRate.toFixed(2)}/hr</span>
                 </div>
               )}
-              <div className="border-t border-navy-700/30 my-1" />
+              <div className="border-t border-border-subtle my-1" />
               <div className="flex justify-between">
-                <span className="text-navy-300 font-medium">Labor</span>
-                <span className="font-mono text-white font-medium">${totalLabor.toFixed(2)}</span>
+                <span className="text-text-secondary font-medium">Labor</span>
+                <span className="font-mono text-text-primary font-medium">${totalLabor.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-navy-300 font-medium">Materials</span>
-                <span className="font-mono text-white font-medium">${totalMaterials.toFixed(2)}</span>
+                <span className="text-text-secondary font-medium">Materials</span>
+                <span className="font-mono text-text-primary font-medium">${totalMaterials.toFixed(2)}</span>
               </div>
-              <div className="border-t border-navy-700/30 my-1" />
+              <div className="border-t border-border-subtle my-1" />
               <div className="flex justify-between items-center pt-1">
-                <span className="font-bold text-white flex items-center gap-1">
+                <span className="font-bold text-text-primary flex items-center gap-1">
                   <DollarSign className="w-4 h-4" />
                   Grand Total
                 </span>

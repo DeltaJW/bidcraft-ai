@@ -33,7 +33,7 @@ interface Props {
   burdenProfileName: string
 }
 
-const $ = (n: number) =>
+const fmt = (n: number) =>
   '$' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
 const ProposalPreview = forwardRef<HTMLDivElement, Props>(function ProposalPreview(
@@ -62,237 +62,243 @@ const ProposalPreview = forwardRef<HTMLDivElement, Props>(function ProposalPrevi
   })
 
   return (
-    <div
-      ref={ref}
-      className="max-w-4xl mx-auto bg-white text-gray-900 rounded-lg shadow-lg"
-      style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: '12px', lineHeight: '1.5' }}
-    >
-      {/* Page 1: Cover & Scope */}
-      <div className="p-10">
-        {/* Header */}
-        <div className="flex justify-between items-start border-b-2 pb-4 mb-8" style={{ borderColor: '#0f1f38' }}>
+    <div ref={ref} className="print-quote max-w-4xl mx-auto bg-white rounded-lg shadow-lg">
+      <div style={{ padding: '40pt 34pt' }}>
+        {/* Letterhead Header */}
+        <div className="quote-header">
           <div className="flex items-center gap-4">
             {company.logoUrl && (
-              <img src={company.logoUrl} alt="" className="w-20 h-20 object-contain" />
+              <img src={company.logoUrl} alt="" style={{ height: '44pt', objectFit: 'contain' }} />
             )}
             <div>
-              <h1 className="text-2xl font-bold" style={{ color: '#0f1f38' }}>
+              <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '20pt', fontWeight: 700, color: '#17355E', margin: 0 }}>
                 {company.name || 'Your Company Name'}
               </h1>
-              {company.address && <p className="text-gray-500 text-sm">{company.address}</p>}
-              <div className="flex gap-4 mt-1 text-xs text-gray-500">
+              <div style={{ display: 'flex', gap: '12pt', marginTop: '4pt', fontSize: '8.5pt', color: '#666' }}>
                 {company.cageCode && <span>CAGE: {company.cageCode}</span>}
                 {company.uei && <span>UEI: {company.uei}</span>}
                 {company.setAside && (
-                  <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded font-medium">
+                  <span style={{ background: '#17355E', color: 'white', padding: '1pt 6pt', borderRadius: '2pt', fontWeight: 600 }}>
                     {company.setAside}
                   </span>
                 )}
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <h2 className="text-xl font-bold" style={{ color: '#0f1f38' }}>PROPOSAL</h2>
-            <p className="text-gray-500 text-sm">{today}</p>
-            {contractRef && <p className="text-gray-500 text-sm">Ref: {contractRef}</p>}
+          <div className="company-info">
+            {company.address && <div>{company.address}</div>}
+            {company.contactPhone && <div>{company.contactPhone}</div>}
+            {company.contactEmail && <div>{company.contactEmail}</div>}
           </div>
         </div>
 
-        {/* Title */}
-        <div className="mb-8">
-          <h3 className="text-lg font-bold mb-1" style={{ color: '#0f1f38' }}>
-            {title || 'Annual Janitorial Services Proposal'}
-          </h3>
-          {location && <p className="text-gray-600 text-sm">Location: {location}</p>}
+        {/* Document Title */}
+        <h2>PROPOSAL</h2>
+
+        {/* Contract Info */}
+        <div className="info-grid">
+          <span className="info-label">Date:</span>
+          <span className="info-value">{today}</span>
+          {contractRef && (
+            <>
+              <span className="info-label">Contract Ref:</span>
+              <span className="info-value">{contractRef}</span>
+            </>
+          )}
+          {location && (
+            <>
+              <span className="info-label">Location:</span>
+              <span className="info-value">{location}</span>
+            </>
+          )}
           {company.contactName && (
-            <p className="text-gray-600 text-sm mt-1">
-              Prepared by: {company.contactName}
-              {company.contactTitle && `, ${company.contactTitle}`}
-            </p>
+            <>
+              <span className="info-label">Prepared By:</span>
+              <span className="info-value">
+                {company.contactName}{company.contactTitle && `, ${company.contactTitle}`}
+              </span>
+            </>
+          )}
+          {burdenProfileName && (
+            <>
+              <span className="info-label">Rate Profile:</span>
+              <span className="info-value">{burdenProfileName}</span>
+            </>
           )}
         </div>
 
+        {/* Proposal Title */}
+        <p style={{ fontFamily: 'Georgia, serif', fontSize: '13pt', fontWeight: 700, color: '#17355E', marginBottom: '10pt' }}>
+          {title || 'Annual Janitorial Services Proposal'}
+        </p>
+
         {/* Scope of Work */}
         {scopeDescription && (
-          <div className="mb-8">
-            <h4 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: '#0f1f38' }}>
-              Scope of Work
-            </h4>
-            <p className="text-gray-700 text-sm leading-relaxed">{scopeDescription}</p>
+          <div style={{ marginBottom: '16pt' }}>
+            <h3>SCOPE OF WORK</h3>
+            <p style={{ color: '#333', lineHeight: 1.6 }}>{scopeDescription}</p>
           </div>
         )}
 
         {/* Labor by Zone */}
-        <div className="mb-8">
-          <h4 className="text-sm font-bold uppercase tracking-wider mb-3" style={{ color: '#0f1f38' }}>
-            Labor — Detailed Breakdown by Zone
-          </h4>
+        <h3>LABOR — DETAILED BREAKDOWN BY ZONE</h3>
 
-          {zones.map((zone) => {
-            const zoneHours = zone.tasks.reduce((s, t) => s + t.annualHours, 0)
-            const zoneCost = zone.tasks.reduce((s, t) => s + t.laborCost, 0)
-            return (
-              <div key={zone.id} className="mb-4">
-                <div className="flex justify-between items-center mb-1 px-2 py-1 rounded" style={{ backgroundColor: '#f0f4f8' }}>
-                  <span className="font-semibold text-sm" style={{ color: '#0f1f38' }}>{zone.name}</span>
-                  <span className="text-xs text-gray-500">
-                    {zoneHours.toFixed(1)} hrs/yr | {$(zoneCost)}
-                  </span>
-                </div>
-                <table className="w-full border-collapse">
-                  <thead>
-                    <tr className="bg-gray-50">
-                      <th className="text-left px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Task</th>
-                      <th className="text-left px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Equipment/Method</th>
-                      <th className="text-right px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Area (SF)</th>
-                      <th className="text-left px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Frequency</th>
-                      <th className="text-right px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Hrs/Yr</th>
-                      <th className="text-right px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Annual Cost</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {zone.tasks.map((t) => (
-                      <tr key={t.id}>
-                        <td className="px-2 py-1 border border-gray-200 text-xs">{t.taskName}</td>
-                        <td className="px-2 py-1 border border-gray-200 text-xs text-gray-500">{t.equipment}</td>
-                        <td className="px-2 py-1 border border-gray-200 text-xs text-right font-mono">{t.sqft.toLocaleString()}</td>
-                        <td className="px-2 py-1 border border-gray-200 text-xs text-gray-500">{t.frequency.replace('_', 'x/')}</td>
-                        <td className="px-2 py-1 border border-gray-200 text-xs text-right font-mono">{t.annualHours.toFixed(1)}</td>
-                        <td className="px-2 py-1 border border-gray-200 text-xs text-right font-mono">{$(t.laborCost)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+        {zones.map((zone) => {
+          const zoneHours = zone.tasks.reduce((s, t) => s + t.annualHours, 0)
+          const zoneCost = zone.tasks.reduce((s, t) => s + t.laborCost, 0)
+          return (
+            <div key={zone.id} style={{ marginBottom: '12pt' }}>
+              <div style={{
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                padding: '5pt 10pt', background: '#DCE4F0', borderRadius: '3pt', marginBottom: '4pt'
+              }}>
+                <span style={{ fontWeight: 700, fontSize: '10pt', color: '#17355E' }}>{zone.name}</span>
+                <span style={{ fontSize: '8.5pt', color: '#555' }}>
+                  {zoneHours.toFixed(1)} hrs/yr | {fmt(zoneCost)}
+                </span>
               </div>
-            )
-          })}
+              <table>
+                <thead>
+                  <tr>
+                    <th>Task</th>
+                    <th>Equipment</th>
+                    <th style={{ textAlign: 'right' }}>Area (SF)</th>
+                    <th>Frequency</th>
+                    <th style={{ textAlign: 'right' }}>Hrs/Yr</th>
+                    <th style={{ textAlign: 'right' }}>Annual Cost</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {zone.tasks.map((t) => (
+                    <tr key={t.id}>
+                      <td>{t.taskName}</td>
+                      <td style={{ color: '#666' }}>{t.equipment}</td>
+                      <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{t.sqft.toLocaleString()}</td>
+                      <td style={{ color: '#666' }}>{t.frequency.replace('_', 'x/')}</td>
+                      <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{t.annualHours.toFixed(1)}</td>
+                      <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(t.laborCost)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )
+        })}
 
-          {/* Labor subtotal */}
-          <div className="flex justify-between px-2 py-2 font-semibold text-sm border-t-2" style={{ borderColor: '#0f1f38' }}>
-            <span>Total Labor</span>
-            <span>
-              {totalAnnualHours.toFixed(1)} hrs/yr | {$(totalLabor)}
-            </span>
-          </div>
-        </div>
+        {/* Labor Total */}
+        <table>
+          <tbody>
+            <tr className="subtotal-row">
+              <td>Total Labor</td>
+              <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>
+                {totalAnnualHours.toFixed(1)} hrs/yr
+              </td>
+              <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(totalLabor)}</td>
+            </tr>
+          </tbody>
+        </table>
 
         {/* Materials */}
         {materials.length > 0 && (
-          <div className="mb-8">
-            <h4 className="text-sm font-bold uppercase tracking-wider mb-3" style={{ color: '#0f1f38' }}>
-              Materials & Supplies
-            </h4>
-            <table className="w-full border-collapse">
+          <div style={{ marginTop: '16pt' }}>
+            <h3>MATERIALS & SUPPLIES</h3>
+            <table>
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Item</th>
-                  <th className="text-right px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Unit Cost</th>
-                  <th className="text-right px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Qty/Year</th>
-                  <th className="text-right px-2 py-1.5 text-xs font-semibold text-gray-600 border border-gray-200">Annual Cost</th>
+                <tr>
+                  <th>Item</th>
+                  <th style={{ textAlign: 'right' }}>Unit Cost</th>
+                  <th style={{ textAlign: 'right' }}>Qty/Year</th>
+                  <th style={{ textAlign: 'right' }}>Annual Cost</th>
                 </tr>
               </thead>
               <tbody>
                 {materials.map((m) => (
                   <tr key={m.id}>
-                    <td className="px-2 py-1 border border-gray-200 text-xs">{m.name}</td>
-                    <td className="px-2 py-1 border border-gray-200 text-xs text-right font-mono">{$(m.unitCost)}</td>
-                    <td className="px-2 py-1 border border-gray-200 text-xs text-right font-mono">{m.quantity} {m.unit}</td>
-                    <td className="px-2 py-1 border border-gray-200 text-xs text-right font-mono">{$(m.unitCost * m.quantity)}</td>
+                    <td>{m.name}</td>
+                    <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(m.unitCost)}</td>
+                    <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{m.quantity} {m.unit}</td>
+                    <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(m.unitCost * m.quantity)}</td>
                   </tr>
                 ))}
-              </tbody>
-              <tfoot>
-                <tr className="font-semibold bg-gray-50">
-                  <td colSpan={3} className="px-2 py-1.5 border border-gray-200 text-xs">Materials Subtotal</td>
-                  <td className="px-2 py-1.5 border border-gray-200 text-xs text-right font-mono">{$(totalMaterials)}</td>
+                <tr className="subtotal-row">
+                  <td colSpan={3}>Materials Subtotal</td>
+                  <td style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(totalMaterials)}</td>
                 </tr>
-              </tfoot>
+              </tbody>
             </table>
           </div>
         )}
 
-        {/* Cost Summary */}
-        <div className="mb-8 rounded-lg overflow-hidden" style={{ border: '2px solid #0f1f38' }}>
-          <div className="px-4 py-2 text-white text-sm font-bold" style={{ backgroundColor: '#0f1f38' }}>
+        {/* Cost Summary Box */}
+        <div style={{ marginTop: '16pt', border: '2pt solid #17355E', borderRadius: '4pt', overflow: 'hidden' }}>
+          <div style={{ background: '#17355E', color: 'white', padding: '8pt 12pt', fontSize: '11pt', fontWeight: 700 }}>
             Cost Summary
           </div>
-          <div className="p-4">
-            <table className="w-full text-sm">
+          <div style={{ padding: '12pt 16pt' }}>
+            <table style={{ width: '100%', marginBottom: 0 }}>
               <tbody>
                 <tr>
-                  <td className="py-1 text-gray-700">Annual Labor</td>
-                  <td className="py-1 text-right font-mono font-semibold">{$(totalLabor)}</td>
+                  <td style={{ padding: '4pt 0', color: '#333', border: 'none' }}>Annual Labor</td>
+                  <td style={{ padding: '4pt 0', textAlign: 'right', fontWeight: 600, fontVariantNumeric: 'tabular-nums', border: 'none' }}>{fmt(totalLabor)}</td>
                 </tr>
                 {totalMaterials > 0 && (
                   <tr>
-                    <td className="py-1 text-gray-700">Annual Materials</td>
-                    <td className="py-1 text-right font-mono font-semibold">{$(totalMaterials)}</td>
+                    <td style={{ padding: '4pt 0', color: '#333', border: 'none' }}>Annual Materials</td>
+                    <td style={{ padding: '4pt 0', textAlign: 'right', fontWeight: 600, fontVariantNumeric: 'tabular-nums', border: 'none' }}>{fmt(totalMaterials)}</td>
                   </tr>
                 )}
-                <tr className="border-t-2" style={{ borderColor: '#0f1f38' }}>
-                  <td className="py-2 font-bold text-base" style={{ color: '#0f1f38' }}>Annual Total</td>
-                  <td className="py-2 text-right font-mono font-bold text-lg" style={{ color: '#0f1f38' }}>
-                    {$(grandTotal)}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-1 text-gray-500">Monthly Equivalent</td>
-                  <td className="py-1 text-right font-mono text-gray-600">{$(monthlyTotal)}</td>
-                </tr>
               </tbody>
             </table>
+            <div style={{ borderTop: '2pt solid #17355E', marginTop: '6pt', paddingTop: '8pt', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontSize: '12pt', fontWeight: 700, color: '#17355E' }}>Annual Total</span>
+              <span style={{ fontSize: '14pt', fontWeight: 700, color: '#17355E', fontVariantNumeric: 'tabular-nums' }}>{fmt(grandTotal)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4pt' }}>
+              <span style={{ fontSize: '9pt', color: '#666' }}>Monthly Equivalent</span>
+              <span style={{ fontSize: '9pt', color: '#444', fontVariantNumeric: 'tabular-nums' }}>{fmt(monthlyTotal)}</span>
+            </div>
           </div>
         </div>
 
-        {/* Burden footnote */}
-        {burdenProfileName && (
-          <p className="text-xs text-gray-400 mb-4">
-            * Labor rates computed from burden profile: "{burdenProfileName}"
-          </p>
-        )}
-
         {/* Assumptions */}
         {assumptions.length > 0 && (
-          <div className="mb-8">
-            <h4 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: '#0f1f38' }}>
-              Assumptions & Conditions
-            </h4>
-            <ol className="text-xs text-gray-600 list-decimal pl-4 space-y-1">
+          <div style={{ marginTop: '16pt' }}>
+            <h3>ASSUMPTIONS & CONDITIONS</h3>
+            <ol style={{ fontSize: '9pt', color: '#444', paddingLeft: '14pt', margin: 0, lineHeight: 1.6 }}>
               {assumptions.map((a, i) => (
-                <li key={i}>{a}</li>
+                <li key={i} style={{ marginBottom: '3pt' }}>{a}</li>
               ))}
             </ol>
           </div>
         )}
 
         {/* Signature blocks */}
-        <div className="grid grid-cols-2 gap-10 mt-12">
+        <div className="signatures">
           <div>
-            <div className="border-b border-gray-400 mb-1 h-12" />
-            <p className="text-xs text-gray-600 font-semibold">Authorized Representative — Contractor</p>
+            <div className="sig-line" />
+            <div className="sig-name">Authorized Representative — Contractor</div>
             {company.contactName && (
-              <p className="text-xs text-gray-500 mt-1">
+              <div style={{ fontSize: '9pt', color: '#333', marginTop: '4pt' }}>
                 {company.contactName}{company.contactTitle && `, ${company.contactTitle}`}
-              </p>
+              </div>
             )}
-            <p className="text-xs text-gray-400 mt-1">Date: _______________</p>
+            <div style={{ fontSize: '8.5pt', color: '#666', marginTop: '4pt' }}>Date: _______________</div>
           </div>
           <div>
-            <div className="border-b border-gray-400 mb-1 h-12" />
-            <p className="text-xs text-gray-600 font-semibold">Authorized Representative — Client</p>
-            <p className="text-xs text-gray-400 mt-1">Name: _______________</p>
-            <p className="text-xs text-gray-400 mt-1">Date: _______________</p>
+            <div className="sig-line" />
+            <div className="sig-name">Authorized Representative — Client</div>
+            <div style={{ fontSize: '8.5pt', color: '#666', marginTop: '4pt' }}>Name: _______________</div>
+            <div style={{ fontSize: '8.5pt', color: '#666', marginTop: '4pt' }}>Date: _______________</div>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-10 pt-4 border-t border-gray-200 flex justify-between items-center">
-          <div className="text-xs text-gray-400">
-            {company.name || 'Your Company'}{' '}
-            {company.contactPhone && `| ${company.contactPhone}`}{' '}
-            {company.contactEmail && `| ${company.contactEmail}`}
-          </div>
-          <div className="text-xs text-gray-300">Generated by BidCraft AI</div>
+        <div className="doc-footer">
+          {company.name || 'Your Company'}
+          {company.contactPhone && ` | ${company.contactPhone}`}
+          {company.contactEmail && ` | ${company.contactEmail}`}
+          <br />
+          Generated by BidCraft AI
         </div>
       </div>
     </div>

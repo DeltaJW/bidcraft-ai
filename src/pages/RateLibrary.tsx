@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, Search, Plus, Trash2, ChevronDown, ChevronRight, RotateCcw } from 'lucide-react'
+import { BookOpen, Search, Plus, Trash2, ChevronDown, ChevronRight, RotateCcw, Download, Upload } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { toast } from '@/components/Toast'
 import { rateLibraryStore, useStore } from '@/data/mockStore'
 import { DEFAULT_RATES, RATE_CATEGORIES } from '@/data/defaultRates'
 import type { RateItem } from '@/types'
@@ -89,6 +90,48 @@ export default function RateLibrary() {
 
   const customCount = library.rates.filter((r) => r.isCustom).length
   const totalCount = library.rates.length
+  const importRef = useRef<HTMLInputElement>(null)
+
+  function handleExportRates() {
+    const data = {
+      app: 'BidCraft AI',
+      type: 'rate_library',
+      exportedAt: new Date().toISOString(),
+      rates: library.rates,
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `bidcraft-rates-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    toast('Rate library exported')
+  }
+
+  function handleImportRates(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string)
+        if (data.app !== 'BidCraft AI' || data.type !== 'rate_library' || !Array.isArray(data.rates)) {
+          toast('Not a valid BidCraft rate library file', 'error')
+          return
+        }
+        rateLibraryStore.update((lib) => ({
+          ...lib,
+          rates: data.rates,
+        }))
+        toast(`Imported ${data.rates.length} rates`)
+      } catch {
+        toast('Invalid file format', 'error')
+      }
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
 
   function formatRate(r: RateItem): string {
     // Restrooms and per-unit items have low sqft values — show as "units/hr"
@@ -106,9 +149,18 @@ export default function RateLibrary() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <BookOpen className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-white">Rate Library</h1>
+          <h1 className="text-2xl font-bold text-text-primary">Rate Library</h1>
         </div>
         <div className="flex gap-2">
+          <button className="btn btn-ghost" onClick={handleExportRates}>
+            <Download className="w-4 h-4" />
+            Export
+          </button>
+          <button className="btn btn-ghost" onClick={() => importRef.current?.click()}>
+            <Upload className="w-4 h-4" />
+            Import
+          </button>
+          <input ref={importRef} type="file" accept=".json" onChange={handleImportRates} className="hidden" />
           {customCount > 0 && (
             <button className="btn btn-ghost" onClick={resetToDefaults}>
               <RotateCcw className="w-4 h-4" />
@@ -124,7 +176,7 @@ export default function RateLibrary() {
 
       {/* Search */}
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-navy-500" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
         <input
           className="pl-10"
           placeholder="Search tasks, equipment, or categories..."
@@ -133,7 +185,7 @@ export default function RateLibrary() {
         />
       </div>
 
-      <p className="text-xs text-navy-500 mb-4">
+      <p className="text-xs text-text-tertiary mb-4">
         {totalCount} industry-standard field-validated cleaning production rates{customCount > 0 ? ` (${customCount} custom)` : ''}. Click any value to edit.
       </p>
 
@@ -144,16 +196,16 @@ export default function RateLibrary() {
             {/* Category header */}
             <button
               onClick={() => toggleCategory(cat)}
-              className="w-full flex items-center justify-between p-4 text-left hover:bg-navy-800/30 transition-colors cursor-pointer border-none bg-transparent text-white"
+              className="w-full flex items-center justify-between p-4 text-left hover:bg-surface-2 transition-colors cursor-pointer border-none bg-transparent text-text-primary"
             >
               <div className="flex items-center gap-2">
                 {expandedCats.has(cat) ? (
-                  <ChevronDown className="w-4 h-4 text-navy-400" />
+                  <ChevronDown className="w-4 h-4 text-text-tertiary" />
                 ) : (
-                  <ChevronRight className="w-4 h-4 text-navy-400" />
+                  <ChevronRight className="w-4 h-4 text-text-tertiary" />
                 )}
                 <span className="font-semibold text-sm">{cat}</span>
-                <span className="text-xs text-navy-500 ml-2">{rates.length} rates</span>
+                <span className="text-xs text-text-tertiary ml-2">{rates.length} rates</span>
               </div>
             </button>
 
@@ -169,7 +221,7 @@ export default function RateLibrary() {
                 >
                   <table className="w-full text-sm">
                     <thead>
-                      <tr className="border-t border-navy-700/30 text-xs text-navy-500">
+                      <tr className="border-t border-border-subtle text-xs text-text-tertiary">
                         <th className="text-left px-4 py-2 font-medium">Task</th>
                         <th className="text-left px-4 py-2 font-medium">Equipment</th>
                         <th className="text-left px-4 py-2 font-medium">Method</th>
@@ -182,7 +234,7 @@ export default function RateLibrary() {
                       {rates.map((r) => (
                         <tr
                           key={r.id}
-                          className={`border-t border-navy-700/20 hover:bg-navy-800/20 transition-colors ${
+                          className={`border-t border-border-subtle hover:bg-surface-2 transition-colors ${
                             r.isCustom ? 'bg-accent/5' : ''
                           }`}
                         >
@@ -204,8 +256,8 @@ export default function RateLibrary() {
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-2 text-navy-300">{r.equipment}</td>
-                          <td className="px-4 py-2 text-navy-400">{r.method}</td>
+                          <td className="px-4 py-2 text-text-secondary">{r.equipment}</td>
+                          <td className="px-4 py-2 text-text-tertiary">{r.method}</td>
                           <td className="px-4 py-2 text-right font-mono text-accent">
                             {editingId === r.id ? (
                               <input
@@ -218,14 +270,14 @@ export default function RateLibrary() {
                               />
                             ) : (
                               <span
-                                className="cursor-pointer hover:text-white transition-colors"
+                                className="cursor-pointer hover:text-text-primary transition-colors"
                                 onClick={() => setEditingId(r.id)}
                               >
                                 {formatRate(r)}
                               </span>
                             )}
                           </td>
-                          <td className="px-4 py-2 text-right text-navy-400 font-mono text-xs">
+                          <td className="px-4 py-2 text-right text-text-tertiary font-mono text-xs">
                             {r.overheadMultiplier > 1
                               ? `${((r.overheadMultiplier - 1) * 100).toFixed(0)}%`
                               : '—'}
@@ -234,7 +286,7 @@ export default function RateLibrary() {
                             {r.isCustom && (
                               <button
                                 onClick={() => deleteRate(r.id)}
-                                className="p-1 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
+                                className="p-1 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
                               >
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>

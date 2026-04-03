@@ -41,181 +41,182 @@ const QuotePreview = forwardRef<HTMLDivElement, Props>(function QuotePreview(
   })
 
   return (
-    <div
-      ref={ref}
-      className="max-w-3xl mx-auto bg-white text-gray-900 p-10 rounded-lg shadow-lg"
-      style={{ fontFamily: "'IBM Plex Sans', sans-serif", fontSize: '13px', lineHeight: '1.5' }}
-    >
-      {/* Header */}
-      <div className="flex justify-between items-start border-b-2 border-navy-800 pb-4 mb-6">
+    <div ref={ref} className="print-quote max-w-3xl mx-auto bg-white p-10 rounded-lg shadow-lg">
+      {/* Letterhead Header */}
+      <div className="quote-header">
         <div className="flex items-center gap-4">
           {company.logoUrl && (
-            <img src={company.logoUrl} alt="" className="w-16 h-16 object-contain" />
+            <img src={company.logoUrl} alt="" style={{ height: '44pt', objectFit: 'contain' }} />
           )}
           <div>
-            <h1 className="text-xl font-bold text-navy-900">
+            <h1 style={{ fontFamily: 'Georgia, serif', fontSize: '18pt', fontWeight: 700, color: '#17355E', margin: 0 }}>
               {company.name || 'Your Company Name'}
             </h1>
-            {company.address && (
-              <p className="text-gray-500 text-xs">{company.address}</p>
-            )}
-            {(company.cageCode || company.uei) && (
-              <p className="text-gray-500 text-xs mt-0.5">
-                {company.cageCode && `CAGE: ${company.cageCode}`}
-                {company.cageCode && company.uei && ' | '}
-                {company.uei && `UEI: ${company.uei}`}
-              </p>
-            )}
             {company.setAside && (
-              <p className="text-xs mt-0.5">
-                <span className="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-xs font-medium">
-                  {company.setAside}
-                </span>
-              </p>
+              <span style={{ display: 'inline-block', background: '#17355E', color: 'white', padding: '2pt 8pt', borderRadius: '3pt', fontSize: '8pt', fontWeight: 600, marginTop: '4pt' }}>
+                {company.setAside}
+              </span>
             )}
           </div>
         </div>
-        <div className="text-right">
-          <h2 className="text-lg font-bold text-navy-900">QUOTE</h2>
-          <p className="text-gray-500 text-xs">Date: {today}</p>
-          {contractRef && (
-            <p className="text-gray-500 text-xs">Ref: {contractRef}</p>
-          )}
+        <div className="company-info">
+          {company.address && <div>{company.address}</div>}
+          {company.cageCode && <div>CAGE: {company.cageCode}</div>}
+          {company.uei && <div>UEI: {company.uei}</div>}
+          {company.contactPhone && <div>{company.contactPhone}</div>}
+          {company.contactEmail && <div>{company.contactEmail}</div>}
         </div>
       </div>
 
+      {/* Document Title */}
+      <h2>COST ESTIMATE / QUOTE</h2>
+
+      {/* Contract Info Grid */}
+      <div className="info-grid">
+        <span className="info-label">Date:</span>
+        <span className="info-value">{today}</span>
+        {contractRef && (
+          <>
+            <span className="info-label">Contract/PO Ref:</span>
+            <span className="info-value">{contractRef}</span>
+          </>
+        )}
+        {location && (
+          <>
+            <span className="info-label">Location:</span>
+            <span className="info-value">{location}</span>
+          </>
+        )}
+        {burdenProfileName && (
+          <>
+            <span className="info-label">Rate Profile:</span>
+            <span className="info-value">{burdenProfileName}</span>
+          </>
+        )}
+      </div>
+
       {/* Quote Title */}
-      <h3 className="text-base font-bold text-navy-900 mb-1">{title || 'Task Order Quote'}</h3>
-      {location && <p className="text-gray-600 text-xs mb-3">Location: {location}</p>}
+      <p style={{ fontSize: '12pt', fontWeight: 700, color: '#17355E', marginBottom: '8pt' }}>
+        {title || 'Task Order Quote'}
+      </p>
 
       {/* Scope */}
       {scopeDescription && (
-        <div className="mb-5">
-          <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-1">
-            Scope of Work
-          </h4>
-          <p className="text-gray-600">{scopeDescription}</p>
+        <div style={{ marginBottom: '14pt' }}>
+          <h3>SCOPE OF WORK</h3>
+          <p>{scopeDescription}</p>
         </div>
       )}
 
       {/* Labor Table */}
-      <div className="mb-5">
-        <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-          Labor
-        </h4>
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="text-left px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Task</th>
-              <th className="text-left px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Equipment</th>
-              <th className="text-right px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Sq Ft</th>
-              <th className="text-right px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Hours</th>
-              <th className="text-right px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Cost</th>
+      <h3>LABOR</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Equipment</th>
+            <th className="numeric" style={{ textAlign: 'right' }}>Area (SF)</th>
+            <th className="numeric" style={{ textAlign: 'right' }}>Hours</th>
+            <th className="numeric" style={{ textAlign: 'right' }}>Cost</th>
+          </tr>
+        </thead>
+        <tbody>
+          {tasks.map((t) => (
+            <tr key={t.id}>
+              <td>{t.taskName}</td>
+              <td style={{ color: '#666' }}>{t.equipment}</td>
+              <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{t.sqft.toLocaleString()}</td>
+              <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{t.hours.toFixed(2)}</td>
+              <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${t.laborCost.toFixed(2)}</td>
             </tr>
-          </thead>
-          <tbody>
-            {tasks.map((t) => (
-              <tr key={t.id}>
-                <td className="px-3 py-1.5 border border-gray-200">{t.taskName}</td>
-                <td className="px-3 py-1.5 border border-gray-200 text-gray-500">{t.equipment}</td>
-                <td className="px-3 py-1.5 border border-gray-200 text-right font-mono">{t.sqft.toLocaleString()}</td>
-                <td className="px-3 py-1.5 border border-gray-200 text-right font-mono">{t.hours.toFixed(2)}</td>
-                <td className="px-3 py-1.5 border border-gray-200 text-right font-mono">${t.laborCost.toFixed(2)}</td>
-              </tr>
-            ))}
-            <tr className="bg-gray-50 font-semibold">
-              <td colSpan={3} className="px-3 py-2 border border-gray-200">Labor Subtotal</td>
-              <td className="px-3 py-2 border border-gray-200 text-right font-mono">{totalHours.toFixed(2)}</td>
-              <td className="px-3 py-2 border border-gray-200 text-right font-mono">${totalLabor.toFixed(2)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          ))}
+          <tr className="subtotal-row">
+            <td colSpan={3}>Labor Subtotal</td>
+            <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{totalHours.toFixed(2)}</td>
+            <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${totalLabor.toFixed(2)}</td>
+          </tr>
+        </tbody>
+      </table>
 
       {/* Materials Table */}
       {materials.length > 0 && (
-        <div className="mb-5">
-          <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-            Materials
-          </h4>
-          <table className="w-full border-collapse">
+        <>
+          <h3>MATERIALS & SUPPLIES</h3>
+          <table>
             <thead>
-              <tr className="bg-gray-100">
-                <th className="text-left px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Item</th>
-                <th className="text-right px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Unit Cost</th>
-                <th className="text-right px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Qty</th>
-                <th className="text-right px-3 py-2 text-xs font-semibold text-gray-700 border border-gray-200">Total</th>
+              <tr>
+                <th>Item</th>
+                <th className="numeric" style={{ textAlign: 'right' }}>Unit Cost</th>
+                <th className="numeric" style={{ textAlign: 'right' }}>Qty</th>
+                <th className="numeric" style={{ textAlign: 'right' }}>Total</th>
               </tr>
             </thead>
             <tbody>
               {materials.map((m) => (
                 <tr key={m.id}>
-                  <td className="px-3 py-1.5 border border-gray-200">{m.name}</td>
-                  <td className="px-3 py-1.5 border border-gray-200 text-right font-mono">${m.unitCost.toFixed(2)}</td>
-                  <td className="px-3 py-1.5 border border-gray-200 text-right font-mono">{m.quantity} {m.unit}</td>
-                  <td className="px-3 py-1.5 border border-gray-200 text-right font-mono">${(m.unitCost * m.quantity).toFixed(2)}</td>
+                  <td>{m.name}</td>
+                  <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${m.unitCost.toFixed(2)}</td>
+                  <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{m.quantity} {m.unit}</td>
+                  <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${(m.unitCost * m.quantity).toFixed(2)}</td>
                 </tr>
               ))}
-              <tr className="bg-gray-50 font-semibold">
-                <td colSpan={3} className="px-3 py-2 border border-gray-200">Materials Subtotal</td>
-                <td className="px-3 py-2 border border-gray-200 text-right font-mono">${totalMaterials.toFixed(2)}</td>
+              <tr className="subtotal-row">
+                <td colSpan={3}>Materials Subtotal</td>
+                <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${totalMaterials.toFixed(2)}</td>
               </tr>
             </tbody>
           </table>
-        </div>
+        </>
       )}
 
       {/* Grand Total */}
-      <div className="bg-navy-900 text-white rounded-lg p-4 flex justify-between items-center mb-6"
-        style={{ backgroundColor: '#0f1f38' }}
-      >
-        <span className="font-bold text-base">TOTAL QUOTE</span>
-        <span className="text-2xl font-bold font-mono">${grandTotal.toFixed(2)}</span>
-      </div>
+      <table style={{ marginTop: '10pt' }}>
+        <tbody>
+          <tr className="total-row">
+            <td>TOTAL QUOTE</td>
+            <td className="numeric" style={{ textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>${grandTotal.toFixed(2)}</td>
+          </tr>
+        </tbody>
+      </table>
 
-      {/* Burden footnote */}
-      {burdenProfileName && (
-        <p className="text-xs text-gray-400 mb-4">
-          * Labor rates based on burden profile: {burdenProfileName}
-        </p>
-      )}
-
-      {/* Assumptions */}
-      <div className="mb-6">
-        <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-          Terms & Conditions
-        </h4>
-        <ul className="text-xs text-gray-600 list-disc pl-4 space-y-1">
-          <li>Quote valid for 30 days from date of issue</li>
-          <li>Prices based on standard business hours; overtime rates may apply</li>
-          <li>Materials pricing subject to supplier availability</li>
-          <li>Additional work beyond stated scope will be quoted separately</li>
+      {/* Terms */}
+      <div style={{ marginTop: '16pt' }}>
+        <h3>TERMS & CONDITIONS</h3>
+        <ul style={{ fontSize: '9pt', color: '#444', paddingLeft: '14pt', margin: 0 }}>
+          <li style={{ marginBottom: '3pt' }}>Quote valid for 30 days from date of issue</li>
+          <li style={{ marginBottom: '3pt' }}>Prices based on standard business hours; overtime rates may apply</li>
+          <li style={{ marginBottom: '3pt' }}>Materials pricing subject to supplier availability</li>
+          <li style={{ marginBottom: '3pt' }}>Additional work beyond stated scope will be quoted separately</li>
         </ul>
       </div>
 
       {/* Signature blocks */}
-      <div className="grid grid-cols-2 gap-8 mt-10">
+      <div className="signatures">
         <div>
-          <div className="border-b border-gray-300 mb-1 h-10" />
-          <p className="text-xs text-gray-500">Authorized Signature — Contractor</p>
+          <div className="sig-line" />
+          <div className="sig-name">Authorized Signature — Contractor</div>
           {company.contactName && (
-            <p className="text-xs text-gray-700 mt-1">{company.contactName}, {company.contactTitle}</p>
+            <div style={{ fontSize: '9pt', color: '#333', marginTop: '4pt' }}>
+              {company.contactName}{company.contactTitle && `, ${company.contactTitle}`}
+            </div>
           )}
+          <div style={{ fontSize: '8.5pt', color: '#666', marginTop: '4pt' }}>Date: _______________</div>
         </div>
         <div>
-          <div className="border-b border-gray-300 mb-1 h-10" />
-          <p className="text-xs text-gray-500">Authorized Signature — Client</p>
+          <div className="sig-line" />
+          <div className="sig-name">Authorized Signature — Client</div>
+          <div style={{ fontSize: '8.5pt', color: '#666', marginTop: '4pt' }}>Name: _______________</div>
+          <div style={{ fontSize: '8.5pt', color: '#666', marginTop: '4pt' }}>Date: _______________</div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-8 pt-4 border-t border-gray-200 text-center">
-        <p className="text-xs text-gray-400">
-          {company.name || 'Your Company'}{' '}
-          {company.contactPhone && `| ${company.contactPhone}`}{' '}
-          {company.contactEmail && `| ${company.contactEmail}`}
-        </p>
-        <p className="text-xs text-gray-300 mt-1">Generated by BidCraft AI</p>
+      <div className="doc-footer">
+        {company.name || 'Your Company'}
+        {company.contactPhone && ` | ${company.contactPhone}`}
+        {company.contactEmail && ` | ${company.contactEmail}`}
+        <br />
+        Generated by BidCraft AI
       </div>
     </div>
   )

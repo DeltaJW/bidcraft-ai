@@ -6,7 +6,7 @@ import { quotesStore, useStore } from '@/data/mockStore'
 import type { Quote } from '@/types'
 
 const STATUS_STYLES: Record<string, string> = {
-  draft: 'bg-navy-700/30 text-navy-300',
+  draft: 'bg-surface-3 text-text-secondary',
   sent: 'bg-blue-500/15 text-blue-400',
   accepted: 'bg-emerald-500/15 text-emerald-400',
   rejected: 'bg-red-500/15 text-red-400',
@@ -72,8 +72,8 @@ export default function SavedQuotes() {
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <FolderOpen className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-white">Saved Quotes</h1>
-          <span className="text-sm text-navy-500">{quotes.length} total</span>
+          <h1 className="text-2xl font-bold text-text-primary">Saved Quotes</h1>
+          <span className="text-sm text-text-tertiary">{quotes.length} total</span>
         </div>
       </div>
 
@@ -86,8 +86,8 @@ export default function SavedQuotes() {
                 <FileText className="w-4 h-4 text-accent" />
               </div>
               <div>
-                <div className="text-lg font-bold text-white">{filtered.length}</div>
-                <div className="text-xs text-navy-500">Showing</div>
+                <div className="text-lg font-bold text-text-primary">{filtered.length}</div>
+                <div className="text-xs text-text-tertiary">Showing</div>
               </div>
             </GlassCard>
             <GlassCard className="!p-4 flex items-center gap-3">
@@ -95,10 +95,10 @@ export default function SavedQuotes() {
                 <DollarSign className="w-4 h-4 text-accent" />
               </div>
               <div>
-                <div className="text-lg font-bold text-white">
+                <div className="text-lg font-bold text-text-primary">
                   ${totalValue >= 1000 ? `${(totalValue / 1000).toFixed(0)}K` : totalValue.toFixed(0)}
                 </div>
-                <div className="text-xs text-navy-500">Total Value</div>
+                <div className="text-xs text-text-tertiary">Total Value</div>
               </div>
             </GlassCard>
             <GlassCard className="!p-4 flex items-center gap-3">
@@ -106,17 +106,17 @@ export default function SavedQuotes() {
                 <DollarSign className="w-4 h-4 text-emerald-400" />
               </div>
               <div>
-                <div className="text-lg font-bold text-white">
+                <div className="text-lg font-bold text-text-primary">
                   ${acceptedValue >= 1000 ? `${(acceptedValue / 1000).toFixed(0)}K` : acceptedValue.toFixed(0)}
                 </div>
-                <div className="text-xs text-navy-500">Won Value</div>
+                <div className="text-xs text-text-tertiary">Won Value</div>
               </div>
             </GlassCard>
           </div>
 
           {/* Filters */}
           <div className="flex items-center gap-3 mb-4">
-            <Filter className="w-4 h-4 text-navy-500" />
+            <Filter className="w-4 h-4 text-text-tertiary" />
             <select
               className="!w-32 !text-xs !py-1.5"
               value={filterStatus}
@@ -143,15 +143,15 @@ export default function SavedQuotes() {
 
       {quotes.length === 0 ? (
         <GlassCard className="text-center py-16">
-          <FolderOpen className="w-12 h-12 text-navy-600 mx-auto mb-4" />
-          <p className="text-navy-400 text-lg mb-2">No saved quotes yet</p>
-          <p className="text-navy-500 text-sm">
+          <FolderOpen className="w-12 h-12 text-text-disabled mx-auto mb-4" />
+          <p className="text-text-tertiary text-lg mb-2">No saved quotes yet</p>
+          <p className="text-text-tertiary text-sm">
             Create a Task Order Quote or Full Proposal and click "Save" to see it here
           </p>
         </GlassCard>
       ) : filtered.length === 0 ? (
         <GlassCard className="text-center py-12">
-          <p className="text-navy-400">No quotes match your filters</p>
+          <p className="text-text-tertiary">No quotes match your filters</p>
         </GlassCard>
       ) : (
         <div className="flex flex-col gap-3">
@@ -165,12 +165,12 @@ export default function SavedQuotes() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="text-sm font-semibold text-white truncate">{q.title}</h3>
+                      <h3 className="text-sm font-semibold text-text-primary truncate">{q.title}</h3>
                       <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_STYLES[q.status]}`}>
                         {q.status}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-navy-500">
+                    <div className="flex items-center gap-4 text-xs text-text-tertiary">
                       <span className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {formatDate(q.createdAt)}
@@ -185,7 +185,7 @@ export default function SavedQuotes() {
                       <DollarSign className="w-4 h-4" />
                       {q.grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                     </div>
-                    <div className="text-xs text-navy-500">
+                    <div className="text-xs text-text-tertiary">
                       {q.totalHours.toFixed(1)} hrs
                     </div>
                   </div>
@@ -201,14 +201,14 @@ export default function SavedQuotes() {
                       <option value="rejected">Rejected</option>
                     </select>
                     <button
-                      className="p-1.5 text-navy-500 hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+                      className="p-1.5 text-text-tertiary hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
                       onClick={() => duplicateQuote(q)}
                       title="Duplicate"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
                     <button
-                      className="p-1.5 text-navy-600 hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
+                      className="p-1.5 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
                       onClick={() => deleteQuote(q.id)}
                       title="Delete"
                     >

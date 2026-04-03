@@ -10,7 +10,7 @@ export default function AppLayout() {
     <div className="flex min-h-screen">
       {/* Mobile menu button */}
       <button
-        className="fixed top-4 left-4 z-[60] lg:hidden p-2 rounded-lg bg-navy-900/80 backdrop-blur border border-navy-700/30 text-navy-300 cursor-pointer no-print"
+        className="fixed top-4 left-4 z-[60] lg:hidden p-2 rounded-lg bg-surface-1 border border-border-default text-text-secondary cursor-pointer no-print"
         onClick={() => setMobileOpen(!mobileOpen)}
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -24,7 +24,7 @@ export default function AppLayout() {
         />
       )}
 
-      {/* Sidebar — always visible on lg+, toggleable on mobile */}
+      {/* Sidebar */}
       <div
         className={`fixed z-50 lg:relative lg:translate-x-0 transition-transform ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
