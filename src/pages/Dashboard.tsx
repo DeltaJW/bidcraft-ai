@@ -45,12 +45,12 @@ const slideInLeft = {
 }
 
 const SHORTCUTS = [
-  { to: '/company', icon: Building2, label: 'Company Profile', color: 'text-blue-400', bg: 'bg-blue-400/8' },
-  { to: '/rates', icon: BookOpen, label: 'Rate Library', color: 'text-emerald-400', bg: 'bg-emerald-400/8' },
-  { to: '/burden', icon: Calculator, label: 'Burden Builder', color: 'text-amber-400', bg: 'bg-amber-400/8' },
-  { to: '/workload', icon: ClipboardList, label: 'Workloading', color: 'text-purple-400', bg: 'bg-purple-400/8' },
-  { to: '/quote', icon: FileText, label: 'Task Order', color: 'text-rose-400', bg: 'bg-rose-400/8' },
-  { to: '/proposal', icon: FileStack, label: 'Full Proposal', color: 'text-cyan-400', bg: 'bg-cyan-400/8' },
+  { to: '/company', icon: Building2, label: 'Company Profile' },
+  { to: '/rates', icon: BookOpen, label: 'Rate Library' },
+  { to: '/burden', icon: Calculator, label: 'Burden Builder' },
+  { to: '/workload', icon: ClipboardList, label: 'Workloading' },
+  { to: '/quote', icon: FileText, label: 'Task Order' },
+  { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
 ]
 
 export default function Dashboard() {
@@ -63,42 +63,10 @@ export default function Dashboard() {
   const winRate = quotes.length > 0 ? Math.round((acceptedCount / quotes.length) * 100) : 0
 
   const stats = [
-    {
-      label: 'Quotes',
-      value: quotes.length,
-      icon: FolderOpen,
-      color: 'text-accent',
-      numColor: 'text-accent',
-      border: 'border-l-accent',
-      bg: 'bg-accent/5',
-    },
-    {
-      label: 'Total Quoted',
-      value: totalQuoted >= 1000 ? `$${(totalQuoted / 1000).toFixed(0)}K` : `$${totalQuoted.toFixed(0)}`,
-      icon: TrendingUp,
-      color: 'text-emerald-400',
-      numColor: 'text-emerald-400',
-      border: 'border-l-emerald-400',
-      bg: 'bg-emerald-400/5',
-    },
-    {
-      label: 'Accepted',
-      value: acceptedCount,
-      icon: CheckCircle,
-      color: 'text-cyan-400',
-      numColor: 'text-cyan-400',
-      border: 'border-l-cyan-400',
-      bg: 'bg-cyan-400/5',
-    },
-    {
-      label: 'Win Rate',
-      value: `${winRate}%`,
-      icon: TrendingUp,
-      color: 'text-amber-400',
-      numColor: 'text-amber-400',
-      border: 'border-l-amber-400',
-      bg: 'bg-amber-400/5',
-    },
+    { label: 'Quotes', value: quotes.length, icon: FolderOpen },
+    { label: 'Total Quoted', value: totalQuoted >= 1000 ? `$${(totalQuoted / 1000).toFixed(0)}K` : `$${totalQuoted.toFixed(0)}`, icon: TrendingUp },
+    { label: 'Accepted', value: acceptedCount, icon: CheckCircle },
+    { label: 'Win Rate', value: `${winRate}%`, icon: TrendingUp },
   ]
 
   return (
@@ -144,12 +112,12 @@ export default function Dashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
         {stats.map((s) => (
           <motion.div key={s.label} variants={scaleIn}>
-            <div className={`rounded-lg border border-border-subtle border-l-[3px] ${s.border} ${s.bg} p-4`}>
+            <div className="stat-card p-4">
               <div className="flex items-center justify-between mb-3">
-                <s.icon className={`w-4 h-4 ${s.color}`} />
+                <s.icon className="w-4 h-4 text-accent" />
                 <span className="text-[10px] tracking-widest uppercase font-semibold text-text-disabled">{s.label}</span>
               </div>
-              <div className={`font-mono text-2xl font-bold tracking-tight ${s.numColor}`}>
+              <div className="font-mono text-2xl font-bold text-text-primary tracking-tight">
                 {s.value}
               </div>
             </div>
@@ -232,8 +200,8 @@ export default function Dashboard() {
           {SHORTCUTS.map((s) => (
             <motion.div key={s.to} variants={scaleIn}>
               <Link to={s.to} className="block no-underline group">
-                <div className={`stat-card p-3 text-center hover:border-border-default transition-colors ${s.bg}`}>
-                  <s.icon className={`w-4 h-4 ${s.color} mx-auto mb-2 group-hover:scale-110 transition-transform`} />
+                <div className="stat-card p-3 text-center hover:border-border-default transition-colors">
+                  <s.icon className="w-4 h-4 text-accent mx-auto mb-2 group-hover:scale-110 transition-transform" />
                   <span className="text-[11px] font-medium text-text-secondary group-hover:text-text-primary transition-colors">{s.label}</span>
                 </div>
               </Link>

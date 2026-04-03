@@ -106,12 +106,7 @@ const NAV_SECTIONS: NavSection[] = [
   },
 ]
 
-const SECTION_COLORS: Record<string, string> = {
-  'Setup': 'text-emerald-400',
-  'Intelligence': 'text-cyan-400',
-  'Proposals': 'text-amber-400',
-  'Analysis': 'text-purple-400',
-}
+
 
 export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const location = useLocation()
@@ -169,7 +164,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                   <button
                     onClick={() => toggleSection(sIdx)}
                     className={`w-full flex items-center justify-between px-2.5 py-1 text-[10px] font-semibold uppercase tracking-widest cursor-pointer bg-transparent border-none ${
-                      SECTION_COLORS[section.title] || (hasActiveItem ? 'text-accent' : 'text-text-disabled hover:text-text-tertiary')
+                      hasActiveItem ? 'text-accent' : 'text-text-disabled hover:text-text-tertiary'
                     } transition-colors`}
                   >
                     {section.title}
