@@ -143,7 +143,43 @@ select {
 
 /* Print */
 @media print {
-  body { background: white !important; color: black !important; }
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body {
+    background: white !important;
+    color: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
   .no-print { display: none !important; }
   .glass { background: white !important; backdrop-filter: none !important; border: 1px solid #ccc !important; }
+
+  /* Hide sidebar and adjust layout */
+  aside, nav { display: none !important; }
+  main { margin-left: 0 !important; padding: 0 !important; }
+
+  /* Page setup */
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  /* Quote/Proposal preview */
+  [class*="max-w-3xl"], [class*="max-w-4xl"] {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Tables should not break across pages */
+  table { page-break-inside: avoid; }
+  tr { page-break-inside: avoid; }
+
+  /* Cost summary box */
+  [style*="backgroundColor: #0f1f38"],
+  [style*="background-color: #0f1f38"] {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
 }

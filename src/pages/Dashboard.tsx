@@ -91,9 +91,23 @@ export default function Dashboard() {
             BidCraft <span className="text-accent">AI</span>
           </h1>
         </div>
-        <p className="text-navy-300 text-lg">
+        <p className="text-navy-300 text-lg mb-4">
           Price the work. Win the bid. Generate the proposal.
         </p>
+        <div className="flex gap-3">
+          <Link to="/burden" className="btn btn-primary no-underline">
+            <Calculator className="w-4 h-4" />
+            New Burden Rate
+          </Link>
+          <Link to="/workload" className="btn btn-ghost no-underline">
+            <ClipboardList className="w-4 h-4" />
+            New Workload
+          </Link>
+          <Link to="/quote" className="btn btn-ghost no-underline">
+            <FileText className="w-4 h-4" />
+            Quick Quote
+          </Link>
+        </div>
       </motion.div>
 
       {/* Stats row */}

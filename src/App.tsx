@@ -10,6 +10,7 @@ import Proposal from '@/pages/Proposal'
 import Landing from '@/pages/Landing'
 import SavedQuotes from '@/pages/SavedQuotes'
 import Settings from '@/pages/Settings'
+import ToastContainer from '@/components/Toast'
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
+      <ToastContainer />
     </BrowserRouter>
   )
 }
