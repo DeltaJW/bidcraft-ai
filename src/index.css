@@ -33,13 +33,13 @@
   /* ---- TEXT ---- */
   --color-text-primary: #E8ECF1;
   --color-text-secondary: #9CABC2;
-  --color-text-tertiary: #6B7D98;
-  --color-text-disabled: #4A5B73;
+  --color-text-tertiary: #8A9DB5;   /* WCAG 4.5:1+ on surface-1 (#111A2E). Was #6B7D98 */
+  --color-text-disabled: #7B92AC;   /* WCAG 4.5:1+ on surface-1 (#111A2E). Was #4A5B73 */
 
   /* ---- ACCENT ---- */
   --color-accent: #5B8DEF;
   --color-accent-hover: #7BA3F5;
-  --color-accent-muted: #5B8DEF26;
+  --color-accent-muted: #5B8DEF1A;  /* reduced opacity: 10% instead of 15% for better contrast */
 
   /* ---- STATUS ---- */
   --color-success: #22C55E;
@@ -96,8 +96,8 @@
 
   --color-text-primary: #1A1F2E;
   --color-text-secondary: #4A5568;
-  --color-text-tertiary: #718096;
-  --color-text-disabled: #A0AEC0;
+  --color-text-tertiary: #637389;   /* darkened for contrast on white backgrounds */
+  --color-text-disabled: #8E9BB0;   /* darkened for WCAG 4.5:1 on light surfaces */
 
   --color-accent: #2B6CB0;
   --color-accent-hover: #2C5282;

@@ -35,6 +35,7 @@ export default function AppLayout() {
       <button
         className="fixed top-4 left-4 z-[60] lg:hidden p-2 rounded-lg bg-surface-1 border border-border-default text-text-secondary cursor-pointer no-print"
         onClick={() => setMobileOpen(!mobileOpen)}
+        aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
       >
         {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
       </button>
