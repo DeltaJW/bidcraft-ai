@@ -212,9 +212,18 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-surface-0);
+  background:
+    radial-gradient(ellipse 70% 50% at 65% 20%, rgba(23, 53, 94, 0.08), transparent 60%),
+    var(--color-surface-0);
   color: var(--color-text-secondary);
   min-height: 100vh;
+}
+
+/* Dot grid on the app shell — very subtle texture */
+#root {
+  background-image: radial-gradient(circle, var(--color-border-subtle) 0.5px, transparent 0.5px);
+  background-size: 32px 32px;
+  background-attachment: fixed;
 }
 
 #root {
