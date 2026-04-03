@@ -58,6 +58,7 @@ export default function Proposal() {
     'Scope assumes current building conditions; additional remediation quoted separately',
     'Annual pricing subject to SCA wage determination adjustments',
   ])
+  const [materialsMarkupPct, setMaterialsMarkupPct] = useState(10)
   const [showPreview, setShowPreview] = useState(false)
   const [showCoverPage, setShowCoverPage] = useState(true)
   const [showCatalog, setShowCatalog] = useState(false)
@@ -107,7 +108,8 @@ export default function Proposal() {
   const totalLabor = computedZones
     .flatMap((z) => z.tasks)
     .reduce((s, t) => s + t.laborCost, 0)
-  const totalMaterials = materials.reduce((s, m) => s + m.unitCost * m.quantity, 0)
+  const rawMaterials = materials.reduce((s, m) => s + m.unitCost * m.quantity, 0)
+  const totalMaterials = rawMaterials * (1 + materialsMarkupPct / 100)
   const grandTotal = totalLabor + totalMaterials
   const monthlyTotal = grandTotal / 12
 
@@ -456,7 +458,18 @@ export default function Proposal() {
           </GlassCard>
 
           {/* Materials */}
-          <GlassCard title="Annual Materials" subtitle="Supplies, chemicals, and consumables">
+          <GlassCard title="Annual Materials" subtitle="Supplies, chemicals, and consumables" action={
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-text-tertiary">Markup:</label>
+              <input
+                type="number"
+                className="!w-16 !text-xs !py-1 !text-right"
+                value={materialsMarkupPct}
+                onChange={(e) => setMaterialsMarkupPct(Number(e.target.value))}
+              />
+              <span className="text-xs text-text-tertiary">%</span>
+            </div>
+          }>
             {materials.length > 0 && (
               <table className="w-full text-sm mb-4">
                 <thead>

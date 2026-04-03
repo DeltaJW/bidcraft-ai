@@ -63,9 +63,15 @@ export default function BurdenBuilder() {
   // Calculations
   const basePlusHW = profile.baseWage + profile.hwRate
   const ficaDollar = profile.baseWage * (profile.ficaPct / 100)
-  const suiDollar = profile.baseWage * (profile.suiPct / 100)
+  // SUI and FUTA have annual wage caps — calculate effective hourly rate
+  const annualWage = profile.baseWage * 2080
+  const suiWageCap = 7000 // Most states cap SUI taxable wages
+  const futaWageCap = 7000 // Federal cap
+  const suiEffectivePct = annualWage > 0 ? Math.min(1, suiWageCap / annualWage) * profile.suiPct : profile.suiPct
+  const futaEffectivePct = annualWage > 0 ? Math.min(1, futaWageCap / annualWage) * profile.futaPct : profile.futaPct
+  const suiDollar = profile.baseWage * (suiEffectivePct / 100)
   const wcDollar = profile.baseWage * (profile.wcPct / 100)
-  const futaDollar = profile.baseWage * (profile.futaPct / 100)
+  const futaDollar = profile.baseWage * (futaEffectivePct / 100)
   const taxTotal = ficaDollar + suiDollar + wcDollar + futaDollar
 
   const totalPaidDays = profile.vacationDays + profile.holidayDays + profile.sickDays

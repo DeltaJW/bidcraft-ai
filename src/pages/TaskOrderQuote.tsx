@@ -22,6 +22,7 @@ export default function TaskOrderQuote() {
   const [selectedBurdenId, setSelectedBurdenId] = useState('')
   const [selectedClientId, setSelectedClientId] = useState('')
   const [tasks, setTasks] = useState<QuoteTask[]>([])
+  const [materialsMarkupPct, setMaterialsMarkupPct] = useState(10)
   const [materials, setMaterials] = useState<MaterialItem[]>([])
   const [showPreview, setShowPreview] = useState(false)
   const [showCatalog, setShowCatalog] = useState(false)
@@ -109,7 +110,9 @@ export default function TaskOrderQuote() {
   // Totals
   const totalHours = tasks.reduce((s, t) => s + t.hours, 0)
   const totalLabor = tasks.reduce((s, t) => s + t.laborCost, 0)
-  const totalMaterials = materials.reduce((s, m) => s + m.unitCost * m.quantity, 0)
+  const rawMaterials = materials.reduce((s, m) => s + m.unitCost * m.quantity, 0)
+  const materialsMarkup = rawMaterials * (materialsMarkupPct / 100)
+  const totalMaterials = rawMaterials + materialsMarkup
   const grandTotal = totalLabor + totalMaterials
 
   function handleSave() {
@@ -377,7 +380,18 @@ export default function TaskOrderQuote() {
           </GlassCard>
 
           {/* Materials */}
-          <GlassCard title="Materials" subtitle="Optional — add supply costs">
+          <GlassCard title="Materials" subtitle="Optional — add supply costs" action={
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-text-tertiary">Markup:</label>
+              <input
+                type="number"
+                className="!w-16 !text-xs !py-1 !text-right"
+                value={materialsMarkupPct}
+                onChange={(e) => setMaterialsMarkupPct(Number(e.target.value))}
+              />
+              <span className="text-xs text-text-tertiary">%</span>
+            </div>
+          }>
             {materials.length > 0 && (
               <table className="w-full text-sm mb-4">
                 <thead>

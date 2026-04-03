@@ -33,6 +33,7 @@ import RecompeteRadar from '@/pages/RecompeteRadar'
 import NarrativeWriter from '@/pages/NarrativeWriter'
 import ContractPL from '@/pages/ContractPL'
 import RegionalCost from '@/pages/RegionalCost'
+import GovExport from '@/pages/GovExport'
 import ToastContainer from '@/components/Toast'
 import Onboarding from '@/components/Onboarding'
 import {
@@ -97,6 +98,7 @@ function App() {
           <Route path="narrative" element={<NarrativeWriter />} />
           <Route path="pl-tracker" element={<ContractPL />} />
           <Route path="regional" element={<RegionalCost />} />
+          <Route path="gov-export" element={<GovExport />} />
           <Route path="documents" element={<DocumentHub />} />
           <Route path="settings" element={<Settings />} />
         </Route>

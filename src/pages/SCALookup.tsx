@@ -65,9 +65,12 @@ export default function SCALookup() {
       computedRate: null,
     }
 
-    // Calculate the computed rate
+    // Calculate the computed rate (with FUTA/SUI wage caps)
     const basePlusHW = profile.baseWage + profile.hwRate
-    const taxTotal = profile.baseWage * ((profile.ficaPct + profile.suiPct + profile.wcPct + profile.futaPct) / 100)
+    const annualWage = profile.baseWage * 2080
+    const suiEff = annualWage > 0 ? Math.min(1, 7000 / annualWage) * profile.suiPct : profile.suiPct
+    const futaEff = annualWage > 0 ? Math.min(1, 7000 / annualWage) * profile.futaPct : profile.futaPct
+    const taxTotal = profile.baseWage * ((profile.ficaPct + suiEff + profile.wcPct + futaEff) / 100)
     const leaveDays = profile.vacationDays + profile.holidayDays + profile.sickDays
     const effectiveDays = 260 - leaveDays
     const leavePct = effectiveDays > 0 ? (leaveDays / effectiveDays) * 100 : 0

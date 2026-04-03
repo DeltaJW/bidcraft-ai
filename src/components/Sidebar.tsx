@@ -32,6 +32,7 @@ import {
   ClipboardCheck,
   PenTool,
   Upload,
+  FileOutput,
   ChevronDown,
   type LucideIcon,
 } from 'lucide-react'
@@ -87,6 +88,7 @@ const NAV_SECTIONS: NavSection[] = [
       { to: '/multi', icon: Building2, label: 'Multi-Building' },
       { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
       { to: '/narrative', icon: PenTool, label: 'Narrative Writer' },
+      { to: '/gov-export', icon: FileOutput, label: 'Gov Format Export' },
     ],
   },
   {
