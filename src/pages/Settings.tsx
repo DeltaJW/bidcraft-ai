@@ -6,10 +6,10 @@ import {
   Upload,
   Trash2,
   AlertTriangle,
-  CheckCircle,
   Database,
   Info,
 } from 'lucide-react'
+import { toast } from '@/components/Toast'
 import GlassCard from '@/components/GlassCard'
 import {
   companyStore,
@@ -28,8 +28,6 @@ export default function Settings() {
   const quotes = useStore(quotesStore)
   const templates = useStore(templatesStore)
 
-  const [exportMsg, setExportMsg] = useState('')
-  const [importMsg, setImportMsg] = useState('')
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
@@ -51,8 +49,7 @@ export default function Settings() {
     a.download = `bidcraft-backup-${new Date().toISOString().slice(0, 10)}.json`
     a.click()
     URL.revokeObjectURL(url)
-    setExportMsg('Backup exported successfully')
-    setTimeout(() => setExportMsg(''), 3000)
+    toast('Backup exported successfully')
   }
 
   function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
@@ -64,8 +61,7 @@ export default function Settings() {
       try {
         const data = JSON.parse(ev.target?.result as string)
         if (data.app !== 'BidCraft AI') {
-          setImportMsg('Error: Not a BidCraft AI backup file')
-          setTimeout(() => setImportMsg(''), 3000)
+          toast('Not a BidCraft AI backup file', 'error')
           return
         }
         if (data.company) companyStore.set(data.company)
@@ -73,11 +69,9 @@ export default function Settings() {
         if (data.burdenProfiles) burdenProfilesStore.set(data.burdenProfiles)
         if (data.quotes) quotesStore.set(data.quotes)
         if (data.templates) templatesStore.set(data.templates)
-        setImportMsg('Data imported successfully')
-        setTimeout(() => setImportMsg(''), 3000)
+        toast('Data imported successfully')
       } catch {
-        setImportMsg('Error: Invalid backup file')
-        setTimeout(() => setImportMsg(''), 3000)
+        toast('Invalid backup file', 'error')
       }
     }
     reader.readAsText(file)
@@ -108,6 +102,7 @@ export default function Settings() {
     quotesStore.set([])
     templatesStore.set([])
     setShowClearConfirm(false)
+    toast('All data cleared', 'info')
   }
 
   // Storage stats
@@ -160,32 +155,6 @@ export default function Settings() {
               className="hidden"
             />
           </div>
-          {exportMsg && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex items-center gap-2 mt-3 text-sm text-emerald-400"
-            >
-              <CheckCircle className="w-4 h-4" />
-              {exportMsg}
-            </motion.div>
-          )}
-          {importMsg && (
-            <motion.div
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex items-center gap-2 mt-3 text-sm ${
-                importMsg.includes('Error') ? 'text-red-400' : 'text-emerald-400'
-              }`}
-            >
-              {importMsg.includes('Error') ? (
-                <AlertTriangle className="w-4 h-4" />
-              ) : (
-                <CheckCircle className="w-4 h-4" />
-              )}
-              {importMsg}
-            </motion.div>
-          )}
         </GlassCard>
 
         {/* Danger Zone */}

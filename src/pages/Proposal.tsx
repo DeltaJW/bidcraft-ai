@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Plus, Trash2, Printer, Save, DollarSign } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { toast } from '@/components/Toast'
 import ProposalPreview from '@/components/ProposalPreview'
 import {
   companyStore,
@@ -157,6 +158,7 @@ export default function Proposal() {
       createdAt: new Date().toISOString(),
     }
     quotesStore.update((prev) => [...prev, quote])
+    toast('Proposal saved')
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }

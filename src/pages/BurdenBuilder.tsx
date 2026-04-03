@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { toast } from '@/components/Toast'
 import { burdenProfilesStore, useStore } from '@/data/mockStore'
 import type { BurdenProfile } from '@/types'
 
@@ -90,13 +91,14 @@ export default function BurdenBuilder() {
       // Add new profile
       burdenProfilesStore.update((profiles) => [...profiles, completed])
     }
+    toast(editingId ? `Profile "${completed.name}" updated` : `Profile "${completed.name}" saved`)
     setSaved(true)
     setTimeout(() => {
       setSaved(false)
       setProfile(emptyProfile())
       setEditingId(null)
       setStep(0)
-    }, 2000)
+    }, 1500)
   }
 
   function loadProfile(bp: BurdenProfile) {

@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { FileText, Plus, Trash2, Printer, DollarSign, Save } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { toast } from '@/components/Toast'
 import QuotePreview from '@/components/QuotePreview'
 import { rateLibraryStore, burdenProfilesStore, companyStore, quotesStore, useStore } from '@/data/mockStore'
 import type { QuoteTask, MaterialItem, Quote } from '@/types'
@@ -110,6 +111,7 @@ export default function TaskOrderQuote() {
       createdAt: new Date().toISOString(),
     }
     quotesStore.update((prev) => [...prev, quote])
+    toast('Task order quote saved')
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   }

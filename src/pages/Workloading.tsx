@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ClipboardList, Plus, Trash2, MapPin, Send, Save, FolderOpen, Download } from 'lucide-react'
+import { ClipboardList, Plus, Trash2, MapPin, Send, FolderOpen, Download } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { toast } from '@/components/Toast'
 import { rateLibraryStore, burdenProfilesStore, workloadDraftStore, templatesStore, useStore } from '@/data/mockStore'
 import type { Zone, ZoneTask, Frequency } from '@/types'
 import { FREQUENCY_ANNUAL_MULTIPLIER, FREQUENCY_LABELS } from '@/types'
@@ -110,6 +111,7 @@ export default function Workloading() {
         createdAt: new Date().toISOString(),
       },
     ])
+    toast('Building template saved')
     setTemplateSaved(true)
     setTimeout(() => setTemplateSaved(false), 2000)
   }

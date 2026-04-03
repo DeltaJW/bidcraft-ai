@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Building2, Save, Upload } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
+import { toast } from '@/components/Toast'
 import { companyStore, useStore } from '@/data/mockStore'
 import type { Company } from '@/types'
 
@@ -20,7 +21,6 @@ const SET_ASIDE_OPTIONS = [
 export default function CompanyProfile() {
   const company = useStore(companyStore)
   const [form, setForm] = useState<Company>({ ...company })
-  const [saved, setSaved] = useState(false)
 
   function update(field: keyof Company, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -28,8 +28,7 @@ export default function CompanyProfile() {
 
   function handleSave() {
     companyStore.set({ ...form })
-    setSaved(true)
-    setTimeout(() => setSaved(false), 2000)
+    toast('Company profile saved')
   }
 
   function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -164,21 +163,10 @@ export default function CompanyProfile() {
         </GlassCard>
 
         {/* Save button */}
-        <div className="flex items-center gap-3">
-          <button className="btn btn-primary" onClick={handleSave}>
-            <Save className="w-4 h-4" />
-            Save Profile
-          </button>
-          {saved && (
-            <motion.span
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="text-sm text-emerald-400"
-            >
-              Profile saved
-            </motion.span>
-          )}
-        </div>
+        <button className="btn btn-primary" onClick={handleSave}>
+          <Save className="w-4 h-4" />
+          Save Profile
+        </button>
       </div>
     </motion.div>
   )
