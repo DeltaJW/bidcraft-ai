@@ -11,6 +11,8 @@ import Proposal from '@/pages/Proposal'
 import Landing from '@/pages/Landing'
 import SavedQuotes from '@/pages/SavedQuotes'
 import Analytics from '@/pages/Analytics'
+import ContractCalendar from '@/pages/ContractCalendar'
+import Clients from '@/pages/Clients'
 import Settings from '@/pages/Settings'
 import AIAssistant from '@/pages/AIAssistant'
 import SCALookup from '@/pages/SCALookup'
@@ -54,6 +56,7 @@ function App() {
         <Route element={<AppLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="company" element={<CompanyProfile />} />
+          <Route path="clients" element={<Clients />} />
           <Route path="rates" element={<RateLibrary />} />
           <Route path="burden" element={<BurdenBuilder />} />
           <Route path="workload" element={<Workloading />} />
@@ -61,6 +64,7 @@ function App() {
           <Route path="proposal" element={<Proposal />} />
           <Route path="saved" element={<SavedQuotes />} />
           <Route path="analytics" element={<Analytics />} />
+          <Route path="calendar" element={<ContractCalendar />} />
           <Route path="ai" element={<AIAssistant />} />
           <Route path="sca" element={<SCALookup />} />
           <Route path="labor" element={<LaborCategories />} />

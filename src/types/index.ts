@@ -110,6 +110,7 @@ export interface Quote {
   id: string
   companyId: string
   burdenProfileId: string
+  clientId?: string
   quoteType: 'task_order' | 'workload' | 'proposal'
   title: string
   contractRef: string
@@ -124,6 +125,8 @@ export interface Quote {
   grandTotal: number
   status: 'draft' | 'sent' | 'accepted' | 'rejected'
   createdAt: string
+  version?: number
+  parentQuoteId?: string
 }
 
 export interface QuoteTask {
@@ -149,5 +152,34 @@ export interface BuildingTemplate {
   name: string
   description: string
   zones: Zone[]
+  createdAt: string
+}
+
+export interface Client {
+  id: string
+  name: string
+  contactName: string
+  contactEmail: string
+  contactPhone: string
+  address: string
+  agency: string  // e.g. "GSA", "Army", "NPS", "Commercial"
+  notes: string
+  createdAt: string
+}
+
+export interface Contract {
+  id: string
+  name: string
+  contractNumber: string
+  clientName: string
+  startDate: string  // ISO date
+  endDate: string    // ISO date
+  optionYears: number
+  currentOptionYear: number
+  wdNumber: string
+  wdExpirationDate: string  // ISO date
+  annualValue: number
+  status: 'active' | 'expiring' | 'expired' | 'pending'
+  notes: string
   createdAt: string
 }

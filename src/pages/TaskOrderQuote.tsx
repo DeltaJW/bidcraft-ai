@@ -4,19 +4,21 @@ import { FileText, Plus, Trash2, Printer, DollarSign, Save, Download, ListChecks
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import QuotePreview from '@/components/QuotePreview'
-import { rateLibraryStore, burdenProfilesStore, companyStore, quotesStore, useStore } from '@/data/mockStore'
+import { rateLibraryStore, burdenProfilesStore, companyStore, quotesStore, clientsStore, useStore } from '@/data/mockStore'
 import type { QuoteTask, MaterialItem, Quote } from '@/types'
 
 export default function TaskOrderQuote() {
   const library = useStore(rateLibraryStore)
   const burdenProfiles = useStore(burdenProfilesStore)
   const company = useStore(companyStore)
+  const clients = useStore(clientsStore)
 
   const [title, setTitle] = useState('')
   const [contractRef, setContractRef] = useState('')
   const [location, setLocation] = useState('')
   const [scopeDescription, setScopeDescription] = useState('')
   const [selectedBurdenId, setSelectedBurdenId] = useState('')
+  const [selectedClientId, setSelectedClientId] = useState('')
   const [tasks, setTasks] = useState<QuoteTask[]>([])
   const [materials, setMaterials] = useState<MaterialItem[]>([])
   const [showPreview, setShowPreview] = useState(false)
@@ -105,6 +107,7 @@ export default function TaskOrderQuote() {
       id: `quote-${Date.now()}`,
       companyId: company.id,
       burdenProfileId: selectedBurdenId,
+      ...(selectedClientId ? { clientId: selectedClientId } : {}),
       quoteType: 'task_order',
       title: title || 'Untitled Task Order',
       contractRef,
@@ -248,6 +251,20 @@ export default function TaskOrderQuote() {
                   {burdenProfiles.map((bp) => (
                     <option key={bp.id} value={bp.id}>
                       {bp.name} (${bp.computedRate?.toFixed(2)}/hr)
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-text-tertiary mb-1">Client (optional)</label>
+                <select
+                  value={selectedClientId}
+                  onChange={(e) => setSelectedClientId(e.target.value)}
+                >
+                  <option value="">— None —</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}{c.agency ? ` (${c.agency})` : ''}
                     </option>
                   ))}
                 </select>

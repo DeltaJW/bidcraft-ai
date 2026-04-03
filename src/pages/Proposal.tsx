@@ -10,6 +10,7 @@ import {
   burdenProfilesStore,
   workloadDraftStore,
   quotesStore,
+  clientsStore,
   useStore,
 } from '@/data/mockStore'
 import type { MaterialItem, Quote } from '@/types'
@@ -35,6 +36,7 @@ export default function Proposal() {
   const company = useStore(companyStore)
   const burdenProfiles = useStore(burdenProfilesStore)
   const workloadDraft = useStore(workloadDraftStore)
+  const clients = useStore(clientsStore)
   const printRef = useRef<HTMLDivElement>(null)
 
   const [title, setTitle] = useState('')
@@ -42,6 +44,7 @@ export default function Proposal() {
   const [location, setLocation] = useState('')
   const [scopeDescription, setScopeDescription] = useState('')
   const [selectedBurdenId, setSelectedBurdenId] = useState('')
+  const [selectedClientId, setSelectedClientId] = useState('')
   const [zones, setZones] = useState<ProposalZone[]>([])
   const [materials, setMaterials] = useState<MaterialItem[]>([])
   const [assumptions, setAssumptions] = useState<string[]>([
@@ -141,6 +144,7 @@ export default function Proposal() {
       id: `quote-${Date.now()}`,
       companyId: company.id,
       burdenProfileId: selectedBurdenId,
+      ...(selectedClientId ? { clientId: selectedClientId } : {}),
       quoteType: 'proposal',
       title: title || 'Untitled Proposal',
       contractRef,
@@ -310,6 +314,20 @@ export default function Proposal() {
                   {burdenProfiles.map((bp) => (
                     <option key={bp.id} value={bp.id}>
                       {bp.name} (${bp.computedRate?.toFixed(2)}/hr)
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-text-tertiary mb-1">Client (optional)</label>
+                <select
+                  value={selectedClientId}
+                  onChange={(e) => setSelectedClientId(e.target.value)}
+                >
+                  <option value="">— None —</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}{c.agency ? ` (${c.agency})` : ''}
                     </option>
                   ))}
                 </select>

@@ -1,12 +1,13 @@
 import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { BookOpen, Search, Plus, Trash2, ChevronDown, ChevronRight, RotateCcw, Download, Upload } from 'lucide-react'
+import { BookOpen, Search, Plus, Trash2, ChevronDown, ChevronRight, RotateCcw, Download, Upload, FileSpreadsheet } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { rateLibraryStore, useStore } from '@/data/mockStore'
 import { DEFAULT_RATES, RATE_CATEGORIES } from '@/data/defaultRates'
 import { INDUSTRIES, getRatesForIndustry, getCategoriesForIndustry, type IndustryType } from '@/data/industryRates'
 import { downloadCSV } from '@/utils/csv'
+import RateImportWizard from '@/components/RateImportWizard'
 import type { RateItem } from '@/types'
 
 export default function RateLibrary() {
@@ -14,6 +15,7 @@ export default function RateLibrary() {
   const [search, setSearch] = useState('')
   const [expandedCats, setExpandedCats] = useState<Set<string>>(new Set(RATE_CATEGORIES))
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [showImportWizard, setShowImportWizard] = useState(false)
 
   const filtered = library.rates.filter(
     (r) =>
@@ -197,6 +199,10 @@ export default function RateLibrary() {
             <Upload className="w-4 h-4" />
             Import
           </button>
+          <button className="btn btn-ghost" onClick={() => setShowImportWizard(true)}>
+            <FileSpreadsheet className="w-4 h-4" />
+            Import Excel
+          </button>
           <input ref={importRef} type="file" accept=".json" onChange={handleImportRates} className="hidden" />
           {customCount > 0 && (
             <button className="btn btn-ghost" onClick={resetToDefaults}>
@@ -356,6 +362,8 @@ export default function RateLibrary() {
           </GlassCard>
         ))}
       </div>
+
+      <RateImportWizard open={showImportWizard} onClose={() => setShowImportWizard(false)} />
     </motion.div>
   )
 }

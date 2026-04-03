@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard,
   Building2,
+  Briefcase,
   BookOpen,
   Calculator,
   ClipboardList,
@@ -13,6 +14,7 @@ import {
   Bot,
   Shield,
   BarChart3,
+  Calendar,
   FileSearch,
   Users,
   Zap,
@@ -22,6 +24,7 @@ const NAV_ITEMS = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/estimate', icon: Zap, label: 'Quick Estimate' },
   { to: '/company', icon: Building2, label: 'Company Profile' },
+  { to: '/clients', icon: Briefcase, label: 'Clients' },
   { to: '/rates', icon: BookOpen, label: 'Rate Library' },
   { to: '/burden', icon: Calculator, label: 'Burden Builder' },
   { to: '/labor', icon: Users, label: 'Labor Categories' },
@@ -32,6 +35,7 @@ const NAV_ITEMS = [
   { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
   { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
   { to: '/analytics', icon: BarChart3, label: 'Analytics' },
+  { to: '/calendar', icon: Calendar, label: 'Contract Calendar' },
   { to: '/ai', icon: Bot, label: 'AI Assistant' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ]
