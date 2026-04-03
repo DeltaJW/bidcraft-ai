@@ -11,65 +11,47 @@ import {
   TrendingUp,
   CheckCircle,
   FolderOpen,
+  ChevronRight,
 } from 'lucide-react'
-import GlassCard from '@/components/GlassCard'
 import { loadDemoData } from '@/data/demoData'
 import { quotesStore, burdenProfilesStore, templatesStore, useStore } from '@/data/mockStore'
 
-const FEATURES = [
-  {
-    to: '/company',
-    icon: Building2,
-    title: 'Company Profile',
-    desc: 'Set up your company info, CAGE code, and branding',
-    color: 'text-blue-400',
-  },
-  {
-    to: '/rates',
-    icon: BookOpen,
-    title: 'Rate Library',
-    desc: 'Industry production rates by equipment and method',
-    color: 'text-emerald-400',
-  },
-  {
-    to: '/burden',
-    icon: Calculator,
-    title: 'Burden Builder',
-    desc: 'Build fully burdened labor rates step by step',
-    color: 'text-amber-400',
-  },
-  {
-    to: '/workload',
-    icon: ClipboardList,
-    title: 'Workloading',
-    desc: 'Calculate labor hours by zone, task, and frequency',
-    color: 'text-purple-400',
-  },
-  {
-    to: '/quote',
-    icon: FileText,
-    title: 'Task Order Quote',
-    desc: 'Quick one-off quotes for task orders',
-    color: 'text-rose-400',
-  },
-  {
-    to: '/proposal',
-    icon: FileStack,
-    title: 'Full Proposal',
-    desc: 'Annual proposals with multi-zone breakdowns',
-    color: 'text-cyan-400',
-  },
-]
+/* ───── animation variants ─────
+   The dashboard loads in a specific sequence:
+   1. Header fades in instantly (0ms)
+   2. Stats scale up with a slight bounce (100ms stagger)
+   3. Recent quotes slide in from left (after stats)
+   4. Shortcuts stagger in from bottom (last)
+   This creates a "systems coming online" feel — like a mission control boot sequence. */
 
-const container = {
+const pageOrchestration = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.05 } },
 }
 
-const item = {
-  hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0 },
+const fadeIn = {
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
 }
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.96 },
+  show: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
+}
+
+const slideInLeft = {
+  hidden: { opacity: 0, x: -12 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
+}
+
+const SHORTCUTS = [
+  { to: '/company', icon: Building2, label: 'Company Profile', color: 'text-blue-400' },
+  { to: '/rates', icon: BookOpen, label: 'Rate Library', color: 'text-emerald-400' },
+  { to: '/burden', icon: Calculator, label: 'Burden Builder', color: 'text-amber-400' },
+  { to: '/workload', icon: ClipboardList, label: 'Workloading', color: 'text-purple-400' },
+  { to: '/quote', icon: FileText, label: 'Task Order', color: 'text-rose-400' },
+  { to: '/proposal', icon: FileStack, label: 'Full Proposal', color: 'text-cyan-400' },
+]
 
 export default function Dashboard() {
   const quotes = useStore(quotesStore)
@@ -78,129 +60,132 @@ export default function Dashboard() {
 
   const totalQuoted = quotes.reduce((s, q) => s + q.grandTotal, 0)
   const acceptedCount = quotes.filter((q) => q.status === 'accepted').length
+  const winRate = quotes.length > 0 ? Math.round((acceptedCount / quotes.length) * 100) : 0
+
+  const stats = [
+    {
+      label: 'Quotes',
+      value: quotes.length,
+      icon: FolderOpen,
+      color: 'text-accent',
+      borderColor: 'hover:after:bg-accent',
+    },
+    {
+      label: 'Total Quoted',
+      value: totalQuoted >= 1000 ? `$${(totalQuoted / 1000).toFixed(0)}K` : `$${totalQuoted.toFixed(0)}`,
+      icon: TrendingUp,
+      color: 'text-emerald-400',
+      borderColor: 'hover:after:bg-emerald-400',
+    },
+    {
+      label: 'Accepted',
+      value: acceptedCount,
+      icon: CheckCircle,
+      color: 'text-cyan-400',
+      borderColor: 'hover:after:bg-cyan-400',
+    },
+    {
+      label: 'Win Rate',
+      value: `${winRate}%`,
+      icon: TrendingUp,
+      color: 'text-amber-400',
+      borderColor: 'hover:after:bg-amber-400',
+    },
+  ]
 
   return (
-    <div className="max-w-5xl">
-      {/* Hero */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
-      >
-        <div className="flex items-center gap-3 mb-2">
-          <Sparkles className="w-8 h-8 text-accent" />
-          <h1 className="text-3xl font-bold text-text-primary">
-            BidCraft <span className="text-accent">AI</span>
-          </h1>
-        </div>
-        <p className="text-text-secondary text-lg mb-4">
-          Price the work. Win the bid. Generate the proposal.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Link to="/burden" className="btn btn-primary no-underline">
-            <Calculator className="w-4 h-4" />
-            New Burden Rate
-          </Link>
-          <Link to="/workload" className="btn btn-ghost no-underline">
-            <ClipboardList className="w-4 h-4" />
-            New Workload
-          </Link>
-          <Link to="/quote" className="btn btn-ghost no-underline">
-            <FileText className="w-4 h-4" />
-            Quick Quote
-          </Link>
-          {quotes.length === 0 && burdenProfiles.length === 0 && (
-            <button className="btn btn-ghost" onClick={loadDemoData}>
-              <Sparkles className="w-4 h-4" />
-              Load Demo Data
-            </button>
-          )}
-        </div>
-      </motion.div>
-
-      {/* Stats row */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
-      >
-        <GlassCard className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-accent/15 flex items-center justify-center">
-            <FolderOpen className="w-5 h-5 text-accent" />
-          </div>
+    <motion.div
+      className="max-w-5xl"
+      initial="hidden"
+      animate="show"
+      variants={pageOrchestration}
+    >
+      {/* ── Header ── */}
+      <motion.div variants={fadeIn} className="mb-8">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <div className="text-2xl font-bold text-text-primary">{quotes.length}</div>
-            <div className="text-xs text-text-tertiary">Quotes Saved</div>
+            <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Command Center</p>
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">
+              BidCraft <span className="text-accent font-normal">AI</span>
+            </h1>
           </div>
-        </GlassCard>
-        <GlassCard className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-emerald-500/15 flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-emerald-400" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-text-primary">
-              ${totalQuoted >= 1000 ? `${(totalQuoted / 1000).toFixed(0)}K` : totalQuoted.toFixed(0)}
-            </div>
-            <div className="text-xs text-text-tertiary">Total Quoted</div>
-          </div>
-        </GlassCard>
-        <GlassCard className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-cyan-500/15 flex items-center justify-center">
-            <CheckCircle className="w-5 h-5 text-cyan-400" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-text-primary">{acceptedCount}</div>
-            <div className="text-xs text-text-tertiary">Accepted</div>
-          </div>
-        </GlassCard>
-        <GlassCard className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-lg bg-amber-500/15 flex items-center justify-center">
-            <Calculator className="w-5 h-5 text-amber-400" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold text-text-primary">{burdenProfiles.length}</div>
-            <div className="text-xs text-text-tertiary">Burden Profiles</div>
-          </div>
-        </GlassCard>
-      </motion.div>
-
-      {/* Recent quotes */}
-      {quotes.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-          className="mb-8"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-text-secondary">Recent Quotes</h2>
-            <Link to="/saved" className="text-xs text-accent hover:text-accent-hover transition-colors no-underline">
-              View all
+          <div className="flex gap-2">
+            <Link to="/burden" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-brand-navy text-white text-xs font-semibold no-underline hover:bg-brand-navy-light transition-colors">
+              <Calculator className="w-3.5 h-3.5" />
+              New Burden Rate
+            </Link>
+            <Link to="/workload" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md border border-border-default text-text-secondary text-xs font-medium no-underline hover:text-text-primary hover:border-border-strong hover:bg-surface-2 transition-all">
+              <ClipboardList className="w-3.5 h-3.5" />
+              New Workload
+            </Link>
+            <Link to="/quote" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md border border-border-default text-text-secondary text-xs font-medium no-underline hover:text-text-primary hover:border-border-strong hover:bg-surface-2 transition-all">
+              <FileText className="w-3.5 h-3.5" />
+              Quick Quote
             </Link>
           </div>
-          <div className="flex flex-col gap-2">
+        </div>
+        {quotes.length === 0 && burdenProfiles.length === 0 && (
+          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-subtle text-text-disabled text-[11px] font-medium bg-transparent cursor-pointer hover:text-text-tertiary hover:border-border-default transition-colors" onClick={loadDemoData}>
+            <Sparkles className="w-3 h-3" />
+            Load demo data
+          </button>
+        )}
+      </motion.div>
+
+      {/* ── Stats ── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+        {stats.map((s) => (
+          <motion.div key={s.label} variants={scaleIn}>
+            <div className="stat-card p-4">
+              <div className="flex items-center justify-between mb-3">
+                <s.icon className={`w-4 h-4 ${s.color}`} />
+                <span className="text-[10px] tracking-widest uppercase font-semibold text-text-disabled">{s.label}</span>
+              </div>
+              <div className="font-mono text-2xl font-bold text-text-primary tracking-tight">
+                {s.value}
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* ── Recent Quotes ── */}
+      {quotes.length > 0 && (
+        <motion.div variants={slideInLeft} className="mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-[11px] tracking-widest uppercase font-semibold text-text-disabled">Recent Quotes</h2>
+            <Link to="/saved" className="inline-flex items-center gap-1 text-[11px] text-accent hover:text-accent-hover transition-colors no-underline font-medium">
+              View all
+              <ChevronRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="rounded-lg border border-border-subtle overflow-hidden">
             {[...quotes]
               .reverse()
-              .slice(0, 3)
-              .map((q) => (
-                <div key={q.id} className="glass glass-hover p-3 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded bg-accent/10 flex items-center justify-center">
-                      {q.quoteType === 'proposal' ? (
-                        <FileStack className="w-4 h-4 text-accent" />
-                      ) : (
-                        <FileText className="w-4 h-4 text-accent" />
-                      )}
-                    </div>
-                    <div>
-                      <p className="text-sm text-text-primary font-medium truncate max-w-md">{q.title}</p>
-                      <p className="text-xs text-text-tertiary">
-                        {new Date(q.createdAt).toLocaleDateString()} | {q.quoteType === 'proposal' ? 'Proposal' : 'Task Order'}
+              .slice(0, 5)
+              .map((q, i) => (
+                <div
+                  key={q.id}
+                  className={`flex items-center justify-between px-4 py-3 ${
+                    i % 2 === 0 ? 'bg-surface-1' : 'bg-surface-0'
+                  } ${i < Math.min(quotes.length, 5) - 1 ? 'border-b border-border-subtle' : ''} hover:bg-surface-2 transition-colors`}
+                >
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                      q.status === 'accepted' ? 'bg-success' :
+                      q.status === 'sent' ? 'bg-accent' :
+                      'bg-text-disabled'
+                    }`} />
+                    <div className="min-w-0">
+                      <p className="text-sm text-text-primary font-medium truncate">{q.title}</p>
+                      <p className="text-[11px] text-text-disabled">
+                        {new Date(q.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        <span className="mx-1.5 text-border-default">·</span>
+                        {q.quoteType === 'proposal' ? 'Proposal' : 'Task Order'}
                       </p>
                     </div>
                   </div>
-                  <span className="font-mono font-bold text-accent">
+                  <span className="font-mono text-sm font-bold text-text-primary tabular-nums">
                     ${q.grandTotal.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                   </span>
                 </div>
@@ -209,29 +194,22 @@ export default function Dashboard() {
         </motion.div>
       )}
 
-      {/* Building Templates */}
+      {/* ── Building Templates ── */}
       {templates.length > 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8"
-        >
+        <motion.div variants={fadeIn} className="mb-8">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-text-secondary">Building Templates</h2>
-            <Link to="/workload" className="text-xs text-accent hover:text-accent-hover transition-colors no-underline">
+            <h2 className="text-[11px] tracking-widest uppercase font-semibold text-text-disabled">Templates</h2>
+            <Link to="/workload" className="inline-flex items-center gap-1 text-[11px] text-accent hover:text-accent-hover transition-colors no-underline font-medium">
               Open Workloading
+              <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {templates.slice(0, 3).map((tmpl) => (
-              <Link key={tmpl.id} to="/workload" className="block no-underline">
-                <div className="glass glass-hover p-4">
-                  <h4 className="text-sm font-medium text-text-primary">{tmpl.name}</h4>
-                  <p className="text-xs text-text-tertiary mt-0.5">{tmpl.description}</p>
-                  <p className="text-xs text-text-disabled mt-1">
-                    {new Date(tmpl.createdAt).toLocaleDateString()}
-                  </p>
+              <Link key={tmpl.id} to="/workload" className="block no-underline group">
+                <div className="card-accent-left p-4">
+                  <h4 className="text-sm font-medium text-text-primary group-hover:text-accent transition-colors">{tmpl.name}</h4>
+                  <p className="text-[11px] text-text-disabled mt-0.5">{tmpl.description}</p>
                 </div>
               </Link>
             ))}
@@ -239,33 +217,22 @@ export default function Dashboard() {
         </motion.div>
       )}
 
-      {/* Feature cards */}
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-      >
-        {FEATURES.map((f) => (
-          <motion.div key={f.to} variants={item}>
-            <Link to={f.to} className="block no-underline">
-              <div className="glass glass-hover p-5 transition-all cursor-pointer">
-                <div className="flex items-start gap-3">
-                  <div className={`mt-0.5 ${f.color}`}>
-                    <f.icon className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold text-text-primary mb-1">
-                      {f.title}
-                    </h3>
-                    <p className="text-xs text-text-tertiary">{f.desc}</p>
-                  </div>
+      {/* ── Quick Access ── */}
+      <motion.div variants={fadeIn}>
+        <h2 className="text-[11px] tracking-widest uppercase font-semibold text-text-disabled mb-3">Quick Access</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+          {SHORTCUTS.map((s) => (
+            <motion.div key={s.to} variants={scaleIn}>
+              <Link to={s.to} className="block no-underline group">
+                <div className="stat-card p-3 text-center hover:border-border-default transition-colors">
+                  <s.icon className={`w-4 h-4 ${s.color} mx-auto mb-2 group-hover:scale-110 transition-transform`} />
+                  <span className="text-[11px] font-medium text-text-secondary group-hover:text-text-primary transition-colors">{s.label}</span>
                 </div>
-              </div>
-            </Link>
-          </motion.div>
-        ))}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </motion.div>
-    </div>
+    </motion.div>
   )
 }

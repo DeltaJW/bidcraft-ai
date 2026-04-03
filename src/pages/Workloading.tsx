@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { ClipboardList, Plus, Trash2, MapPin, Send, FolderOpen, Download } from 'lucide-react'
+import { Plus, Trash2, MapPin, Send, FolderOpen, Download } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import HelpTip from '@/components/HelpTip'
 import ConfirmDialog from '@/components/ConfirmDialog'
@@ -239,9 +239,9 @@ export default function Workloading() {
       className="max-w-6xl"
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
-        <div className="flex items-center gap-3">
-          <ClipboardList className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Workloading Calculator</h1>
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Calculator</p>
+          <h1 className="text-2xl font-bold text-text-primary tracking-tight">Workloading</h1>
         </div>
         <div className="flex flex-wrap gap-2">
           {templates.length > 0 && (
@@ -485,80 +485,82 @@ export default function Workloading() {
           ))}
         </div>
 
-        {/* Right: Summary */}
+        {/* Right: Summary — command center panel */}
         <div>
-          <GlassCard title="Hours Summary" className="sticky top-8" action={
-            totalAnnualHours > 0 ? (
-              <button
-                className="p-1 text-text-tertiary hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
-                onClick={handleExportWorkloadCSV}
-                title="Export workload as CSV"
-              >
-                <Download className="w-4 h-4" />
-              </button>
-            ) : undefined
-          }>
-            <div className="flex flex-col gap-3 text-sm">
+          <div className="stat-card sticky top-8">
+            <div className="px-4 py-3 border-b border-border-subtle flex items-center justify-between">
+              <p className="text-[10px] tracking-widest uppercase font-semibold text-accent">Hours Summary</p>
+              {totalAnnualHours > 0 && (
+                <button
+                  className="p-1 text-text-disabled hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+                  onClick={handleExportWorkloadCSV}
+                  title="Export as CSV"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            <div className="px-4 py-3 flex flex-col gap-2 text-[12px]">
               <SummaryRow label="Annual Hours" value={`${totalAnnualHours.toFixed(1)}`} bold />
               <SummaryRow label="Monthly Hours" value={`${totalMonthlyHours.toFixed(1)}`} />
               <SummaryRow label="Weekly Hours" value={`${totalWeeklyHours.toFixed(1)}`} />
               <SummaryRow label="Daily Hours" value={`${totalDailyHours.toFixed(1)}`} />
-              <div className="border-t border-border-subtle my-1" />
+              <div className="separator-gradient my-1" />
               <div className="flex justify-between items-center">
-                <span className="text-text-primary font-medium">FTEs Needed <HelpTip text="Full-Time Equivalent = Annual Hours / (Productive Hours/Day x Work Days/Year). Example: 3,380 hrs / (6.5 x 260) = 2.0 FTEs" /></span>
-                <span className="font-mono text-text-primary font-medium">{fteCount.toFixed(2)}</span>
+                <span className="text-text-secondary font-medium text-[12px]">FTEs Needed <HelpTip text="Full-Time Equivalent = Annual Hours / (Productive Hours/Day x Work Days/Year). Example: 3,380 hrs / (6.5 x 260) = 2.0 FTEs" /></span>
+                <span className="font-mono text-text-primary font-semibold">{fteCount.toFixed(2)}</span>
               </div>
-              <p className="text-xs text-text-tertiary">
+              <p className="text-[10px] text-text-disabled">
                 Based on {PRODUCTIVE_HOURS_PER_DAY} productive hrs/day <HelpTip text="Industry standard is 6.5 productive hours per 8-hour shift. Accounts for travel between zones, breaks, restocking supplies, and supervisor check-ins." />, {WORK_DAYS_PER_YEAR} work days/yr
               </p>
+            </div>
 
-              {annualLaborCost !== null && (
-                <>
-                  <div className="border-t border-border-subtle my-1" />
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary font-medium">Annual Labor</span>
-                    <span className="text-lg font-bold text-accent font-mono">
-                      ${annualLaborCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+            {annualLaborCost !== null && (
+              <div className="px-4 py-3 bg-brand-navy/20 border-t border-accent/20">
+                <div className="flex justify-between items-center">
+                  <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-wide">Annual Labor</span>
+                  <span className="text-2xl font-bold text-accent font-mono tracking-tight">
+                    ${annualLaborCost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  </span>
+                </div>
+                <div className="flex justify-between mt-1">
+                  <span className="text-[10px] text-text-disabled">Monthly</span>
+                  <span className="text-[11px] font-mono text-text-tertiary tabular-nums">
+                    ${(annualLaborCost / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                  </span>
+                </div>
+                {blendedEffectiveRate !== null && (
+                  <div className="flex justify-between mt-0.5">
+                    <span className="text-[10px] text-text-disabled">Blended Rate</span>
+                    <span className="text-[11px] font-mono text-text-tertiary tabular-nums">
+                      ${blendedEffectiveRate.toFixed(2)}/hr
                     </span>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-text-tertiary">Monthly</span>
-                    <span className="font-mono text-text-secondary">
-                      ${(annualLaborCost / 12).toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                    </span>
-                  </div>
+                )}
+              </div>
+            )}
 
-                  {/* Blended effective rate */}
-                  {blendedEffectiveRate !== null && (
-                    <div className="flex justify-between">
-                      <span className="text-text-tertiary">Blended Rate</span>
-                      <span className="font-mono text-text-secondary">
-                        ${blendedEffectiveRate.toFixed(2)}/hr
+            {categoryBreakdown.length > 1 && (
+              <div className="px-4 py-3 border-t border-border-subtle">
+                <p className="text-[10px] tracking-widest uppercase font-semibold text-text-disabled mb-2">By Labor Category</p>
+                <div className="flex flex-col gap-1.5">
+                  {categoryBreakdown.map((cb) => (
+                    <div key={cb.id} className="flex justify-between text-[11px]">
+                      <span className="text-text-disabled truncate mr-2">{cb.name}</span>
+                      <span className="font-mono text-text-secondary whitespace-nowrap tabular-nums">
+                        {cb.hours.toFixed(0)} hrs · ${cb.cost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                       </span>
                     </div>
-                  )}
+                  ))}
+                </div>
+              </div>
+            )}
 
-                  {/* Cost breakdown by labor category */}
-                  {categoryBreakdown.length > 1 && (
-                    <>
-                      <div className="border-t border-border-subtle my-1" />
-                      <span className="text-xs font-medium text-text-secondary">By Labor Category</span>
-                      {categoryBreakdown.map((cb) => (
-                        <div key={cb.id} className="flex justify-between text-xs">
-                          <span className="text-text-tertiary truncate mr-2">{cb.name}</span>
-                          <span className="font-mono text-text-secondary whitespace-nowrap">
-                            {cb.hours.toFixed(0)} hrs &middot; ${cb.cost.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                          </span>
-                        </div>
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
-
-              {totalAnnualHours > 0 && (
+            {totalAnnualHours > 0 && (
+              <div className="px-4 py-3 border-t border-border-subtle">
                 <button
-                  className="btn btn-primary w-full mt-3 justify-center"
+                  className="inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-md bg-brand-navy text-white text-xs font-semibold cursor-pointer border-none hover:bg-brand-navy-light transition-colors"
                   onClick={() => {
                     workloadDraftStore.set({
                       buildingName,
@@ -580,12 +582,12 @@ export default function Workloading() {
                     navigate('/proposal')
                   }}
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-3.5 h-3.5" />
                   Send to Proposal
                 </button>
-              )}
-            </div>
-          </GlassCard>
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <ConfirmDialog
@@ -605,9 +607,9 @@ export default function Workloading() {
 
 function SummaryRow({ label, value, bold }: { label: string; value: string; bold?: boolean }) {
   return (
-    <div className="flex justify-between">
-      <span className={bold ? 'text-text-primary font-medium' : 'text-text-tertiary'}>{label}</span>
-      <span className={`font-mono ${bold ? 'text-text-primary font-medium' : 'text-text-secondary'}`}>
+    <div className="flex justify-between items-center">
+      <span className={`${bold ? 'text-text-secondary font-medium' : 'text-text-disabled'}`}>{label}</span>
+      <span className={`font-mono tabular-nums ${bold ? 'text-text-primary font-semibold' : 'text-text-secondary'}`}>
         {value}
       </span>
     </div>

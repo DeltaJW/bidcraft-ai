@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil, Download, Search } from 'lucide-react'
-import GlassCard from '@/components/GlassCard'
+import { ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil, Download, Search } from 'lucide-react'
 import HelpTip from '@/components/HelpTip'
 import { toast } from '@/components/Toast'
 import { burdenProfilesStore, lastSCALookupStore, useStore } from '@/data/mockStore'
@@ -10,12 +9,12 @@ import { downloadCSV } from '@/utils/csv'
 import type { BurdenProfile } from '@/types'
 
 const STEPS = [
-  { title: 'Base Wage', desc: 'Starting hourly rate from WD or manual entry' },
-  { title: 'Fringe Benefits', desc: 'Health & Welfare rate' },
-  { title: 'Payroll Taxes', desc: 'FICA, SUI, Workers Comp, FUTA' },
-  { title: 'Leave / PTO', desc: 'Vacation, holidays, sick days' },
-  { title: 'Overhead / G&A', desc: 'General & Administrative costs' },
-  { title: 'Profit / Fee', desc: 'Your desired profit margin' },
+  { title: 'Base Wage', desc: 'Starting hourly rate' },
+  { title: 'Fringe', desc: 'Health & Welfare' },
+  { title: 'Taxes', desc: 'FICA, SUI, WC, FUTA' },
+  { title: 'Leave', desc: 'PTO / Holidays' },
+  { title: 'G&A', desc: 'Overhead costs' },
+  { title: 'Profit', desc: 'Fee margin' },
 ]
 
 const SUI_BY_STATE: Record<string, number> = {
@@ -47,6 +46,15 @@ function emptyProfile(): BurdenProfile {
   }
 }
 
+const pageAnim = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+}
+const fadeIn = {
+  hidden: { opacity: 0, y: 8 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] as const } },
+}
+
 export default function BurdenBuilder() {
   const savedProfiles = useStore(burdenProfilesStore)
   const lastSCA = useStore(lastSCALookupStore)
@@ -63,10 +71,9 @@ export default function BurdenBuilder() {
   // Calculations
   const basePlusHW = profile.baseWage + profile.hwRate
   const ficaDollar = profile.baseWage * (profile.ficaPct / 100)
-  // SUI and FUTA have annual wage caps — calculate effective hourly rate
   const annualWage = profile.baseWage * 2080
-  const suiWageCap = 7000 // Most states cap SUI taxable wages
-  const futaWageCap = 7000 // Federal cap
+  const suiWageCap = 7000
+  const futaWageCap = 7000
   const suiEffectivePct = annualWage > 0 ? Math.min(1, suiWageCap / annualWage) * profile.suiPct : profile.suiPct
   const futaEffectivePct = annualWage > 0 ? Math.min(1, futaWageCap / annualWage) * profile.futaPct : profile.futaPct
   const suiDollar = profile.baseWage * (suiEffectivePct / 100)
@@ -118,7 +125,6 @@ export default function BurdenBuilder() {
       toast('Profile name is required', 'error')
       return
     }
-    // SCA wage floor validation
     if (lastSCA?.janitorRate && profile.baseWage < lastSCA.janitorRate) {
       toast(
         `Warning: $${profile.baseWage.toFixed(2)}/hr is below the SCA minimum of $${lastSCA.janitorRate.toFixed(2)}/hr (WD ${lastSCA.wdNumber}). Verify compliance.`,
@@ -131,12 +137,10 @@ export default function BurdenBuilder() {
       computedRate: fullyBurdened,
     }
     if (editingId) {
-      // Update existing profile
       burdenProfilesStore.update((profiles) =>
         profiles.map((p) => (p.id === editingId ? completed : p))
       )
     } else {
-      // Add new profile
       burdenProfilesStore.update((profiles) => [...profiles, completed])
     }
     toast(editingId ? `Profile "${completed.name}" updated` : `Profile "${completed.name}" saved`)
@@ -163,61 +167,76 @@ export default function BurdenBuilder() {
     }
   }
 
+  const waterfallSegments = [
+    { label: 'Base', value: profile.baseWage, color: 'bg-accent' },
+    { label: 'H&W', value: profile.hwRate, color: 'bg-blue-400' },
+    { label: 'Taxes', value: taxTotal, color: 'bg-amber-400' },
+    { label: 'Leave', value: leaveDollar, color: 'bg-purple-400' },
+    { label: 'G&A', value: gaDollar, color: 'bg-emerald-400' },
+    { label: 'Profit', value: feeDollar, color: 'bg-rose-400' },
+  ]
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
       className="max-w-5xl"
+      initial="hidden"
+      animate="show"
+      variants={pageAnim}
     >
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
-          <Calculator className="w-6 h-6 text-accent" />
-          <h1 className="text-2xl font-bold text-text-primary">Burden Rate Builder</h1>
-          {editingId && (
-            <span className="text-xs bg-amber-500/15 text-amber-400 px-2 py-1 rounded-full font-medium">
-              Editing
-            </span>
-          )}
+      {/* Header */}
+      <motion.div variants={fadeIn} className="flex items-center justify-between mb-6">
+        <div>
+          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Rate Calculator</p>
+          <div className="flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-text-primary tracking-tight">Burden Rate Builder</h1>
+            {editingId && (
+              <span className="text-[10px] font-semibold tracking-widest uppercase bg-amber-500/15 text-amber-400 px-2 py-0.5 rounded">
+                Editing
+              </span>
+            )}
+          </div>
         </div>
         {editingId && (
           <button
-            className="btn btn-ghost"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-default text-text-secondary text-xs font-medium bg-transparent cursor-pointer hover:text-text-primary hover:border-border-strong transition-all"
             onClick={() => { setProfile(emptyProfile()); setEditingId(null); setStep(0) }}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3.5 h-3.5" />
             New Profile
           </button>
         )}
-      </div>
+      </motion.div>
 
       {/* Profile name */}
-      <div className="mb-6">
+      <motion.div variants={fadeIn} className="mb-6">
         <input
           className="!max-w-sm"
           placeholder="Profile name (e.g. GSA Valley Region, Commercial Default)"
           value={profile.name}
           onChange={(e) => update('name', e.target.value)}
         />
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left: Steps */}
-        <div className="lg:col-span-2">
-          {/* Step indicators */}
-          <div className="flex items-center gap-1 mb-6 overflow-x-auto">
+        <motion.div variants={fadeIn} className="lg:col-span-2">
+          {/* Step indicators — segmented control style */}
+          <div className="flex items-stretch gap-0 mb-5 rounded-lg border border-border-subtle overflow-hidden">
             {STEPS.map((s, i) => (
               <button
                 key={i}
                 onClick={() => setStep(i)}
-                className={`flex-1 min-w-[80px] py-2 px-2 text-xs font-medium rounded-lg border transition-all cursor-pointer ${
+                className={`flex-1 py-2 px-1 text-center cursor-pointer border-none transition-all ${
                   i === step
-                    ? 'bg-accent/15 border-accent/30 text-accent'
+                    ? 'bg-accent/15 text-accent'
                     : i < step
-                      ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                      : 'bg-transparent border-border-subtle text-text-tertiary'
-                }`}
+                      ? 'bg-surface-2 text-emerald-400'
+                      : 'bg-surface-1 text-text-disabled hover:text-text-tertiary hover:bg-surface-2'
+                } ${i > 0 ? 'border-l border-border-subtle' : ''}`}
+                style={i > 0 ? { borderLeft: '1px solid var(--color-border-subtle)' } : {}}
               >
-                {i + 1}. {s.title}
+                <div className="text-[10px] font-mono font-bold">{String(i + 1).padStart(2, '0')}</div>
+                <div className="text-[11px] font-semibold">{s.title}</div>
               </button>
             ))}
           </div>
@@ -226,16 +245,21 @@ export default function BurdenBuilder() {
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 16 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              exit={{ opacity: 0, x: -16 }}
               transition={{ duration: 0.15 }}
             >
-              <GlassCard title={STEPS[step].title} subtitle={STEPS[step].desc}>
+              <div className="card-accent-left p-5">
+                <div className="mb-4">
+                  <h3 className="text-sm font-semibold text-text-primary">{STEPS[step].title}</h3>
+                  <p className="text-[11px] text-text-disabled">{STEPS[step].desc}</p>
+                </div>
+
                 {step === 0 && (
                   <div className="flex flex-col gap-4">
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Base Hourly Wage ($) <HelpTip text="The starting hourly rate from your SCA Wage Determination or your company's prevailing wage. For federal contracts, this must meet the SCA minimum for the labor category." /></label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">Base Hourly Wage ($) <HelpTip text="The starting hourly rate from your SCA Wage Determination or your company's prevailing wage. For federal contracts, this must meet the SCA minimum for the labor category." /></label>
                       <input
                         type="number"
                         step="0.01"
@@ -243,20 +267,20 @@ export default function BurdenBuilder() {
                         onChange={(e) => update('baseWage', Number(e.target.value))}
                         placeholder="17.75"
                       />
-                      <p className="text-xs text-text-tertiary mt-1">
+                      <p className="text-[11px] text-text-disabled mt-1">
                         Enter from SCA Wage Determination or your prevailing wage
                       </p>
                     </div>
                     {profile.baseWage === 0 && (
-                      <div className="glass !bg-accent/5 border-accent/15 p-3 rounded-lg flex items-start gap-3">
+                      <div className="bg-accent/5 border border-accent/15 p-3 rounded-lg flex items-start gap-3">
                         <Search className="w-4 h-4 text-accent mt-0.5 shrink-0" />
                         <div>
-                          <p className="text-xs text-text-secondary">
-                            Need to find SCA wage rates for your area? Look up the wage determination for your contract's location and labor category.
+                          <p className="text-[11px] text-text-secondary">
+                            Need to find SCA wage rates? Look up the wage determination for your contract.
                           </p>
                           <Link
                             to="/sca"
-                            className="text-xs text-accent hover:text-accent-hover transition-colors mt-1 inline-block no-underline font-medium"
+                            className="text-[11px] text-accent hover:text-accent-hover transition-colors mt-1 inline-block no-underline font-medium"
                           >
                             Open SCA Wage Lookup →
                           </Link>
@@ -267,37 +291,35 @@ export default function BurdenBuilder() {
                 )}
 
                 {step === 1 && (
-                  <div className="flex flex-col gap-4">
-                    <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Health & Welfare Rate ($/hr) <HelpTip text="The fringe benefit rate from the Wage Determination. Typically $4-5/hr for SCA contracts. Can be paid as cash-in-lieu or used toward employer health plan costs." /></label>
-                      <input
-                        type="number"
-                        step="0.01"
-                        value={profile.hwRate || ''}
-                        onChange={(e) => update('hwRate', Number(e.target.value))}
-                        placeholder="4.60"
-                      />
-                      <p className="text-xs text-text-tertiary mt-1">
-                        From WD or your employer-provided health plan cost per hour
-                      </p>
-                    </div>
+                  <div>
+                    <label className="block text-[11px] text-text-tertiary mb-1 font-medium">Health & Welfare Rate ($/hr) <HelpTip text="The fringe benefit rate from the Wage Determination. Typically $4-5/hr for SCA contracts. Can be paid as cash-in-lieu or used toward employer health plan costs." /></label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={profile.hwRate || ''}
+                      onChange={(e) => update('hwRate', Number(e.target.value))}
+                      placeholder="4.60"
+                    />
+                    <p className="text-[11px] text-text-disabled mt-1">
+                      From WD or your employer-provided health plan cost per hour
+                    </p>
                   </div>
                 )}
 
                 {step === 2 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">FICA (%) <HelpTip text="Federal Insurance Contributions Act — Social Security (6.2%) + Medicare (1.45%) = 7.65%. This is set by federal law and cannot be changed." /></label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">FICA (%) <HelpTip text="Federal Insurance Contributions Act — Social Security (6.2%) + Medicare (1.45%) = 7.65%. This is set by federal law and cannot be changed." /></label>
                       <input
                         type="number"
                         step="0.01"
                         value={profile.ficaPct}
                         onChange={(e) => update('ficaPct', Number(e.target.value))}
                       />
-                      <p className="text-xs text-text-tertiary mt-1">7.65% is federal law (Social Security 6.2% + Medicare 1.45%)</p>
+                      <p className="text-[11px] text-text-disabled mt-1">7.65% is federal law</p>
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">State Unemployment — SUI (%) <HelpTip text="State Unemployment Insurance. Rates vary by state and employer history. New employers typically pay the standard rate. Select your state for the default." /></label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">SUI (%) <HelpTip text="State Unemployment Insurance. Rates vary by state and employer history. New employers typically pay the standard rate. Select your state for the default." /></label>
                       <div className="flex gap-2">
                         <select
                           className="!w-24"
@@ -318,7 +340,7 @@ export default function BurdenBuilder() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Workers Comp (%) <HelpTip text="Workers Compensation insurance rate. Varies by state and NCCI classification code. Janitorial (code 9014) typically ranges 3-7%." /></label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">Workers Comp (%) <HelpTip text="Workers Compensation insurance rate. Varies by state and NCCI classification code. Janitorial (code 9014) typically ranges 3-7%." /></label>
                       <input
                         type="number"
                         step="0.01"
@@ -326,28 +348,23 @@ export default function BurdenBuilder() {
                         onChange={(e) => update('wcPct', Number(e.target.value))}
                         placeholder="5.0"
                       />
-                      <p className="text-xs text-text-tertiary mt-1">Varies by state and classification code</p>
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">FUTA (%) <HelpTip text="Federal Unemployment Tax Act. Standard rate is 6.0% but with state credit the effective rate is usually 0.6% on the first $7,000 per employee." /></label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">FUTA (%) <HelpTip text="Federal Unemployment Tax Act. Standard rate is 6.0% but with state credit the effective rate is usually 0.6% on the first $7,000 per employee." /></label>
                       <input
                         type="number"
                         step="0.01"
                         value={profile.futaPct}
                         onChange={(e) => update('futaPct', Number(e.target.value))}
                       />
-                      <p className="text-xs text-text-tertiary mt-1">0.6% standard with state credit reduction</p>
                     </div>
                   </div>
                 )}
 
                 {step === 3 && (
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div className="sm:col-span-3">
-                      <p className="text-xs text-text-tertiary">Leave / PTO <HelpTip text="Paid time off reduces productive days. 260 work days/year minus holidays, vacation, and sick days = actual productive days. The cost of paying for non-productive days is spread across productive hours." /></p>
-                    </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Vacation Days / Year</label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">Vacation Days / Yr</label>
                       <input
                         type="number"
                         value={profile.vacationDays}
@@ -355,7 +372,7 @@ export default function BurdenBuilder() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Holidays / Year</label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">Holidays / Yr</label>
                       <input
                         type="number"
                         value={profile.holidayDays}
@@ -363,17 +380,17 @@ export default function BurdenBuilder() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs text-text-tertiary mb-1">Sick Days / Year</label>
+                      <label className="block text-[11px] text-text-tertiary mb-1 font-medium">Sick Days / Yr</label>
                       <input
                         type="number"
                         value={profile.sickDays}
                         onChange={(e) => update('sickDays', Number(e.target.value))}
                       />
                     </div>
-                    <div className="sm:col-span-3 glass !bg-surface-2 p-3 rounded-lg">
-                      <p className="text-xs text-text-tertiary">
-                        <strong className="text-text-secondary">Calculated impact:</strong>{' '}
-                        {totalPaidDays} paid non-work days = {leavePct.toFixed(2)}% cost increase.
+                    <div className="sm:col-span-3 bg-surface-2 border border-border-subtle p-3 rounded-lg">
+                      <p className="text-[11px] text-text-tertiary">
+                        <span className="font-semibold text-text-secondary">{totalPaidDays}</span> paid non-work days ={' '}
+                        <span className="font-mono font-semibold text-accent">{leavePct.toFixed(2)}%</span> cost increase.
                         Worker produces for {effectiveWorkDays} of {workDaysPerYear} paid days.
                       </p>
                     </div>
@@ -382,167 +399,177 @@ export default function BurdenBuilder() {
 
                 {step === 4 && (
                   <div>
-                    <label className="block text-xs text-text-tertiary mb-1">G&A / Overhead Rate (%) <HelpTip text="General & Administrative costs as a percentage of direct costs. Includes rent, utilities, management salaries, insurance, accounting, legal, etc. Typical range for janitorial contractors: 8-18%." /></label>
+                    <label className="block text-[11px] text-text-tertiary mb-1 font-medium">G&A / Overhead Rate (%) <HelpTip text="General & Administrative costs as a percentage of direct costs. Includes rent, utilities, management salaries, insurance, accounting, legal, etc. Typical range for janitorial contractors: 8-18%." /></label>
                     <input
                       type="number"
                       step="0.1"
                       value={profile.gaPct}
                       onChange={(e) => update('gaPct', Number(e.target.value))}
                     />
-                    <p className="text-xs text-text-tertiary mt-2">
-                      This is the cost of running your company divided by total direct costs.
-                      Typical range: <strong className="text-text-secondary">8-18%</strong> for janitorial contractors.
+                    <p className="text-[11px] text-text-disabled mt-2">
+                      Typical range: <span className="text-text-secondary font-semibold">8-18%</span> for janitorial contractors.
                     </p>
                   </div>
                 )}
 
                 {step === 5 && (
                   <div>
-                    <label className="block text-xs text-text-tertiary mb-1">Profit / Fee (%) <HelpTip text="Your desired profit margin. Government contracts typically allow 5-12%. Commercial contracts commonly target 10-20%. Must cover business risk and return on investment." /></label>
+                    <label className="block text-[11px] text-text-tertiary mb-1 font-medium">Profit / Fee (%) <HelpTip text="Your desired profit margin. Government contracts typically allow 5-12%. Commercial contracts commonly target 10-20%. Must cover business risk and return on investment." /></label>
                     <input
                       type="number"
                       step="0.1"
                       value={profile.feePct}
                       onChange={(e) => update('feePct', Number(e.target.value))}
                     />
-                    <p className="text-xs text-text-tertiary mt-2">
-                      Typical range: <strong className="text-text-secondary">5-12%</strong> for government,{' '}
-                      <strong className="text-text-secondary">10-20%</strong> for commercial.
+                    <p className="text-[11px] text-text-disabled mt-2">
+                      Gov: <span className="text-text-secondary font-semibold">5-12%</span> | Commercial: <span className="text-text-secondary font-semibold">10-20%</span>
                     </p>
                   </div>
                 )}
 
                 {/* Nav buttons */}
-                <div className="flex justify-between mt-6 pt-4 border-t border-border-subtle">
+                <div className="flex justify-between mt-5 pt-4 border-t border-border-subtle">
                   <button
-                    className="btn btn-ghost"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-default text-text-secondary text-xs font-medium bg-transparent cursor-pointer hover:text-text-primary hover:border-border-strong transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                     onClick={() => setStep(Math.max(0, step - 1))}
                     disabled={step === 0}
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
                     Back
                   </button>
                   {step < 5 ? (
                     <button
-                      className="btn btn-primary"
+                      className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-brand-navy text-white text-xs font-semibold cursor-pointer border-none hover:bg-brand-navy-light transition-colors"
                       onClick={() => setStep(step + 1)}
                     >
                       Next
-                      <ChevronRight className="w-4 h-4" />
+                      <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   ) : (
                     <div className="flex gap-2">
-                      <button className="btn btn-ghost" onClick={() => { setProfile(emptyProfile()); setStep(0) }}>
-                        <RotateCcw className="w-4 h-4" />
+                      <button
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border-default text-text-secondary text-xs font-medium bg-transparent cursor-pointer hover:text-text-primary transition-all"
+                        onClick={() => { setProfile(emptyProfile()); setStep(0) }}
+                      >
+                        <RotateCcw className="w-3.5 h-3.5" />
                         Reset
                       </button>
-                      <button className="btn btn-primary" onClick={handleSave}>
-                        <Save className="w-4 h-4" />
+                      <button
+                        className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-brand-navy text-white text-xs font-semibold cursor-pointer border-none hover:bg-brand-navy-light transition-colors"
+                        onClick={handleSave}
+                      >
+                        <Save className="w-3.5 h-3.5" />
                         {saved ? 'Saved!' : editingId ? 'Update Profile' : 'Save Profile'}
                       </button>
                     </div>
                   )}
                 </div>
-              </GlassCard>
+              </div>
             </motion.div>
           </AnimatePresence>
-        </div>
+        </motion.div>
 
-        {/* Right: Live breakdown */}
-        <div>
-          <GlassCard title="Live Breakdown" className="sticky top-8" action={
-            <button
-              className="p-1 text-text-tertiary hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
-              onClick={handleExportBreakdown}
-              title="Export breakdown as CSV"
-            >
-              <Download className="w-4 h-4" />
-            </button>
-          }>
-            <div className="flex flex-col gap-2 text-sm">
-              <Row label="Base Wage" value={profile.baseWage} />
-              <Row label="Health & Welfare" value={profile.hwRate} />
-              <Divider />
-              <Row label="Subtotal" value={basePlusHW} bold />
-              <Row label={`FICA (${profile.ficaPct}%)`} value={ficaDollar} />
-              <Row label={`SUI (${profile.suiPct}%)`} value={suiDollar} />
-              <Row label={`Workers Comp (${profile.wcPct}%)`} value={wcDollar} />
-              <Row label={`FUTA (${profile.futaPct}%)`} value={futaDollar} />
-              <Divider />
-              <Row label="Tax Total" value={taxTotal} bold />
-              <Row label={`Leave (${leavePct.toFixed(1)}%)`} value={leaveDollar} />
-              <Divider />
-              <Row label="Direct Cost" value={subtotal} bold />
-              <Row label={`G&A (${profile.gaPct}%)`} value={gaDollar} />
-              <Row label={`Fee (${profile.feePct}%)`} value={feeDollar} />
-              <Divider />
-              <div className="flex justify-between items-center pt-2">
-                <span className="font-bold text-text-primary">Fully Burdened</span>
-                <span className="text-xl font-bold text-accent font-mono">
+        {/* Right: Live breakdown panel — "Bloomberg terminal" style */}
+        <motion.div variants={fadeIn}>
+          <div className="stat-card sticky top-8">
+            {/* Header bar */}
+            <div className="px-4 py-3 border-b border-border-subtle flex items-center justify-between">
+              <div>
+                <p className="text-[10px] tracking-widest uppercase font-semibold text-accent">Live Breakdown</p>
+              </div>
+              <button
+                className="p-1 text-text-disabled hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+                onClick={handleExportBreakdown}
+                title="Export as CSV"
+              >
+                <Download className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Line items */}
+            <div className="px-4 py-3 flex flex-col gap-1.5 text-[12px]">
+              <BreakdownRow label="Base Wage" value={profile.baseWage} />
+              <BreakdownRow label="Health & Welfare" value={profile.hwRate} />
+              <div className="separator-gradient my-1" />
+              <BreakdownRow label="Subtotal" value={basePlusHW} bold />
+              <BreakdownRow label={`FICA ${profile.ficaPct}%`} value={ficaDollar} />
+              <BreakdownRow label={`SUI ${profile.suiPct}%`} value={suiDollar} />
+              <BreakdownRow label={`WC ${profile.wcPct}%`} value={wcDollar} />
+              <BreakdownRow label={`FUTA ${profile.futaPct}%`} value={futaDollar} />
+              <div className="separator-gradient my-1" />
+              <BreakdownRow label="Tax Total" value={taxTotal} bold />
+              <BreakdownRow label={`Leave ${leavePct.toFixed(1)}%`} value={leaveDollar} />
+              <div className="separator-gradient my-1" />
+              <BreakdownRow label="Direct Cost" value={subtotal} bold />
+              <BreakdownRow label={`G&A ${profile.gaPct}%`} value={gaDollar} />
+              <BreakdownRow label={`Fee ${profile.feePct}%`} value={feeDollar} />
+            </div>
+
+            {/* Total — prominent */}
+            <div className="px-4 py-3 bg-brand-navy/20 border-t border-accent/20">
+              <div className="flex justify-between items-center">
+                <span className="text-[11px] font-semibold text-text-secondary uppercase tracking-wide">Fully Burdened</span>
+                <span className="text-2xl font-bold text-accent font-mono tracking-tight">
                   ${fullyBurdened.toFixed(2)}
                 </span>
               </div>
               {profile.baseWage > 0 && (
-                <p className="text-xs text-text-tertiary mt-2">
-                  Markup: {((fullyBurdened / profile.baseWage - 1) * 100).toFixed(1)}% over base wage
+                <p className="text-[10px] text-text-disabled mt-1 text-right font-mono">
+                  {((fullyBurdened / profile.baseWage - 1) * 100).toFixed(1)}% markup
                 </p>
               )}
-
-              {/* Cost Waterfall */}
-              {fullyBurdened > 0 && (
-                <div className="mt-4 pt-3 border-t border-border-subtle">
-                  <h4 className="text-xs font-semibold text-text-secondary mb-2">Cost Waterfall</h4>
-                  <div className="flex flex-col gap-1">
-                    {[
-                      { label: 'Base', value: profile.baseWage, color: 'bg-accent' },
-                      { label: 'H&W', value: profile.hwRate, color: 'bg-blue-400' },
-                      { label: 'Taxes', value: taxTotal, color: 'bg-amber-400' },
-                      { label: 'Leave', value: leaveDollar, color: 'bg-purple-400' },
-                      { label: 'G&A', value: gaDollar, color: 'bg-emerald-400' },
-                      { label: 'Profit', value: feeDollar, color: 'bg-rose-400' },
-                    ].map((seg) => {
-                      const pct = fullyBurdened > 0 ? (seg.value / fullyBurdened) * 100 : 0
-                      return (
-                        <div key={seg.label} className="flex items-center gap-2">
-                          <span className="text-[10px] text-text-disabled w-10 text-right">{seg.label}</span>
-                          <div className="flex-1 h-3.5 bg-surface-0 rounded overflow-hidden">
-                            <div
-                              className={`h-full ${seg.color} rounded transition-all duration-300`}
-                              style={{ width: `${pct}%` }}
-                            />
-                          </div>
-                          <span className="text-[10px] font-mono text-text-tertiary w-12 text-right">
-                            {pct.toFixed(0)}%
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
             </div>
-          </GlassCard>
-        </div>
+
+            {/* Cost Waterfall */}
+            {fullyBurdened > 0 && (
+              <div className="px-4 py-3 border-t border-border-subtle">
+                <p className="text-[10px] tracking-widest uppercase font-semibold text-text-disabled mb-2">Cost Waterfall</p>
+                <div className="flex flex-col gap-1.5">
+                  {waterfallSegments.map((seg) => {
+                    const pct = fullyBurdened > 0 ? (seg.value / fullyBurdened) * 100 : 0
+                    return (
+                      <div key={seg.label} className="flex items-center gap-2">
+                        <span className="text-[10px] text-text-disabled w-10 text-right font-mono">{seg.label}</span>
+                        <div className="flex-1 h-4 bg-surface-0 rounded overflow-hidden">
+                          <motion.div
+                            className={`h-full ${seg.color} rounded`}
+                            initial={{ width: 0 }}
+                            animate={{ width: `${pct}%` }}
+                            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const, delay: 0.1 }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-mono text-text-tertiary w-14 text-right tabular-nums">
+                          ${seg.value.toFixed(2)}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
       </div>
 
       {/* Saved Profiles */}
       {savedProfiles.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-lg font-semibold text-text-primary mb-4">Saved Burden Profiles</h2>
+        <motion.div variants={fadeIn} className="mt-8">
+          <h2 className="text-[11px] tracking-widest uppercase font-semibold text-text-disabled mb-3">Saved Profiles</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {savedProfiles.map((bp) => (
-              <GlassCard
+              <div
                 key={bp.id}
-                className={`glass-hover relative group cursor-pointer ${editingId === bp.id ? 'border-accent/40 ring-1 ring-accent/20' : ''}`}
+                className={`stat-card p-4 cursor-pointer group transition-all ${editingId === bp.id ? 'glow-ring' : 'hover:border-border-default'}`}
+                onClick={() => loadProfile(bp)}
               >
-                <div className="flex justify-between items-start" onClick={() => loadProfile(bp)}>
+                <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-sm font-semibold text-text-primary">{bp.name}</h3>
-                    <div className="text-2xl font-bold text-accent font-mono mt-1">
+                    <div className="text-2xl font-bold text-accent font-mono mt-1 tracking-tight">
                       ${bp.computedRate != null ? bp.computedRate.toFixed(2) : '—'}
                     </div>
-                    <p className="text-xs text-text-tertiary mt-1">
-                      Base: ${bp.baseWage.toFixed(2)} | Markup: {bp.baseWage > 0 && bp.computedRate != null ? (((bp.computedRate / bp.baseWage) - 1) * 100).toFixed(0) : 0}%
+                    <p className="text-[11px] text-text-disabled mt-1 font-mono">
+                      Base: ${bp.baseWage.toFixed(2)} | +{bp.baseWage > 0 && bp.computedRate != null ? (((bp.computedRate / bp.baseWage) - 1) * 100).toFixed(0) : 0}%
                     </p>
                   </div>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -550,7 +577,7 @@ export default function BurdenBuilder() {
                       className="p-1.5 text-text-tertiary hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
                       onClick={(e) => { e.stopPropagation(); loadProfile(bp) }}
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Pencil className="w-3.5 h-3.5" />
                     </button>
                     <button
                       className="p-1.5 text-text-disabled hover:text-red-400 transition-colors bg-transparent border-none cursor-pointer"
@@ -574,35 +601,31 @@ export default function BurdenBuilder() {
                         }
                       }}
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
-                <div className="flex gap-3 mt-3 text-xs text-text-tertiary">
-                  <span>H&W: ${bp.hwRate.toFixed(2)}</span>
-                  <span>G&A: {bp.gaPct}%</span>
-                  <span>Fee: {bp.feePct}%</span>
+                <div className="flex gap-3 mt-3 text-[11px] text-text-disabled font-mono">
+                  <span>H&W ${bp.hwRate.toFixed(2)}</span>
+                  <span>G&A {bp.gaPct}%</span>
+                  <span>Fee {bp.feePct}%</span>
                 </div>
-              </GlassCard>
+              </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       )}
     </motion.div>
   )
 }
 
-function Row({ label, value, bold }: { label: string; value: number; bold?: boolean }) {
+function BreakdownRow({ label, value, bold }: { label: string; value: number; bold?: boolean }) {
   return (
-    <div className="flex justify-between">
-      <span className={bold ? 'text-text-primary font-medium' : 'text-text-tertiary'}>{label}</span>
-      <span className={`font-mono ${bold ? 'text-text-primary font-medium' : 'text-text-secondary'}`}>
+    <div className="flex justify-between items-center">
+      <span className={`${bold ? 'text-text-secondary font-medium' : 'text-text-disabled'}`}>{label}</span>
+      <span className={`font-mono tabular-nums ${bold ? 'text-text-primary font-semibold' : 'text-text-secondary'}`}>
         ${value.toFixed(2)}
       </span>
     </div>
   )
-}
-
-function Divider() {
-  return <div className="border-t border-border-subtle my-1" />
 }

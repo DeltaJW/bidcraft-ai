@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
-  Sparkles,
   Calculator,
   FileText,
   ClipboardList,
@@ -15,68 +14,102 @@ import {
   Bot,
   Download,
   Layers,
+  ChevronRight,
 } from 'lucide-react'
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0 },
+/* ───── animation orchestration ─────
+   Key principle: different elements enter from different distances
+   and with different timings. This breaks the "AI generated" feel
+   where everything fades up identically. */
+
+const heroStagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
 }
 
-const stagger = {
+const heroItem = {
+  hidden: { opacity: 0, y: 30, filter: 'blur(4px)' },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const },
+  },
+}
+
+const sectionStagger = {
   hidden: {},
-  show: { transition: { staggerChildren: 0.1 } },
+  show: { transition: { staggerChildren: 0.08 } },
+}
+
+const cardReveal = {
+  hidden: { opacity: 0, y: 20 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+  },
+}
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.95 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+  },
 }
 
 const FEATURES = [
   {
     icon: Layers,
     title: 'Multi-Industry Rate Library',
-    desc: '120+ production rates across janitorial, security, landscaping, and facilities maintenance. Fully customizable.',
-    color: 'text-emerald-400',
-    bg: 'bg-emerald-500/10',
+    desc: '120+ production rates across janitorial, security, landscaping, and facilities maintenance.',
+    stat: '120+',
+    statLabel: 'rates',
   },
   {
     icon: Calculator,
     title: 'Burden Rate Builder',
-    desc: '6-step wizard builds fully burdened labor rates. Base wage, fringe, taxes, leave, G&A, and profit — all calculated live.',
-    color: 'text-blue-400',
-    bg: 'bg-blue-500/10',
+    desc: '6-step wizard builds fully burdened labor rates. Base wage, fringe, taxes, leave, G&A, and profit.',
+    stat: '6',
+    statLabel: 'steps',
   },
   {
     icon: ClipboardList,
     title: 'Workloading Calculator',
-    desc: 'Zone-based workloading with 9 frequency options. Auto-calculates annual hours, monthly hours, FTE needs, and labor costs.',
-    color: 'text-purple-400',
-    bg: 'bg-purple-500/10',
+    desc: 'Zone-based workloading with 9 frequency options. Auto-calculates annual hours, FTE needs, and labor costs.',
+    stat: '9',
+    statLabel: 'frequencies',
   },
   {
     icon: FileText,
     title: 'Professional Proposals',
-    desc: 'Generate government-ready proposals with your logo, CAGE code, and set-aside status. Navy letterhead, signature blocks, the works.',
-    color: 'text-rose-400',
-    bg: 'bg-rose-500/10',
+    desc: 'Government-ready proposals with your logo, CAGE code, and set-aside status. Navy letterhead, signature blocks.',
+    stat: 'Gov',
+    statLabel: 'ready',
   },
   {
     icon: Bot,
     title: 'AI Pricing Assistant',
-    desc: 'Describe a building, paste a scope of work, or ask about burden rates. AI suggests zones, tasks, rates, and pricing strategies.',
-    color: 'text-cyan-400',
-    bg: 'bg-cyan-500/10',
+    desc: 'Describe a building or paste a scope of work. AI suggests zones, tasks, rates, and pricing strategies.',
+    stat: 'AI',
+    statLabel: 'powered',
   },
   {
     icon: Download,
     title: 'Export Everything',
-    desc: 'CSV export on every table. Print-ready government documents. Backup and restore all your data in one click.',
-    color: 'text-amber-400',
-    bg: 'bg-amber-500/10',
+    desc: 'CSV, PDF, and DOCX export. Print-ready government documents. Backup and restore all data in one click.',
+    stat: '3',
+    statLabel: 'formats',
   },
 ]
 
 const INDUSTRIES = [
-  { name: 'Janitorial', count: '45+ rates', desc: 'Floor care, carpet, restrooms, trash' },
-  { name: 'Security', count: '24 rates', desc: 'Fixed post, patrol, access control, monitoring' },
-  { name: 'Landscaping', count: '30 rates', desc: 'Mowing, trimming, turf care, snow removal' },
-  { name: 'Maintenance', count: '28 rates', desc: 'HVAC, electrical, plumbing, PM' },
+  { name: 'Janitorial', count: '45', unit: 'rates', desc: 'Floor care, carpet, restrooms, trash' },
+  { name: 'Security', count: '24', unit: 'rates', desc: 'Fixed post, patrol, access control' },
+  { name: 'Landscaping', count: '30', unit: 'rates', desc: 'Mowing, trimming, turf care, snow' },
+  { name: 'Maintenance', count: '28', unit: 'rates', desc: 'HVAC, electrical, plumbing, PM' },
 ]
 
 const PRICING = [
@@ -92,7 +125,7 @@ const PRICING = [
   {
     name: 'Pro',
     price: '$49',
-    period: '/month',
+    period: '/mo',
     desc: 'For solo contractors',
     features: [
       'Unlimited quotes',
@@ -108,7 +141,7 @@ const PRICING = [
   {
     name: 'Business',
     price: '$99',
-    period: '/month',
+    period: '/mo',
     desc: 'For growing teams',
     features: [
       'Everything in Pro',
@@ -124,7 +157,7 @@ const PRICING = [
   {
     name: 'Enterprise',
     price: '$299',
-    period: '/month',
+    period: '/mo',
     desc: 'For large operations',
     features: [
       'Everything in Business',
@@ -142,117 +175,137 @@ const PRICING = [
 export default function Landing() {
   return (
     <div className="min-h-screen bg-surface-0 text-text-primary">
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-surface-0/80 backdrop-blur-xl border-b border-border-subtle">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-accent" />
-            <span className="text-lg font-bold">
-              BidCraft <span className="text-accent">AI</span>
+      {/* ── Nav ── */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-border-subtle bg-surface-0/90 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-md bg-brand-navy flex items-center justify-center">
+              <span className="text-white text-xs font-bold font-mono">BC</span>
+            </div>
+            <span className="text-sm font-semibold tracking-tight">
+              BidCraft <span className="text-accent font-normal">AI</span>
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            <a href="#features" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">Features</a>
-            <a href="#industries" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">Industries</a>
-            <a href="#pricing" className="text-sm text-text-secondary hover:text-text-primary transition-colors no-underline">Pricing</a>
-            <Link to="/" className="btn btn-primary !text-sm no-underline">
+          <div className="flex items-center gap-6">
+            <a href="#features" className="text-xs text-text-tertiary hover:text-text-primary transition-colors no-underline tracking-wide uppercase font-medium">Features</a>
+            <a href="#pricing" className="text-xs text-text-tertiary hover:text-text-primary transition-colors no-underline tracking-wide uppercase font-medium">Pricing</a>
+            <Link to="/" className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-md bg-brand-navy text-white text-xs font-semibold no-underline hover:bg-brand-navy-light transition-colors">
               Launch App
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3 h-3" />
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="pt-32 pb-20 px-6">
+      {/* ── Hero ── */}
+      <section className="relative pt-28 pb-24 px-6 overflow-hidden">
+        {/* Dot grid background — this is the "Linear signature" */}
+        <div className="absolute inset-0 dot-grid opacity-40" />
+        {/* Radial fade so the dots don't dominate */}
+        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-transparent to-surface-0" />
+
         <motion.div
           initial="hidden"
           animate="show"
-          variants={stagger}
-          className="max-w-4xl mx-auto text-center"
+          variants={heroStagger}
+          className="relative max-w-4xl mx-auto"
         >
-          <motion.div variants={fadeUp} className="mb-6">
-            <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium bg-accent-muted text-accent border border-accent/20">
-              <Zap className="w-3 h-3" />
-              The only bid pricing platform built for facility services
+          {/* Badge */}
+          <motion.div variants={heroItem} className="mb-8">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-medium text-text-tertiary border border-border-subtle bg-surface-1/60 tracking-wide uppercase">
+              <Zap className="w-3 h-3 text-accent" />
+              Facility Services Bid Pricing Platform
             </span>
           </motion.div>
+
+          {/* Headline — dramatic size, tight leading */}
           <motion.h1
-            variants={fadeUp}
-            className="text-5xl md:text-6xl font-bold leading-tight mb-6"
-            style={{ fontFamily: "'IBM Plex Sans', sans-serif" }}
+            variants={heroItem}
+            className="text-6xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6"
           >
             Price the work.
             <br />
-            <span className="text-accent">Win the bid.</span>
+            <span className="gradient-text">Win the bid.</span>
             <br />
             Generate the proposal.
           </motion.h1>
+
           <motion.p
-            variants={fadeUp}
-            className="text-xl text-text-secondary max-w-2xl mx-auto mb-10"
+            variants={heroItem}
+            className="text-lg text-text-secondary max-w-xl mb-10 leading-relaxed"
           >
-            Stop guessing with spreadsheets. Calculate production rates, build burdened labor rates,
-            and generate government-ready proposals — for janitorial, security, landscaping, and maintenance.
+            Calculate production rates, build burdened labor rates, and generate
+            government-ready proposals — for janitorial, security, landscaping,
+            and maintenance.
           </motion.p>
-          <motion.div variants={fadeUp} className="flex justify-center gap-4">
-            <Link to="/" className="btn btn-primary !text-base !px-8 !py-3 no-underline">
+
+          <motion.div variants={heroItem} className="flex items-center gap-3">
+            <Link to="/" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-brand-navy text-white text-sm font-semibold no-underline hover:bg-brand-navy-light transition-all hover:-translate-y-px hover:shadow-lg">
               Start Free
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-4 h-4" />
             </Link>
-            <a href="#features" className="btn btn-ghost !text-base !px-8 !py-3 no-underline">
+            <a href="#features" className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md border border-border-default text-text-secondary text-sm font-medium no-underline hover:text-text-primary hover:border-border-strong hover:bg-surface-1 transition-all">
               See Features
+              <ChevronRight className="w-3.5 h-3.5" />
             </a>
           </motion.div>
 
-          {/* Trust signals */}
-          <motion.div variants={fadeUp} className="mt-16 flex justify-center gap-8 items-center">
-            <div className="flex items-center gap-2 text-text-tertiary">
-              <Building2 className="w-4 h-4" />
-              <span className="text-xs">Built for federal contractors</span>
-            </div>
-            <div className="flex items-center gap-2 text-text-tertiary">
-              <Clock className="w-4 h-4" />
-              <span className="text-xs">Quotes in minutes, not hours</span>
-            </div>
-            <div className="flex items-center gap-2 text-text-tertiary">
-              <Shield className="w-4 h-4" />
-              <span className="text-xs">SCA wage compliant</span>
-            </div>
-            <div className="flex items-center gap-2 text-text-tertiary">
-              <Brain className="w-4 h-4" />
-              <span className="text-xs">AI-powered pricing</span>
-            </div>
+          {/* Trust bar — horizontal, minimal */}
+          <motion.div
+            variants={heroItem}
+            className="mt-16 pt-8 border-t border-border-subtle flex gap-8 items-center"
+          >
+            {[
+              { icon: Building2, text: 'Built for federal contractors' },
+              { icon: Clock, text: 'Quotes in minutes' },
+              { icon: Shield, text: 'SCA wage compliant' },
+              { icon: Brain, text: 'AI-powered pricing' },
+            ].map((item) => (
+              <div key={item.text} className="flex items-center gap-2 text-text-disabled">
+                <item.icon className="w-3.5 h-3.5" />
+                <span className="text-[11px] tracking-wide uppercase font-medium">{item.text}</span>
+              </div>
+            ))}
           </motion.div>
         </motion.div>
       </section>
 
-      {/* Features */}
-      <section id="features" className="py-20 px-6 bg-surface-1/50">
-        <div className="max-w-6xl mx-auto">
+      {/* ── Features ── */}
+      <section id="features" className="py-24 px-6 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-surface-1/30 to-surface-0" />
+        <div className="relative max-w-5xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true }}
-            variants={stagger}
+            viewport={{ once: true, margin: '-80px' }}
+            variants={sectionStagger}
           >
-            <motion.div variants={fadeUp} className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">Everything you need to price and win</h2>
-              <p className="text-text-tertiary max-w-xl mx-auto">
-                From production rates to professional proposals — one platform replaces your spreadsheets,
-                rate books, and Word templates.
+            <motion.div variants={cardReveal} className="mb-14">
+              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Capabilities</p>
+              <h2 className="text-3xl font-bold tracking-tight mb-3">Everything you need to price and win</h2>
+              <p className="text-text-tertiary max-w-lg text-sm leading-relaxed">
+                From production rates to professional proposals — one platform replaces
+                your spreadsheets, rate books, and Word templates.
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-3 gap-6">
+            {/* Feature cards — left-border accent style */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {FEATURES.map((f) => (
-                <motion.div key={f.title} variants={fadeUp}>
-                  <div className="glass p-6 h-full">
-                    <div className={`w-10 h-10 rounded-lg ${f.bg} flex items-center justify-center mb-4`}>
-                      <f.icon className={`w-5 h-5 ${f.color}`} />
+                <motion.div key={f.title} variants={cardReveal}>
+                  <div className="card-accent-left p-5 flex gap-4 h-full">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-md bg-surface-2 flex items-center justify-center">
+                      <f.icon className="w-4.5 h-4.5 text-accent" />
                     </div>
-                    <h3 className="text-base font-semibold text-text-primary mb-2">{f.title}</h3>
-                    <p className="text-sm text-text-tertiary leading-relaxed">{f.desc}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <h3 className="text-sm font-semibold text-text-primary">{f.title}</h3>
+                        <span className="text-[10px] font-mono font-bold text-accent tracking-wide">
+                          {f.stat} <span className="text-text-disabled font-normal">{f.statLabel}</span>
+                        </span>
+                      </div>
+                      <p className="text-xs text-text-tertiary leading-relaxed">{f.desc}</p>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -261,30 +314,36 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Industries */}
-      <section id="industries" className="py-20 px-6">
-        <div className="max-w-4xl mx-auto">
+      {/* ── Industries — "Bloomberg style" number-forward ── */}
+      <section id="industries" className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true }}
-            variants={stagger}
+            viewport={{ once: true, margin: '-80px' }}
+            variants={sectionStagger}
           >
-            <motion.div variants={fadeUp} className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">Not just cleaning</h2>
-              <p className="text-text-tertiary max-w-xl mx-auto">
+            <motion.div variants={cardReveal} className="mb-14">
+              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Coverage</p>
+              <h2 className="text-3xl font-bold tracking-tight mb-3">Not just cleaning</h2>
+              <p className="text-text-tertiary max-w-lg text-sm leading-relaxed">
                 BidCraft ships with rate libraries for four facility services industries.
-                Same powerful engine, purpose-built rates.
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {INDUSTRIES.map((ind) => (
-                <motion.div key={ind.name} variants={fadeUp}>
-                  <div className="glass p-5 text-center h-full">
-                    <h4 className="text-sm font-bold text-text-primary mb-1">{ind.name}</h4>
-                    <p className="text-accent font-mono text-xs font-semibold mb-2">{ind.count}</p>
-                    <p className="text-xs text-text-tertiary">{ind.desc}</p>
+                <motion.div key={ind.name} variants={scaleIn}>
+                  <div className="stat-card p-5 text-center">
+                    <div className="font-mono text-3xl font-bold text-text-primary tracking-tight mb-0.5">
+                      {ind.count}
+                    </div>
+                    <div className="text-[10px] uppercase tracking-widest text-accent font-semibold mb-3">
+                      {ind.unit}
+                    </div>
+                    <div className="separator-gradient mb-3" />
+                    <h4 className="text-sm font-semibold text-text-primary mb-1">{ind.name}</h4>
+                    <p className="text-[11px] text-text-disabled leading-snug">{ind.desc}</p>
                   </div>
                 </motion.div>
               ))}
@@ -293,33 +352,40 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="py-20 px-6 bg-surface-1/50">
-        <div className="max-w-4xl mx-auto">
+      {/* ── How It Works ── */}
+      <section className="py-24 px-6 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-surface-1/30 to-surface-0" />
+        <div className="relative max-w-4xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true }}
-            variants={stagger}
+            viewport={{ once: true, margin: '-80px' }}
+            variants={sectionStagger}
           >
-            <motion.div variants={fadeUp} className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">How it works</h2>
-              <p className="text-text-tertiary">Four steps from zero to a professional proposal</p>
+            <motion.div variants={cardReveal} className="mb-14 text-center">
+              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Workflow</p>
+              <h2 className="text-3xl font-bold tracking-tight">Four steps to a professional proposal</h2>
             </motion.div>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 gap-0">
               {[
-                { step: '1', title: 'Set up', desc: 'Enter your company info, logo, and CAGE code' },
-                { step: '2', title: 'Build rates', desc: 'Calculate your fully burdened labor rate step by step' },
-                { step: '3', title: 'Workload', desc: 'Map zones, tasks, and frequencies for each building' },
-                { step: '4', title: 'Propose', desc: 'Generate a branded, government-ready proposal' },
-              ].map((s) => (
-                <motion.div key={s.step} variants={fadeUp} className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-brand-navy flex items-center justify-center mx-auto mb-3 border border-brand-navy-light">
-                    <span className="text-white font-bold text-lg">{s.step}</span>
+                { step: '01', title: 'Set up', desc: 'Company info, logo, CAGE code' },
+                { step: '02', title: 'Build rates', desc: 'Fully burdened labor rate' },
+                { step: '03', title: 'Workload', desc: 'Zones, tasks, frequencies' },
+                { step: '04', title: 'Propose', desc: 'Government-ready output' },
+              ].map((s, i) => (
+                <motion.div key={s.step} variants={cardReveal} className="relative text-center px-4">
+                  {/* Connecting line */}
+                  {i < 3 && (
+                    <div className="absolute top-5 left-[calc(50%+24px)] right-[calc(-50%+24px)] h-px bg-border-subtle" />
+                  )}
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full border-2 border-accent/30 bg-surface-1 flex items-center justify-center mx-auto mb-3">
+                      <span className="text-xs font-mono font-bold text-accent">{s.step}</span>
+                    </div>
+                    <h4 className="text-sm font-semibold text-text-primary mb-1">{s.title}</h4>
+                    <p className="text-[11px] text-text-disabled">{s.desc}</p>
                   </div>
-                  <h4 className="text-sm font-semibold text-text-primary mb-1">{s.title}</h4>
-                  <p className="text-xs text-text-tertiary">{s.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -327,52 +393,69 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Pricing */}
-      <section id="pricing" className="py-20 px-6">
-        <div className="max-w-6xl mx-auto">
+      {/* ── Pricing ── */}
+      <section id="pricing" className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true }}
-            variants={stagger}
+            viewport={{ once: true, margin: '-80px' }}
+            variants={sectionStagger}
           >
-            <motion.div variants={fadeUp} className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-3">Simple, transparent pricing</h2>
-              <p className="text-text-tertiary">
+            <motion.div variants={cardReveal} className="text-center mb-14">
+              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Pricing</p>
+              <h2 className="text-3xl font-bold tracking-tight mb-3">Simple, transparent pricing</h2>
+              <p className="text-text-tertiary text-sm">
                 Start free. Upgrade when you need more.
-                <span className="text-accent ml-1">Save 20% with annual billing.</span>
+                <span className="text-accent ml-1 font-medium">Save 20% annually.</span>
               </p>
             </motion.div>
 
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {PRICING.map((tier) => (
-                <motion.div key={tier.name} variants={fadeUp}>
+                <motion.div key={tier.name} variants={scaleIn}>
                   <div
-                    className={`glass p-6 h-full flex flex-col ${
-                      tier.highlighted ? 'border-accent/40 ring-1 ring-accent/20' : ''
+                    className={`relative rounded-lg p-6 h-full flex flex-col ${
+                      tier.highlighted
+                        ? 'glow-ring bg-surface-1'
+                        : 'bg-surface-1 border border-border-subtle'
                     }`}
                   >
+                    {/* Highlighted tier gets a navy header bar */}
                     {tier.highlighted && (
-                      <span className="text-xs font-medium text-accent mb-2">Most Popular</span>
+                      <div className="absolute top-0 left-0 right-0 h-1 rounded-t-lg bg-gradient-to-r from-accent via-brand-navy-light to-accent" />
                     )}
-                    <h3 className="text-lg font-bold text-text-primary">{tier.name}</h3>
-                    <div className="flex items-baseline gap-1 my-3">
-                      <span className="text-3xl font-bold text-text-primary">{tier.price}</span>
-                      <span className="text-text-tertiary text-sm">{tier.period}</span>
+
+                    <div className="mb-4">
+                      {tier.highlighted && (
+                        <span className="inline-block text-[10px] font-semibold tracking-widest uppercase text-accent mb-2">Most Popular</span>
+                      )}
+                      <h3 className="text-base font-bold text-text-primary">{tier.name}</h3>
+                      <p className="text-[11px] text-text-disabled mt-0.5">{tier.desc}</p>
                     </div>
-                    <p className="text-xs text-text-tertiary mb-5">{tier.desc}</p>
-                    <ul className="flex flex-col gap-2 mb-6 flex-1">
+
+                    <div className="flex items-baseline gap-1 mb-5">
+                      <span className="text-3xl font-bold font-mono text-text-primary tracking-tight">{tier.price}</span>
+                      <span className="text-text-disabled text-xs">{tier.period}</span>
+                    </div>
+
+                    <div className="separator-gradient mb-5" />
+
+                    <ul className="flex flex-col gap-2.5 mb-6 flex-1">
                       {tier.features.map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm">
-                          <Check className="w-4 h-4 text-success mt-0.5 shrink-0" />
+                        <li key={f} className="flex items-start gap-2 text-xs">
+                          <Check className="w-3.5 h-3.5 text-success mt-0.5 shrink-0" />
                           <span className="text-text-secondary">{f}</span>
                         </li>
                       ))}
                     </ul>
+
                     <Link
                       to="/"
-                      className={`btn justify-center w-full no-underline ${
-                        tier.highlighted ? 'btn-primary' : 'btn-ghost'
+                      className={`flex items-center justify-center gap-1.5 w-full py-2 rounded-md text-xs font-semibold no-underline transition-all ${
+                        tier.highlighted
+                          ? 'bg-brand-navy text-white hover:bg-brand-navy-light'
+                          : 'border border-border-default text-text-secondary hover:text-text-primary hover:border-border-strong hover:bg-surface-2'
                       }`}
                     >
                       {tier.cta}
@@ -385,41 +468,45 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-6 bg-surface-1/50">
+      {/* ── CTA ── */}
+      <section className="py-24 px-6 relative">
+        <div className="absolute inset-0 dot-grid opacity-20" />
+        <div className="absolute inset-0 bg-gradient-to-b from-surface-0 via-transparent to-surface-0" />
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
-          variants={stagger}
-          className="max-w-3xl mx-auto text-center"
+          variants={sectionStagger}
+          className="relative max-w-2xl mx-auto text-center"
         >
-          <motion.h2 variants={fadeUp} className="text-3xl font-bold mb-4">
+          <motion.h2 variants={cardReveal} className="text-3xl font-bold tracking-tight mb-4">
             Stop pricing on spreadsheets
           </motion.h2>
-          <motion.p variants={fadeUp} className="text-text-secondary text-lg mb-8">
+          <motion.p variants={cardReveal} className="text-text-secondary text-sm mb-8 leading-relaxed">
             Your competitors are still using Excel. Be the one with AI-powered pricing,
             professional proposals, and burden rates calculated in seconds.
           </motion.p>
-          <motion.div variants={fadeUp}>
-            <Link to="/" className="btn btn-primary !text-base !px-10 !py-3 no-underline">
-              <Sparkles className="w-5 h-5" />
+          <motion.div variants={cardReveal}>
+            <Link to="/" className="inline-flex items-center gap-2 px-8 py-3 rounded-md bg-brand-navy text-white text-sm font-semibold no-underline hover:bg-brand-navy-light transition-all hover:-translate-y-px hover:shadow-lg">
               Start Free Today
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border-subtle py-8 px-6">
+      {/* ── Footer ── */}
+      <footer className="border-t border-border-subtle py-6 px-6">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-accent" />
-            <span className="font-semibold">
-              BidCraft <span className="text-accent">AI</span>
+          <div className="flex items-center gap-2.5">
+            <div className="w-5 h-5 rounded bg-brand-navy flex items-center justify-center">
+              <span className="text-white text-[9px] font-bold font-mono">BC</span>
+            </div>
+            <span className="text-xs font-semibold">
+              BidCraft <span className="text-text-tertiary font-normal">AI</span>
             </span>
           </div>
-          <p className="text-xs text-text-disabled">
+          <p className="text-[11px] text-text-disabled">
             &copy; {new Date().getFullYear()} BidCraft AI. All rights reserved.
           </p>
         </div>
