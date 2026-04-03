@@ -10,6 +10,7 @@ import Proposal from '@/pages/Proposal'
 import Landing from '@/pages/Landing'
 import SavedQuotes from '@/pages/SavedQuotes'
 import Settings from '@/pages/Settings'
+import AIAssistant from '@/pages/AIAssistant'
 import ToastContainer from '@/components/Toast'
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="quote" element={<TaskOrderQuote />} />
           <Route path="proposal" element={<Proposal />} />
           <Route path="saved" element={<SavedQuotes />} />
+          <Route path="ai" element={<AIAssistant />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
-import { FolderOpen, FileText, FileStack, Trash2, Clock, DollarSign, Copy, Filter } from 'lucide-react'
+import { FolderOpen, FileText, FileStack, Trash2, Clock, DollarSign, Copy, Filter, Download } from 'lucide-react'
 import { useState } from 'react'
 import GlassCard from '@/components/GlassCard'
 import { quotesStore, useStore } from '@/data/mockStore'
+import { downloadCSV } from '@/utils/csv'
 import type { Quote } from '@/types'
 
 const STATUS_STYLES: Record<string, string> = {
@@ -58,6 +59,21 @@ export default function SavedQuotes() {
     })
   }
 
+  function handleExportCSV() {
+    const headers = ['Title', 'Type', 'Status', 'Date', 'Contract Ref', 'Location', 'Hours', 'Amount']
+    const rows = filtered.map((q) => [
+      q.title,
+      q.quoteType === 'proposal' ? 'Full Proposal' : q.quoteType === 'task_order' ? 'Task Order' : 'Workload',
+      q.status,
+      formatDate(q.createdAt),
+      q.contractRef || '',
+      q.location || '',
+      Number(q.totalHours.toFixed(1)),
+      Number(q.grandTotal.toFixed(2)),
+    ])
+    downloadCSV(`bidcraft-quotes-${new Date().toISOString().slice(0, 10)}.csv`, headers, rows)
+  }
+
   const totalValue = filtered.reduce((s, q) => s + q.grandTotal, 0)
   const acceptedValue = filtered
     .filter((q) => q.status === 'accepted')
@@ -75,6 +91,12 @@ export default function SavedQuotes() {
           <h1 className="text-2xl font-bold text-text-primary">Saved Quotes</h1>
           <span className="text-sm text-text-tertiary">{quotes.length} total</span>
         </div>
+        {quotes.length > 0 && (
+          <button className="btn btn-ghost" onClick={handleExportCSV}>
+            <Download className="w-4 h-4" />
+            Export CSV
+          </button>
+        )}
       </div>
 
       {quotes.length > 0 && (

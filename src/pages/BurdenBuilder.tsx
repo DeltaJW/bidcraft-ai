@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil } from 'lucide-react'
+import { Calculator, ChevronRight, ChevronLeft, Save, RotateCcw, Trash2, Plus, Pencil, Download } from 'lucide-react'
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { burdenProfilesStore, useStore } from '@/data/mockStore'
+import { downloadCSV } from '@/utils/csv'
 import type { BurdenProfile } from '@/types'
 
 const STEPS = [
@@ -75,6 +76,28 @@ export default function BurdenBuilder() {
   const preProfit = subtotal + gaDollar
   const feeDollar = preProfit * (profile.feePct / 100)
   const fullyBurdened = preProfit + feeDollar
+
+  function handleExportBreakdown() {
+    const headers = ['Component', 'Percentage', 'Dollar Amount']
+    const rows: (string | number)[][] = [
+      ['Base Wage', '', profile.baseWage.toFixed(2)],
+      ['Health & Welfare', '', profile.hwRate.toFixed(2)],
+      ['Subtotal (Base + H&W)', '', basePlusHW.toFixed(2)],
+      [`FICA`, `${profile.ficaPct}%`, ficaDollar.toFixed(2)],
+      [`SUI`, `${profile.suiPct}%`, suiDollar.toFixed(2)],
+      [`Workers Comp`, `${profile.wcPct}%`, wcDollar.toFixed(2)],
+      [`FUTA`, `${profile.futaPct}%`, futaDollar.toFixed(2)],
+      ['Tax Total', '', taxTotal.toFixed(2)],
+      ['Leave / PTO', `${leavePct.toFixed(1)}%`, leaveDollar.toFixed(2)],
+      ['Direct Cost', '', subtotal.toFixed(2)],
+      [`G&A / Overhead`, `${profile.gaPct}%`, gaDollar.toFixed(2)],
+      [`Profit / Fee`, `${profile.feePct}%`, feeDollar.toFixed(2)],
+      ['Fully Burdened Rate', '', fullyBurdened.toFixed(2)],
+    ]
+    const name = profile.name.trim() || 'burden-breakdown'
+    downloadCSV(`bidcraft-${name.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.csv`, headers, rows)
+    toast('Burden breakdown exported as CSV')
+  }
 
   function handleSave() {
     if (profile.baseWage <= 0) {
@@ -392,7 +415,15 @@ export default function BurdenBuilder() {
 
         {/* Right: Live breakdown */}
         <div>
-          <GlassCard title="Live Breakdown" className="sticky top-8">
+          <GlassCard title="Live Breakdown" className="sticky top-8" action={
+            <button
+              className="p-1 text-text-tertiary hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+              onClick={handleExportBreakdown}
+              title="Export breakdown as CSV"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          }>
             <div className="flex flex-col gap-2 text-sm">
               <Row label="Base Wage" value={profile.baseWage} />
               <Row label="Health & Welfare" value={profile.hwRate} />

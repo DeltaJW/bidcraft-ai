@@ -5,6 +5,7 @@ import { ClipboardList, Plus, Trash2, MapPin, Send, FolderOpen, Download } from 
 import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { rateLibraryStore, burdenProfilesStore, workloadDraftStore, templatesStore, useStore } from '@/data/mockStore'
+import { downloadCSV } from '@/utils/csv'
 import type { Zone, ZoneTask, Frequency } from '@/types'
 import { FREQUENCY_ANNUAL_MULTIPLIER, FREQUENCY_LABELS } from '@/types'
 
@@ -142,6 +143,30 @@ export default function Workloading() {
     if (t.sqftPerHour <= 0 || t.sqft <= 0) return 0
     const hoursPerOccurrence = t.sqft / t.sqftPerHour
     return hoursPerOccurrence * FREQUENCY_ANNUAL_MULTIPLIER[t.frequency]
+  }
+
+  function handleExportWorkloadCSV() {
+    const headers = ['Zone', 'Task', 'Equipment', 'Sq Ft', 'Frequency', 'Rate', 'Annual Hours', 'Annual Cost']
+    const rows: (string | number)[][] = []
+    zones.forEach((z) => {
+      z.tasks.forEach((t) => {
+        const annHrs = taskAnnualHours(t)
+        const annCost = selectedBurden ? annHrs * selectedBurden.computedRate! : 0
+        rows.push([
+          z.name,
+          t.taskName,
+          t.equipment,
+          t.sqft,
+          FREQUENCY_LABELS[t.frequency],
+          t.sqftPerHour,
+          Number(annHrs.toFixed(1)),
+          Number(annCost.toFixed(2)),
+        ])
+      })
+    })
+    const name = buildingName.trim() || 'workload'
+    downloadCSV(`bidcraft-${name.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.csv`, headers, rows)
+    toast('Workload exported as CSV')
   }
 
   const allTasks = zones.flatMap((z) => z.tasks)
@@ -374,7 +399,17 @@ export default function Workloading() {
 
         {/* Right: Summary */}
         <div>
-          <GlassCard title="Hours Summary" className="sticky top-8">
+          <GlassCard title="Hours Summary" className="sticky top-8" action={
+            totalAnnualHours > 0 ? (
+              <button
+                className="p-1 text-text-tertiary hover:text-accent transition-colors bg-transparent border-none cursor-pointer"
+                onClick={handleExportWorkloadCSV}
+                title="Export workload as CSV"
+              >
+                <Download className="w-4 h-4" />
+              </button>
+            ) : undefined
+          }>
             <div className="flex flex-col gap-3 text-sm">
               <SummaryRow label="Annual Hours" value={`${totalAnnualHours.toFixed(1)}`} bold />
               <SummaryRow label="Monthly Hours" value={`${totalMonthlyHours.toFixed(1)}`} />

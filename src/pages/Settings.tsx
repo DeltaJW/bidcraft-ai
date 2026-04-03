@@ -8,6 +8,9 @@ import {
   AlertTriangle,
   Database,
   Info,
+  Bot,
+  Eye,
+  EyeOff,
 } from 'lucide-react'
 import { toast } from '@/components/Toast'
 import GlassCard from '@/components/GlassCard'
@@ -17,6 +20,7 @@ import {
   burdenProfilesStore,
   quotesStore,
   templatesStore,
+  aiSettingsStore,
   useStore,
 } from '@/data/mockStore'
 import { DEFAULT_RATES } from '@/data/defaultRates'
@@ -28,7 +32,10 @@ export default function Settings() {
   const quotes = useStore(quotesStore)
   const templates = useStore(templatesStore)
 
+  const aiSettings = useStore(aiSettingsStore)
+
   const [showClearConfirm, setShowClearConfirm] = useState(false)
+  const [showApiKey, setShowApiKey] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   function handleExport() {
@@ -133,6 +140,56 @@ export default function Settings() {
             <DataRow icon={Database} label="Saved Quotes" value={`${quotes.length} quotes`} />
             <DataRow icon={Database} label="Building Templates" value={`${templates.length} templates`} />
             <DataRow icon={Database} label="Storage Used" value={formatBytes(storageUsed)} />
+          </div>
+        </GlassCard>
+
+        {/* AI Settings */}
+        <GlassCard title="AI Assistant" subtitle="Configure your Claude API key for the AI Assistant">
+          <div className="flex items-center gap-2 mb-3">
+            <Bot className="w-5 h-5 text-accent" />
+            <span className="text-sm text-text-secondary">
+              {aiSettings.apiKey ? 'API key configured' : 'No API key set'}
+            </span>
+            {aiSettings.apiKey && (
+              <span className="badge badge-green">Active</span>
+            )}
+          </div>
+          <div className="flex flex-col gap-3">
+            <div>
+              <label className="label">Claude API Key</label>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <input
+                    type={showApiKey ? 'text' : 'password'}
+                    value={aiSettings.apiKey}
+                    onChange={(e) => aiSettingsStore.update((prev) => ({ ...prev, apiKey: e.target.value }))}
+                    placeholder="sk-ant-..."
+                    className="!pr-10"
+                  />
+                  <button
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-text-tertiary hover:text-text-secondary bg-transparent border-none cursor-pointer"
+                    onClick={() => setShowApiKey(!showApiKey)}
+                  >
+                    {showApiKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+              </div>
+              <p className="helper-text">
+                Your key stays in your browser's localStorage. It's only sent to api.anthropic.com.
+              </p>
+            </div>
+            <div>
+              <label className="label">Model</label>
+              <select
+                value={aiSettings.model}
+                onChange={(e) => aiSettingsStore.update((prev) => ({ ...prev, model: e.target.value }))}
+                className="!w-64"
+              >
+                <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (recommended)</option>
+                <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (faster, cheaper)</option>
+                <option value="claude-opus-4-20250514">Claude Opus 4 (most capable)</option>
+              </select>
+            </div>
           </div>
         </GlassCard>
 

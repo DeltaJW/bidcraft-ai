@@ -5,6 +5,8 @@ import GlassCard from '@/components/GlassCard'
 import { toast } from '@/components/Toast'
 import { rateLibraryStore, useStore } from '@/data/mockStore'
 import { DEFAULT_RATES, RATE_CATEGORIES } from '@/data/defaultRates'
+import { INDUSTRIES, getRatesForIndustry, getCategoriesForIndustry, type IndustryType } from '@/data/industryRates'
+import { downloadCSV } from '@/utils/csv'
 import type { RateItem } from '@/types'
 
 export default function RateLibrary() {
@@ -86,6 +88,23 @@ export default function RateLibrary() {
       name: 'Default',
       rates: [...DEFAULT_RATES],
     })
+    setExpandedCats(new Set(RATE_CATEGORIES))
+  }
+
+  function loadIndustryPack(industry: IndustryType) {
+    if (industry === 'janitorial') {
+      resetToDefaults()
+      return
+    }
+    const rates = getRatesForIndustry(industry)
+    const cats = getCategoriesForIndustry(industry)
+    rateLibraryStore.set({
+      id: `${industry}-library`,
+      name: INDUSTRIES[industry].label,
+      rates: [...rates],
+    })
+    setExpandedCats(new Set(cats))
+    toast(`Loaded ${INDUSTRIES[industry].label} rate pack (${rates.length} rates)`)
   }
 
   const customCount = library.rates.filter((r) => r.isCustom).length
@@ -133,6 +152,20 @@ export default function RateLibrary() {
     e.target.value = ''
   }
 
+  function handleExportCSV() {
+    const headers = ['Category', 'Task', 'Equipment', 'Method', 'Rate', 'Overhead Multiplier']
+    const rows = library.rates.map((r) => [
+      r.category,
+      r.task,
+      r.equipment,
+      r.method,
+      r.sqftPerHour,
+      r.overheadMultiplier,
+    ])
+    downloadCSV(`bidcraft-rates-${new Date().toISOString().slice(0, 10)}.csv`, headers, rows)
+    toast('Rate library exported as CSV')
+  }
+
   function formatRate(r: RateItem): string {
     // Restrooms and per-unit items have low sqft values — show as "units/hr"
     if (r.sqftPerHour < 100) return `${r.sqftPerHour} units/hr`
@@ -156,6 +189,10 @@ export default function RateLibrary() {
             <Download className="w-4 h-4" />
             Export
           </button>
+          <button className="btn btn-ghost" onClick={handleExportCSV}>
+            <Download className="w-4 h-4" />
+            CSV
+          </button>
           <button className="btn btn-ghost" onClick={() => importRef.current?.click()}>
             <Upload className="w-4 h-4" />
             Import
@@ -174,6 +211,23 @@ export default function RateLibrary() {
         </div>
       </div>
 
+      {/* Industry Packs */}
+      <div className="flex gap-2 mb-4">
+        {(Object.entries(INDUSTRIES) as [IndustryType, typeof INDUSTRIES[IndustryType]][]).map(([key, info]) => (
+          <button
+            key={key}
+            onClick={() => loadIndustryPack(key)}
+            className={`px-3 py-2 rounded-lg text-xs font-medium transition-all cursor-pointer border ${
+              library.name === info.label || (key === 'janitorial' && library.name === 'Default')
+                ? 'bg-accent-muted border-accent/30 text-accent'
+                : 'bg-transparent border-border-default text-text-secondary hover:bg-surface-3 hover:text-text-primary'
+            }`}
+          >
+            {info.label}
+          </button>
+        ))}
+      </div>
+
       {/* Search */}
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-tertiary" />
@@ -186,7 +240,7 @@ export default function RateLibrary() {
       </div>
 
       <p className="text-xs text-text-tertiary mb-4">
-        {totalCount} industry-standard field-validated cleaning production rates{customCount > 0 ? ` (${customCount} custom)` : ''}. Click any value to edit.
+        {totalCount} production rates{customCount > 0 ? ` (${customCount} custom)` : ''} — {library.name}. Click any value to edit.
       </p>
 
       {/* Categories */}

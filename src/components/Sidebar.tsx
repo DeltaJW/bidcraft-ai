@@ -10,6 +10,7 @@ import {
   FileStack,
   Settings,
   Sparkles,
+  Bot,
 } from 'lucide-react'
 
 const NAV_ITEMS = [
@@ -21,6 +22,7 @@ const NAV_ITEMS = [
   { to: '/quote', icon: FileText, label: 'Task Order Quote' },
   { to: '/proposal', icon: FileStack, label: 'Full Proposal' },
   { to: '/saved', icon: FolderOpen, label: 'Saved Quotes' },
+  { to: '/ai', icon: Bot, label: 'AI Assistant' },
   { to: '/settings', icon: Settings, label: 'Settings' },
 ]
 

@@ -100,6 +100,17 @@ export interface WorkloadDraft {
 
 export const workloadDraftStore = createStore<WorkloadDraft | null>('workloadDraft', null)
 
+// ---- AI Settings ----
+export interface AISettings {
+  apiKey: string
+  model: string
+}
+
+export const aiSettingsStore = createStore<AISettings>('aiSettings', {
+  apiKey: '',
+  model: 'claude-sonnet-4-20250514',
+})
+
 // React hook helper
 export function useStore<T>(store: {
   get: () => T
