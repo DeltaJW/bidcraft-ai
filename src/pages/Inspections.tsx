@@ -223,7 +223,7 @@ export default function Inspections() {
           className="mb-8"
         >
           <div className="mb-2">
-            <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Operations</p>
+            <p className="section-label">Operations</p>
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">
               QC Inspections
             </h1>
@@ -257,7 +257,7 @@ export default function Inspections() {
           className="mb-8"
         >
           <div className="mb-2">
-            <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Operations</p>
+            <p className="section-label">Operations</p>
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">
               QC Inspections
             </h1>

@@ -58,7 +58,7 @@ export default function CompanyProfile() {
       className="max-w-3xl"
     >
       <div className="mb-6">
-        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Setup</p>
+        <p className="section-label">Setup</p>
         <h1 className="text-2xl font-bold text-text-primary tracking-tight">Company Profile</h1>
       </div>
 

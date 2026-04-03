@@ -288,7 +288,7 @@ export default function ContractCalendar() {
         <div className="flex items-center justify-between">
           <div>
             <div className="mb-2">
-              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Operations</p>
+              <p className="section-label">Operations</p>
               <h1 className="text-2xl font-bold text-text-primary tracking-tight">Contract Calendar</h1>
             </div>
             <p className="text-text-secondary text-lg">Track contract dates, expirations, and wage determinations.</p>

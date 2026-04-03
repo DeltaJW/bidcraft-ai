@@ -403,7 +403,7 @@ export default function NarrativeWriter() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">AI Tools</p>
+          <p className="section-label">AI Tools</p>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">Narrative Writer</h1>
             <span className="badge badge-blue">AI-Powered</span>

@@ -104,7 +104,7 @@ export default function Dashboard() {
       <motion.div variants={fadeIn} className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Command Center</p>
+            <p className="section-label">Command Center</p>
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">
               BidCraft <span className="text-accent font-normal">AI</span>
             </h1>

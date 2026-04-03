@@ -146,7 +146,7 @@ export default function SavedQuotes() {
     >
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Pipeline</p>
+          <p className="section-label">Pipeline</p>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">Saved Quotes</h1>
             <span className="text-[11px] font-mono text-text-disabled">{quotes.length} total</span>

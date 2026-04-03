@@ -158,7 +158,7 @@ export default function RegionalCost() {
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <div className="mb-2">
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Reference</p>
+          <p className="section-label">Reference</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Regional Cost Adjuster</h1>
         </div>
         <p className="text-text-secondary text-lg">

@@ -434,7 +434,7 @@ export default function GovExport() {
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <div className="mb-2">
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Output</p>
+          <p className="section-label">Output</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Government Format Export</h1>
         </div>
         <p className="text-text-secondary text-lg">

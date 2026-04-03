@@ -88,7 +88,7 @@ export default function ScenarioCompare() {
       className="max-w-5xl"
     >
       <div className="mb-2">
-        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Analysis</p>
+        <p className="section-label">Analysis</p>
         <h1 className="text-2xl font-bold text-text-primary tracking-tight">What-If Scenarios</h1>
       </div>
       <p className="text-text-tertiary text-sm mb-6">

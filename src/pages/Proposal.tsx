@@ -313,7 +313,7 @@ export default function Proposal() {
       {/* Header */}
       <motion.div variants={fadeIn} className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Output</p>
+          <p className="section-label">Output</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Full Proposal</h1>
         </div>
         <div className="flex gap-2">

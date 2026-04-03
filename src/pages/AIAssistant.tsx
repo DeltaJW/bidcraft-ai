@@ -143,7 +143,7 @@ export default function AIAssistant() {
     >
       <div className="flex items-center justify-between mb-4">
         <div>
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">AI Tools</p>
+          <p className="section-label">AI Tools</p>
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">AI Assistant</h1>
             <span className="badge badge-blue">Beta</span>

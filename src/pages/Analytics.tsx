@@ -113,7 +113,7 @@ export default function Analytics() {
       <div className="max-w-5xl">
         <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <div className="mb-2">
-            <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Analysis</p>
+            <p className="section-label">Analysis</p>
             <h1 className="text-2xl font-bold text-text-primary tracking-tight">Win/Loss Analytics</h1>
           </div>
           <p className="text-text-secondary text-lg">Pipeline analytics and performance metrics.</p>
@@ -144,7 +144,7 @@ export default function Analytics() {
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
         <div className="mb-2">
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Analysis</p>
+          <p className="section-label">Analysis</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Win/Loss Analytics</h1>
         </div>
         <p className="text-text-secondary text-lg">Pipeline analytics and performance metrics.</p>

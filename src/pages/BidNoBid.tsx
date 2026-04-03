@@ -159,7 +159,7 @@ export default function BidNoBid() {
     return (
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl">
         <div className="mb-2">
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+          <p className="section-label">Intelligence</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Bid / No-Bid Decision</h1>
         </div>
         <p className="text-text-tertiary text-sm mb-6">
@@ -241,7 +241,7 @@ export default function BidNoBid() {
   return (
     <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="max-w-6xl">
       <div className="mb-2">
-        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+        <p className="section-label">Intelligence</p>
         <h1 className="text-2xl font-bold text-text-primary tracking-tight">Bid / No-Bid Scorecard</h1>
       </div>
       <div className="flex items-center gap-3 mb-6">

@@ -242,7 +242,7 @@ export default function DocumentHub() {
       className="max-w-5xl"
     >
       <div className="mb-2">
-        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Intelligence</p>
+        <p className="section-label">Intelligence</p>
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Document Hub</h1>
           <span className="badge badge-blue">AI-Powered</span>

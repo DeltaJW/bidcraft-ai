@@ -240,7 +240,7 @@ export default function Workloading() {
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <div>
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Calculator</p>
+          <p className="section-label">Calculator</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Workloading</h1>
         </div>
         <div className="flex flex-wrap gap-2">

@@ -196,7 +196,7 @@ export default function RateLibrary() {
     >
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
         <div>
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Rate Data</p>
+          <p className="section-label">Rate Data</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Rate Library</h1>
         </div>
         <div className="flex flex-wrap gap-2">

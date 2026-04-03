@@ -130,7 +130,7 @@ export default function Settings() {
       className="max-w-3xl"
     >
       <div className="mb-6">
-        <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">System</p>
+        <p className="section-label">System</p>
         <h1 className="text-2xl font-bold text-text-primary tracking-tight">Settings</h1>
       </div>
 

@@ -73,7 +73,7 @@ export default function LaborCategories() {
     >
       <div className="flex items-center justify-between mb-6">
         <div>
-          <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-1">Setup</p>
+          <p className="section-label">Setup</p>
           <h1 className="text-2xl font-bold text-text-primary tracking-tight">Labor Categories</h1>
         </div>
         <div className="flex gap-2">

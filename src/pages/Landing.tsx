@@ -281,7 +281,7 @@ export default function Landing() {
             variants={sectionStagger}
           >
             <motion.div variants={cardReveal} className="mb-14">
-              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Capabilities</p>
+              <p className="section-label mb-3">Capabilities</p>
               <h2 className="text-3xl font-bold tracking-tight mb-3">Everything you need to price and win</h2>
               <p className="text-text-tertiary max-w-lg text-sm leading-relaxed">
                 From production rates to professional proposals — one platform replaces
@@ -324,7 +324,7 @@ export default function Landing() {
             variants={sectionStagger}
           >
             <motion.div variants={cardReveal} className="mb-14">
-              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Coverage</p>
+              <p className="section-label mb-3">Coverage</p>
               <h2 className="text-3xl font-bold tracking-tight mb-3">Not just cleaning</h2>
               <p className="text-text-tertiary max-w-lg text-sm leading-relaxed">
                 BidCraft ships with rate libraries for four facility services industries.
@@ -363,7 +363,7 @@ export default function Landing() {
             variants={sectionStagger}
           >
             <motion.div variants={cardReveal} className="mb-14 text-center">
-              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Workflow</p>
+              <p className="section-label mb-3">Workflow</p>
               <h2 className="text-3xl font-bold tracking-tight">Four steps to a professional proposal</h2>
             </motion.div>
 
@@ -403,7 +403,7 @@ export default function Landing() {
             variants={sectionStagger}
           >
             <motion.div variants={cardReveal} className="text-center mb-14">
-              <p className="text-[11px] tracking-widest uppercase font-semibold text-accent mb-3">Pricing</p>
+              <p className="section-label mb-3">Pricing</p>
               <h2 className="text-3xl font-bold tracking-tight mb-3">Simple, transparent pricing</h2>
               <p className="text-text-tertiary text-sm">
                 Start free. Upgrade when you need more.
